@@ -6,7 +6,7 @@ install:
 	nbt install
 
 test:
-	nbt verify
+	nbt verify --skip-layout-checks
 
 build:
 	nbt build

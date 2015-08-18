@@ -1,3 +1,5 @@
+/* globals self, caches, clients */
+'use strict';
 var cacheName = 'static-assets';
 var cssFile = /^https?:\/\/next-geebee\.ft\.com\/hashed-assets\/(.*)\/main-.*\.css/;
 var fontFile = /^https?:\/\/next-geebee\.ft\.com\/build\/files\/o-fonts-assets/;
@@ -45,7 +47,7 @@ self.addEventListener('fetch', function(event) {
 						// Was a new version so invalidate all old copies
 						cache.keys().then(function(keys) {
 							keys.filter(function(key){
-								return getCssAppName(key) === getCssAppName(request.url);
+								return getCssAppName(key) === getCssAppName(event.request.url);
 							}).forEach(function(request) {
 								cache.delete(request);
 							});
