@@ -1,5 +1,5 @@
 var cacheName = 'static-assets';
-var cssFile = /^https?:\/\/next-geebee\.ft\.com\/hashed-assets\/.*\/main-.*\.css/;
+var cssFile = /^https?:\/\/next-geebee\.ft\.com\/hashed-assets\/(.*)\/main-.*\.css/;
 var fontFile = /^https?:\/\/next-geebee\.ft\.com\/build\/files\/o-fonts-assets/;
 
 self.addEventListener('install',function(event) {
@@ -22,17 +22,21 @@ self.addEventListener('activate', function(event) {
 	}
 });
 
-function isMainCssRequest(request) {
+function isCssRequest(request) {
 	return cssFile.test(request.url);
 }
 
-function isMainFontRequest(request) {
+function isFontRequest(request) {
 	return fontFile.test(request.url);
+}
+
+function getCssAppName(path) {
+	return path.match(cssFile)[1];
 }
 
 self.addEventListener('fetch', function(event) {
 	// If this is a request for our main CSS file
-	if (isMainCssRequest(event.request)) {
+	if (isCssRequest(event.request)) {
 		caches.open(cacheName).then(function(cache) {
 			// Respond with cached copy or fetch new version
 			event.respondWith(
@@ -40,7 +44,9 @@ self.addEventListener('fetch', function(event) {
 					return response || fetch(event.request).then(function(response) {
 						// Was a new version so invalidate all old copies
 						cache.keys().then(function(keys) {
-							keys.filter(isMainCssRequest).forEach(function(request) {
+							keys.filter(function(key){
+								return getCssAppName(key) === getCssAppName(request.url);
+							}).forEach(function(request) {
 								cache.delete(request);
 							});
 						});
@@ -55,7 +61,7 @@ self.addEventListener('fetch', function(event) {
 		});
 	}
 
-	if(isMainFontRequest(event.request)) {
+	if(isFontRequest(event.request)) {
 		caches.open(cacheName).then(function(cache) {
 			event.respondWith(
 				cache.match(event.request).then(function(response) {
