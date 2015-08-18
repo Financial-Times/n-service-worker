@@ -2,14 +2,14 @@ clean:
 	git clean -fxd
 
 install:
-	npm install origami-build-tools
-	obt install
+	npm install next-build-tools
+	nbt install
 
 test:
-	obt verify
+	nbt verify
 
 build:
-	obt build
+	nbt build
 
 deploy:
 	nbt deploy-static ./sw.js --destination service-worker/ --strip 1 --bucket ft-next-service-worker-prod --cache-control 'max-age=0'
