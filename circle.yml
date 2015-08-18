@@ -1,0 +1,11 @@
+machine:
+  services:
+    - docker
+  node:
+    version: 0.12.2
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - make deploy
