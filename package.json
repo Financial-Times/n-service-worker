@@ -1,0 +1,26 @@
+{
+  "name": "n-service-worker",
+  "version": "0.0.0",
+  "description": "Global service worker component for next.ft.com",
+  "main": "main.js",
+  "dependencies": {
+    "next-build-tools": "^3.20.8"
+  },
+  "devDependencies": {
+    "next-build-tools": "^3.20.8"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Financial-Times/n-service-worker.git"
+  },
+  "keywords": [
+    "ServiceWorker"
+  ],
+  "author": "Patrick Hamann <patrick.hamann@ft.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Financial-Times/n-service-worker/issues"
+  },
+  "homepage": "https://github.com/Financial-Times/n-service-worker"
+}
