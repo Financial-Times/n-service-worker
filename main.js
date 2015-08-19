@@ -4,9 +4,9 @@ module.exports  = {
 	init: function(flags) {
 		if ('serviceWorker' in navigator) {
 			if(flags.serviceWorkerExperiments) {
-				navigator.serviceWorker.register('./sw.js');
+				navigator.serviceWorker.register('./__sw.js');
 			} else {
-				navigator.serviceWorker.register('./sw.js').then(function(registration){
+				navigator.serviceWorker.register('./__sw.js').then(function(registration){
 					registration.unregister();
 				});
 			}
