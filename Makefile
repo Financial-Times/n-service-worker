@@ -12,4 +12,5 @@ build:
 	nbt build
 
 deploy:
+	nbt configure
 	nbt deploy-static ./__sw.js --destination service-worker/ --strip 1 --bucket ft-next-service-worker-prod --cache-control 'max-age=0'
