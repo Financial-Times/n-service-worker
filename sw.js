@@ -47,7 +47,7 @@ self.addEventListener('fetch', function(event) {
 						// Was a new version so invalidate all old copies
 						cache.keys().then(function(keys) {
 							keys.filter(function(key){
-								return getCssAppName(key) === getCssAppName(event.request.url);
+								return getCssAppName(key.url) === getCssAppName(event.request.url);
 							}).forEach(function(request) {
 								cache.delete(request);
 							});
