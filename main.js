@@ -8,7 +8,7 @@ module.exports  = {
 					.register('/__sw.js')
 					.catch(function(err) {
 						throw err;
-					})
+					});
 			}
 		}
 	}
