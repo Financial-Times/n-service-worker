@@ -18,7 +18,7 @@ self.addEventListener('install',function(event) {
 	);
 });
 
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', function() {
 	if (self.clients && clients.claim) {
 		clients.claim();
 	}

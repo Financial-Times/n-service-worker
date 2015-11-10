@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports  = {
+module.exports = {
 	init: function(flags) {
 		if ('serviceWorker' in navigator) {
 			if(flags.get('serviceWorkerExperiments')) {
