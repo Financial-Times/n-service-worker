@@ -6,9 +6,10 @@
   "dependencies": {
     "next-build-tools": "^5.0.0"
   },
-  "devDependencies": {},
-  "scripts": {
+  "devDependencies": {
+    "origami-build-tools": "^4.2.0"
   },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/Financial-Times/n-service-worker.git"

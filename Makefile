@@ -2,8 +2,7 @@ clean:
 	git clean -fxd
 
 install:
-	npm install next-build-tools
-	nbt install
+	obt install
 
 test:
 	nbt verify --skip-layout-checks
