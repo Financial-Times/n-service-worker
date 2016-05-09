@@ -2,17 +2,17 @@
 'use strict';
 var cacheName = 'static-assets';
 var cssFile = /^https?:\/\/next-geebee\.ft\.com\/hashed-assets\/(.*)\/main-.*\.css/;
-var fontFile = /^https?:\/\/next-geebee\.ft\.com\/build\/files\/o-fonts-assets/;
+var fontFile = /^https?:\/\/next-geebee\.ft\.com\/build\/v2\/files\/o-fonts-assets/;
 
 self.addEventListener('install',function(event) {
 	event.waitUntil(
 		caches.open(cacheName).then(function(cache) {
 			return cache.addAll([
-				'https://next-geebee.ft.com/build/files/o-fonts-assets@1.2.0/MetricWeb-Light.woff?',
-				'https://next-geebee.ft.com/build/files/o-fonts-assets@1.2.0/MetricWeb-Semibold.woff?',
-				'https://next-geebee.ft.com/build/files/o-fonts-assets@1.2.0/MetricWeb-LightItalic.woff?',
-				'https://next-geebee.ft.com/build/files/o-fonts-assets@1.2.0/FinancierDisplayWeb-LightItalic.woff?',
-				'https://next-geebee.ft.com/build/files/o-fonts-assets@1.2.0/FinancierDisplayWeb-MediumItalic.woff?'
+				'https://next-geebee.ft.com/build/v2/files/o-fonts-assets@1.2.0/MetricWeb-Light.woff?',
+				'https://next-geebee.ft.com/build/v2/files/o-fonts-assets@1.2.0/MetricWeb-Semibold.woff?',
+				'https://next-geebee.ft.com/build/v2/files/o-fonts-assets@1.2.0/MetricWeb-LightItalic.woff?',
+				'https://next-geebee.ft.com/build/v2/files/o-fonts-assets@1.2.0/FinancierDisplayWeb-LightItalic.woff?',
+				'https://next-geebee.ft.com/build/v2/files/o-fonts-assets@1.2.0/FinancierDisplayWeb-MediumItalic.woff?'
 			]);
 		})
 	);
