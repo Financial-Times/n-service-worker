@@ -1,15 +1,12 @@
-'use strict';
-
-module.exports = {
-	init: function(flags) {
-		if ('serviceWorker' in navigator) {
-			if(flags.get('serviceWorkerExperiments')) {
-				navigator.serviceWorker
-					.register('/__sw.js')
-					.catch(function(err) {
-						throw err;
-					});
-			}
-		}
+export default flags => {
+	if ('serviceWorker' in navigator && flags.get('serviceWorker')) {
+		navigator.serviceWorker
+			.register('/__sw.js')
+			.then(registration => {
+				console.log(registration);
+			})
+			.catch(err => {
+				console.log(err);
+			});
 	}
 };
