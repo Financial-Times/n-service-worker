@@ -17,9 +17,9 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', () => {
-	if (self.clients && clients.claim) {
-		clients.claim();
-	}
+	// if (self.clients && clients.claim) {
+	// 	clients.claim();
+	// }
 });
 
 const isCssRequest = request => cssFile.test(request.url);
