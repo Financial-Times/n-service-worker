@@ -1,14 +1,9 @@
-clean:
-	git clean -fxd
+include n.Makefile
 
-install:
-	obt install
+test: verify
 
-test:
-	nbt verify --skip-layout-checks
-
-build:
-	nbt build
+build: test
+	webpack src/__sw.js dist/__sw.js -p
 
 deploy:
 	nbt configure

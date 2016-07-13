@@ -7,9 +7,6 @@
   ],
   "description": "Global service worker component for next.ft.com",
   "main": "main.js",
-  "keywords": [
-    "ServiceWorker"
-  ],
   "license": "MIT",
   "ignore": [
     "**/.*",

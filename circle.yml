@@ -1,6 +1,10 @@
 machine:
   node:
-    version: 4.2.0
+    version: 6.3.0
+
+dependencies:
+  cache_directories:
+    - "bower_components"
 
 deployment:
   production:

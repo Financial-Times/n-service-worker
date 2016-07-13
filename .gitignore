@@ -1,3 +1,7 @@
-.env
-/node_modules/
+*.env*
+.editorconfig
+.eslintrc.js
+
 /bower_components/
+/dist/
+/node_modules/
