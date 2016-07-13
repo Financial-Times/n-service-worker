@@ -1,18 +1,20 @@
 {
   "name": "n-service-worker",
-  "version": "1.0.0",
   "homepage": "https://github.com/Financial-Times/n-service-worker",
   "authors": [
-    "Patrick Hamann <patrick.hamann@ft.com>"
+    "Patrick Hamann <patrick.hamann@ft.com>",
+    "Darren Hurley <darren.hurley@ft.com>"
   ],
   "description": "Global service worker component for next.ft.com",
   "main": "main.js",
   "license": "MIT",
   "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    ".gitignore",
+    "circle.yml",
+    "ft.yml",
+    "Makefile",
+    "n.Makefile",
+    "package.json",
+    "webpack.config.js"
   ]
 }
