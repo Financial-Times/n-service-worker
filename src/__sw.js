@@ -2,14 +2,14 @@ import toolbox from 'sw-toolbox';
 
 const fonts = ['MetricWeb-Regular', 'MetricWeb-Semibold', 'FinancierDisplayWeb-Regular'];
 const fontsVersion = '1.3.0';
-
+let flags = {}; //eslint-disable-line
 
 self.addEventListener('message', msg => {
-  switch (msg.type) {
-  	case 'flagsUpdate':
-  		flags = msg.flags
-  		break;
-  }
+	switch (msg.type) {
+		case 'flagsUpdate' :
+			flags = Object.freeze(msg.flags);
+			break;
+	}
 });
 
 self.addEventListener('activate', () => {

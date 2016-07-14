@@ -20,19 +20,24 @@ const message = msg => {
 
 const register = flags => {
 	if ('serviceWorker' in navigator && flags.get('serviceWorker')) {
-		navigator.serviceWorker.register('/__sw.js');
-		message({
-			type: 'flagsUpdate',
-			flags
-		});
+		return navigator.serviceWorker.register('/__sw.js')
+			.then(() => {
+				return message({
+					type: 'flagsUpdate',
+					flags
+				});
+			});
 	};
+
+	return Promise.resolve(false);
 };
 
 const unregister = () => {
 	if ('serviceWorker' in navigator) {
-		navigator.serviceWorker.getRegistration()
-			.then(registration => registration ? registration.unregister();
+		return navigator.serviceWorker.getRegistration()
+			.then(registration => registration ? registration.unregister() : false);
 	}
+	return Promise.resolve(false);
 };
 
 export { register, unregister, message };
