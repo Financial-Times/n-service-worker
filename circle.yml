@@ -8,7 +8,6 @@ dependencies:
 
 deployment:
   production:
-    tag: /v[0-9]+(\.[0-9]+)*/
-    owner: Financial-Times
+    branch: master
     commands:
       - make deploy
