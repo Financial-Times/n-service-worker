@@ -1,3 +1,5 @@
+const BowerWebpackPlugin = require('bower-webpack-plugin');
+
 module.exports = {
 	module: {
 		loaders: [
@@ -10,5 +12,6 @@ module.exports = {
 				}
 			}
 		]
-	}
+	},
+	plugins: [new BowerWebpackPlugin()]
 }

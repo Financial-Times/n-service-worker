@@ -16,5 +16,8 @@
     "n.Makefile",
     "package.json",
     "webpack.config.js"
-  ]
+  ],
+  "dependencies": {
+    "sw-toolbox": "^3.2.1"
+  }
 }
