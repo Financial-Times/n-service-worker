@@ -1,54 +1,21 @@
-const cacheName = 'static-assets-v1';
+import toolbox from 'sw-toolbox';
+
 const fonts = ['MetricWeb-Regular', 'MetricWeb-Semibold', 'FinancierDisplayWeb-Regular'];
 const fontsVersion = '1.3.0';
-const cssFile = /^https?:\/\/[^\.]*\.ft\.com\/(.*)\/main(-.+)?\.css$/;
-const fontFile = /^https?:\/\/next-geebee\.ft\.com\/build\/v2\/files\/o-fonts-assets/;
 
-const isCssRequest = request => cssFile.test(request.url);
+// cache fronts upfront
+toolbox.precache(
+	fonts.map(font => `https://next-geebee.ft.com/build/v2/files/o-fonts-assets@${fontsVersion}/${font}.woff?`)
+);
 
-const isFontRequest = request => fontFile.test(request.url);
+// fonts route
+toolbox.router.get(
+	'/build/v2/files/o-fonts-assets@:version/:font.woff', toolbox.cacheFirst, { origin: 'https://next-geebee.ft.com' }
+);
 
-self.addEventListener('install', event => {
-	event.waitUntil(
-		caches.open(cacheName)
-			.then(cache =>
-				cache.addAll(
-					fonts.map(font => `https://next-geebee.ft.com/build/v2/files/o-fonts-assets@${fontsVersion}/${font}.woff?`)
-				)
-			)
-	);
-});
+// css route
+toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.css', toolbox.cacheFirst);
+// local css
+toolbox.router.get('/:appName/:cssName.css', toolbox.cacheFirst);
 
-self.addEventListener('activate', () => { });
-
-self.addEventListener('fetch', event => {
-	// If this is a request for our main CSS file
-	if (isCssRequest(event.request)) {
-		// Respond with cached copy or fetch new version
-		event.respondWith(
-			caches.match(event.request)
-				.then(response => {
-					if (response) {
-						return response;
-					}
-
-					return fetch(event.request.clone())
-						.then(response => {
-							if (response && response.status === 200 && response.type === 'basic') {
-								caches.open(cacheName)
-									.then(cache => cache.put(event.request, response.clone()));
-							}
-
-							return response;
-						});
-				})
-		);
-	}
-
-	if (isFontRequest(event.request)) {
-		event.respondWith(
-			caches.match(event.request)
-				.then(response => response || fetch(event.request))
-		);
-	}
-});
+toolbox.router.get('/', toolbox.fastest);
