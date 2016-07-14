@@ -3,6 +3,19 @@ import toolbox from 'sw-toolbox';
 const fonts = ['MetricWeb-Regular', 'MetricWeb-Semibold', 'FinancierDisplayWeb-Regular'];
 const fontsVersion = '1.3.0';
 
+
+self.addEventListener('message', msg => {
+  switch (msg.type) {
+  	case 'flagsUpdate':
+  		flags = msg.flags
+  		break;
+  }
+});
+
+self.addEventListener('activate', () => {
+	// do some stuff to enable/disable caches and other features based on value of current flags
+});
+
 // cache fronts upfront
 toolbox.precache(
 	fonts.map(font => `https://next-geebee.ft.com/build/v2/files/o-fonts-assets@${fontsVersion}/${font}.woff?`)
