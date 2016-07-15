@@ -24,7 +24,7 @@ const register = flags => {
 			.then(() => {
 				return message({
 					type: 'flagsUpdate',
-					flags
+					flags: JSON.parse(JSON.stringify(flags)) // to avoid error caused by the getters
 				});
 			});
 	};
