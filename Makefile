@@ -14,4 +14,4 @@ server:
 run: build-dev server
 
 deploy: build
-	nht deploy-static ./dist/__sw.js --destination service-worker/ --strip 1 --bucket ft-next-service-worker-prod --no-cache
+	nht deploy-static `find . -path "./dist/*"` --strip 1 --bucket ft-next-service-worker-prod --no-cache
