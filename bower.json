@@ -3,7 +3,8 @@
   "homepage": "https://github.com/Financial-Times/n-service-worker",
   "authors": [
     "Patrick Hamann <patrick.hamann@ft.com>",
-    "Darren Hurley <darren.hurley@ft.com>"
+    "Darren Hurley <darren.hurley@ft.com>",
+    "Rhys Evans <rhys.evans@ft.com>"
   ],
   "description": "Global service worker component for next.ft.com",
   "main": "main.js",
