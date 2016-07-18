@@ -1,17 +1,14 @@
-const BowerWebpackPlugin = require('bower-webpack-plugin');
+const path = require('path');
+const nWebpack = require('@financial-times/n-webpack');
 
-module.exports = {
-	module: {
-		loaders: [
-			{
-				test: /\.js$/,
-				exclude: /(node_modules|bower_components)/,
-				loader: 'babel',
-				query: {
-					presets: ['es2015']
-				}
-			}
-		]
+module.exports = nWebpack({
+	withBabelPolyfills: false,
+	output: {
+		filename: '[name]',
+		devtoolModuleFilenameTemplate: 'n-service-worker//[resource-path]?[loaders]'
 	},
-	plugins: [new BowerWebpackPlugin()]
-}
+	entry: {
+		'./dist/__sw.js': './src/__sw.js'
+	},
+	include: [path.resolve('./src')]
+});

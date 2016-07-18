@@ -2,11 +2,8 @@ include n.Makefile
 
 test: verify
 
-build:
-	webpack src/__sw.js dist/__sw.js -p
-
-build-dev:
-	webpack src/__sw.js dist/__sw.js -d --watch
+build-dev: build
+	webpack -d --watch
 
 server:
 	http-server dist -p 3010
