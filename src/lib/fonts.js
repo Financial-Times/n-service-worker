@@ -5,7 +5,7 @@ const fontsVersion = '1.3.0';
 const cacheOptions = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
-		name: `fonts:${fontsVersion}`
+		name: `next:fonts:${fontsVersion}`
 	}
 };
 

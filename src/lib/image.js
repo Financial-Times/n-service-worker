@@ -3,7 +3,7 @@ import toolbox from 'sw-toolbox';
 const cacheOptions = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
-		name: 'image'
+		name: 'next:image'
 	}
 };
 
