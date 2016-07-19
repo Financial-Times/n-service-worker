@@ -1,13 +1,12 @@
 import toolbox from 'sw-toolbox';
 import flags from './flags';
 
-
 // TODO have one cache for our more actively developed apps,
 // another with longer cache life for errors, opt-out etc
 const cacheOptions = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
-		name: 'built-assets',
+		name: 'next:built-assets',
 		maxEntries: 20,
 		// our code base moves so fast, pointless caching enything longer than a few days
 		maxAgeSeconds: 60 * 60 * 24 * 5
