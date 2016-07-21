@@ -11,6 +11,12 @@ const cacheOptions = {
 
 toolbox.router.get('/', toolbox.fastest, cacheOptions);
 
+toolbox.router.get('/content/:uuid', request =>
+	// use the cache if we have it, otherwise fetch (but don't cache the response)
+	caches.match(request)
+		.then(response => response ? response : fetch(request))
+);
+
 self.addEventListener('message', ev => {
 	const msg = ev.data;
 	if (msg.type === 'cacheContent') {
@@ -21,7 +27,8 @@ self.addEventListener('message', ev => {
 				{}, cacheOptions.cache, content.cacheAge ? { maxAgeSeconds: content.cacheAge} : null
 			);
 			const options = Object.assign({}, cacheOptions, { cache: contentCacheOptions });
-			toolbox.cache(content.url, options);
+			// only get the content if we don't already have it
+			toolbox.cacheFirst(new Request(content.url), null, options);
 		});
 	}
 });

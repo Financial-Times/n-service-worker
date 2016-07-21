@@ -24,6 +24,3 @@ self.addEventListener('message', msg => {
 // prod
 toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.css', toolbox.cacheFirst, cacheOptions);
 toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.js', toolbox.cacheFirst, cacheOptions);
-// local
-toolbox.router.get('/:appName/:cssName.css', toolbox.cacheFirst, cacheOptions);
-toolbox.router.get('/:appName/:cssName.js', toolbox.cacheFirst, cacheOptions);

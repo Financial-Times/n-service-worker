@@ -1,5 +1,7 @@
 import toolbox from 'sw-toolbox';
 
+import precache from '../utils/precache';
+
 const cacheOptions = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
@@ -13,8 +15,9 @@ const headerImages = [
 	'ftlogo:brand-myft?source=o-header&tint=%23505050,%23505050&format=svg'
 ]
 
-toolbox.precache(
-	headerImages.map(image => `https://next-geebee.ft.com/image/v1/images/raw/${image}`)
+precache(
+	headerImages.map(image => `https://next-geebee.ft.com/image/v1/images/raw/${image}`),
+	cacheOptions
 );
 
 toolbox.router.get('/image/v1/images/raw/fticon*', toolbox.cacheFirst, cacheOptions);
