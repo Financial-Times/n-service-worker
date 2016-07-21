@@ -5,10 +5,10 @@
 // if flag === true can put and retrieve from cache
 let flags = {}; //eslint-disable-line
 
-self.addEventListener('message', msg => {
-	const data = msg.data;
-	if (data.type === 'flagsUpdate') {
-		flags = Object.freeze(data.flags);
+self.addEventListener('message', ev => {
+	const msg = ev.data;
+	if (msg.type === 'flagsUpdate') {
+		flags = Object.freeze(msg.flags);
 	}
 });
 
