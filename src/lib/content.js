@@ -27,7 +27,8 @@ self.addEventListener('message', ev => {
 				{}, cacheOptions.cache, content.cacheAge ? { maxAgeSeconds: content.cacheAge} : null
 			);
 			const options = Object.assign({}, cacheOptions, { cache: contentCacheOptions });
-			toolbox.cache(content.url, options);
+			// only get the content if we don't already have it
+			toolbox.cacheFirst(new Request(content.url), null, options);
 		});
 	}
 });
