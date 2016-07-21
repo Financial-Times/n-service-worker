@@ -11,6 +11,12 @@ const cacheOptions = {
 
 toolbox.router.get('/', toolbox.fastest, cacheOptions);
 
+toolbox.router.get('/content/:uuid', request =>
+	// use the cache if we have it, otherwise fetch (but don't cache the response)
+	caches.match(request)
+		.then(response => response ? response : fetch(request))
+);
+
 self.addEventListener('message', ev => {
 	const msg = ev.data;
 	if (msg.type === 'cacheContent') {
