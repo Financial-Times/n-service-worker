@@ -14,8 +14,14 @@ toolbox.router.get('/', toolbox.fastest, cacheOptions);
 self.addEventListener('message', ev => {
 	const msg = ev.data;
 	if (msg.type === 'cacheContent') {
-		(msg.content || []).forEach(url => {
-			toolbox.cache(url, cacheOptions);
+		// each content object contains a `url` and optional `cacheAge` property
+		(msg.content || []).forEach(content => {
+			// copy
+			const contentCacheOptions = Object.assign(
+				{}, cacheOptions.cache, content.cacheAge ? { maxAgeSeconds: content.cacheAge} : null
+			);
+			const options = Object.assign({}, cacheOptions, { cache: contentCacheOptions });
+			toolbox.cache(content.url, options);
 		});
 	}
 });
