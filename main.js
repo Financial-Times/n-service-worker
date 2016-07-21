@@ -46,4 +46,11 @@ const unregister = () => {
 	}
 };
 
+// Make sure install barrier never gets shown
+// (at least while we consider the web app's role)
+window.addEventListener('beforeinstallprompt', ev => {
+	ev.preventDefault();
+	return false;
+});
+
 export { register, unregister, message };
