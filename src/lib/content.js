@@ -28,7 +28,7 @@ self.addEventListener('message', ev => {
 			);
 			const options = Object.assign({}, cacheOptions, { cache: contentCacheOptions });
 			// only get the content if we don't already have it
-			toolbox.cacheFirst(new Request(content.url), null, options);
+			toolbox.cacheFirst(new Request(content.url, { credentials: 'same-origin' }), null, options);
 		});
 	}
 });
