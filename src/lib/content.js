@@ -4,7 +4,6 @@ const cacheOptions = {
 	origin: 'https://*.ft.com',
 	cache: {
 		name: 'next:content',
-		// our code base moves so fast, pointless caching enything longer than a few days
 		maxAgeSeconds: 60
 	}
 };
