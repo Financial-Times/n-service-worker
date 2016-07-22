@@ -1,5 +1,5 @@
 import toolbox from 'sw-toolbox';
-import flags from './flags';
+import flags from '../utils/flags';
 
 // TODO have one cache for our more actively developed apps,
 // another with longer cache life for errors, opt-out etc

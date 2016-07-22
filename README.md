@@ -26,3 +26,40 @@ General workflow is
 ```
 
 This will also start webpack's watch
+
+
+## API
+
+For most cases [sw-toolbox](http://googlechrome.github.io/sw-toolbox/docs/releases/v3.2.0/tutorial-api.html) is used to manage caches, but n-service-worker also provides a few other utilities
+
+### flags
+
+On each page load the service worker is passed the current set of feature flags. Depending on what you're using the flag to toggle on\off, it may not take effect until the next page load due to the service worker lifecycle
+
+```javascript
+import {get as getFlag} from './utils/flags'
+
+if (getFlag('swUseSpecificCache')) {
+	// do something
+}
+```
+
+### precache/cache
+sw-toolbox doesn't offer all features on its cache and precache utilities, so we offer enhanced versions
+
+```javascript
+import cache from './utils/cache';
+import precache from './utils/precache';
+// then use instead of toolbox.cache or toolbox.precache
+
+```
+
+### flagged caches
+To turn on whether a particular request fetches from a cache or network, based on the value of a flag, use flagged-toolbox
+
+```javascript
+import {cacheFirst} from './utils/flagged-toolbox';
+
+toolbox.get('/url', cacheFirst('flagname'));
+
+```
