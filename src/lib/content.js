@@ -1,6 +1,6 @@
 import toolbox from 'sw-toolbox';
 
-const cacheOptions = {
+const options = {
 	origin: 'https://*.ft.com',
 	cache: {
 		name: 'next:content',
@@ -8,7 +8,7 @@ const cacheOptions = {
 	}
 };
 
-toolbox.router.get('/', toolbox.fastest, cacheOptions);
+toolbox.router.get('/', toolbox.fastest, options);
 
 toolbox.router.get('/content/:uuid', request =>
 	// use the cache if we have it, otherwise fetch (but don't cache the response)
@@ -22,12 +22,18 @@ self.addEventListener('message', ev => {
 		// each content object contains a `url` and optional `cacheAge` property
 		(msg.content || []).forEach(content => {
 			// copy
-			const contentCacheOptions = Object.assign(
-				{}, cacheOptions.cache, content.cacheAge ? { maxAgeSeconds: content.cacheAge} : null
+			const cacheOptions = Object.assign(
+				{}, options.cache, content.cacheAge ? { maxAgeSeconds: content.cacheAge} : null
 			);
-			const options = Object.assign({}, cacheOptions, { cache: contentCacheOptions });
+			const contentOptions = Object.assign({}, options, { cache: cacheOptions });
 			// only get the content if we don't already have it
-			toolbox.cacheFirst(new Request(content.url, { credentials: 'same-origin' }), null, options);
+			toolbox.cacheFirst(new Request(content.url, { credentials: 'same-origin' }), null, contentOptions)
+				.then(response => {
+					// if it's a barrier, remove from cache
+					if (response.headers.get('X-Ft-Auth-Gate-Result') === 'DENIED') {
+						toolbox.uncache(content.url);
+					}
+				})
 		});
 	}
 });
