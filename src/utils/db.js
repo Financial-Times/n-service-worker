@@ -1,37 +1,30 @@
-import idb from 'indexeddb-promised';
-
-console.log(idb);
+import IndexedDBPromised from 'indexeddb-promised';
 
 export default class {
 
 	constructor (storeName, { dbName = 'next', dbVersion = 1 } = { }) {
 		this.storeName = storeName;
-		this.dbPromise = idb.open(dbName, dbVersion, upgradeDB => {
-			upgradeDB.createObjectStore(storeName);
-		});
+		const indexedDBPromised = new IndexedDBPromised(dbName);
+		this.idb = indexedDBPromised
+			.setVersion(dbVersion)
+			.addObjectStore({ name: storeName })
+			.build();
 	}
 
 	get (key) {
-		return this.dbPromise.then(db => {
-			return db.transaction(this.storeName)
-        		.objectStore(this.storeName).get(key);
-    		});
+		return this.idb[this.storeName].get(key);
+	}
+
+	getAll () {
+		return this.idb[this.storeName].getAll();
 	}
 
 	set (key, val) {
-		return this.dbPromise.then(db => {
-      		const tx = db.transaction(this.storeName, 'readwrite');
-      		tx.objectStore(this.storeName).put(val, key);
-      		return tx.complete;
-    	});
+		return this.idb[this.storeName].put(val, key);
 	}
 
-  	delete (key) {
-    	return this.dbPromise.then(db => {
-      		const tx = db.transaction(this.storeName, 'readwrite');
-      		tx.objectStore(this.storeName).delete(key);
-      		return tx.complete;
-    	});
-  	}
+	delete (key) {
+		return this.idb[this.storeName].delete(key);
+	}
 
 }

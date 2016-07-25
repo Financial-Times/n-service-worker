@@ -25,12 +25,16 @@ const message = msg => {
 const register = flags => {
 	if ('serviceWorker' in navigator && flags.get('serviceWorker')) {
 		return navigator.serviceWorker.register('/__sw.js?cache-bust=1')
-			.then(registration => {
+			.then(() => {
 				message({
 					type: 'flagsUpdate',
 					flags: JSON.parse(JSON.stringify(flags)) // to avoid error caused by the getters
 				});
-				return registration;
+				return navigator.serviceWorker.ready(registration =>
+					registration.periodicSync.register({ tag: 'spoor' })
+						.then(() => registration)
+						.catch(() => registration)
+				);
 			});
 	} else {
 		return Promise.reject('Service Worker unavailable, or serviceWorker flag off');
