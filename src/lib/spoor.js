@@ -43,7 +43,6 @@ self.addEventListener('periodicsync', ev => {
 
 toolbox.router.post('/ingest', request => {
 	const clonedRequest = request.clone();
-	// try and post the data, otherwise store in cache
 	return fetch(request)
 		.then(response => {
 			if (!response.ok) {
@@ -52,7 +51,7 @@ toolbox.router.post('/ingest', request => {
 					.then(() => response)
 					.catch(() => response);
 			} else {
-				// sync stored spoor data too
+				// sync stored spoor data
 				return syncData().then(() => response);
 			}
 		})
