@@ -1,7 +1,7 @@
 import toolbox from 'sw-toolbox';
+toolbox.options.cache.name = 'next';
 
 import './utils/flags';
-import './utils/personal';
 import './lib/fonts';
 import './lib/image';
 import './lib/built-assets';
@@ -11,4 +11,3 @@ import './lib/content';
 import './lib/comments';
 import './lib/myft';
 
-toolbox.options.cache.name = 'next';
