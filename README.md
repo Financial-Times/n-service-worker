@@ -1,4 +1,4 @@
-# n-service-worker
+# n-service-worker [![CircleCI](https://circleci.com/gh/Financial-Times/n-service-worker.svg?style=svg)](https://circleci.com/gh/Financial-Times/n-service-worker)
 
 Global service worker component for next.ft.com
 
