@@ -25,9 +25,10 @@ self.addEventListener('message', ev => {
 			const cacheOptions = Object.assign(
 				{}, options.cache, content.cacheAge ? { maxAgeSeconds: content.cacheAge} : null
 			);
-			const contentOptions = Object.assign({}, options, { cache: cacheOptions });
 			// only get the content if we don't already have it
-			toolbox.cacheFirst(new Request(content.url, { credentials: 'same-origin' }), null, contentOptions)
+			// NOTE: odd that we put something in the cache, only to potentially immediately remove it, but that's
+			// so we get sw-toolbox's caching extras
+			toolbox.cacheFirst(new Request(content.url, { credentials: 'same-origin' }), null, { cache: cacheOptions })
 				.then(response => {
 					// if it's a barrier, remove from cache
 					if (response.headers.get('X-Ft-Auth-Gate-Result') === 'DENIED') {
