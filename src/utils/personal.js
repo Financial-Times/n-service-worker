@@ -6,11 +6,12 @@ export function registerCache (name) {
 	personalCaches.add(name)
 }
 
-function clearCaches () {
+function clearCaches (request) {
 	Array.from(personalCaches)
-		.forEach(name => caches.delete(name))
+		.forEach(name => caches.delete(name));
+	return fetch(request);
 }
 
 toolbox.router.get('/logout', clearCaches, {
-	// origin: 'https://*.ft.com'
+	origin: self.registration.scope.replace(/\/$/, '')
 })

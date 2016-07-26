@@ -1,6 +1,9 @@
 import toolbox from 'sw-toolbox';
 import {cacheFirst} from '../utils/flagged-toolbox';
+import {registerCache} from '../utils/personal';
+
 const cacheOptions = {
+	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
 		name: 'next:myft',
 		maxAgeSeconds: 60 * 60 * 12
@@ -22,6 +25,8 @@ function clearCache (request) {
 
 	return networkResponse
 }
+
+registerCache('next:myft');
 
 toolbox.router.get('/__myft/api/*', cacheFirst('swMyftCaching'), cacheOptions);
 toolbox.router.put('/__myft/api/*', clearCache);

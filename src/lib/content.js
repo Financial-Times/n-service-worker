@@ -1,7 +1,7 @@
 import toolbox from 'sw-toolbox';
 
 const options = {
-	origin: 'https://*.ft.com',
+	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
 		name: 'next:content',
 		maxAgeSeconds: 60
