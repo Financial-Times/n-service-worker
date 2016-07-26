@@ -24,7 +24,7 @@ const message = msg => {
 
 const register = flags => {
 	if ('serviceWorker' in navigator && flags.get('serviceWorker')) {
-		return navigator.serviceWorker.register('/__sw.js')
+		return navigator.serviceWorker.register('/__sw.js?cache-bust=1')
 			.then(registration => {
 				message({
 					type: 'flagsUpdate',
