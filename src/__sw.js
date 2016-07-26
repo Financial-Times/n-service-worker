@@ -1,3 +1,6 @@
+self.addEventListener('fetch', ev => {
+	console.log(ev.request.url)
+})
 import toolbox from 'sw-toolbox';
 toolbox.options.cache.name = 'next';
 
