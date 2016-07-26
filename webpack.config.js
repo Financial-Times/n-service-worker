@@ -10,5 +10,12 @@ module.exports = nWebpack({
 	entry: {
 		'./dist/__sw.js': './src/__sw.js'
 	},
-	include: [path.resolve('./src')]
+	include: [path.resolve('./src'), path.resolve('./node_modules/indexeddb')],
+	loaders: [
+		{
+			test: /indexeddb-promised\.js$/,
+			loader: require.resolve('imports-loader'),
+			query: 'window=>self'
+		}
+	]
 });
