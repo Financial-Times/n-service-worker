@@ -1,62 +1,92 @@
 import toolbox from 'sw-toolbox';
 import {cacheFirst} from '../utils/flagged-toolbox';
+import {get as getFlag} from '../utils/flags';
 import {registerCache} from '../utils/personal';
 
-const cacheOptions = {
-	cache: {
-		name: 'next:ads',
-		maxAgeSeconds: 60 * 10,
+function getCacheOptions (days, isPersonal) {
+	return {
+		name: 'next:ads' + (isPersonal ? ':personal' : ''),
+		maxAgeSeconds: 60 * 60 * 24 * (days >= 1 ? days : (1/24)),
 		maxEntries: 60
 	}
-};
+}
 
 registerCache('next:ads:personal');
 
-//stale on revalidate
+// very similar to cacheFirst (on which it's based), but allows for differnt cache length for special reports
+// TODO abstract this pattern out to somewhere
+function conceptCache(request) {
+	if (!getFlag('swAdsCaching')) {
+		return fetch(request);
+	}
+	return caches.open('next:ads')
+		.then(cache => cache.match(request))
+		.then(response => {
 
-https://ads-api.ft.com/v1/user 1 week
-https://ads-api.ft.com/v1/concept/* 1 week
- // if not taxonomy specialReports
- // or restrict to sections & popular streams only
-https://www.googletagservices.com/tag/js/gpt.js 1 hour / 1 day
-https://partner.googleadservices.com/gpt/pubads_impl_*.js long cache
-https://pagead2.googlesyndication.com/pagead/osd.js / 1 day
+			if (response) {
+				return response;
+			}
 
+			return fetch(request.clone())
+				.then(response => {
+					if (request.method === 'GET' && toolbox.options.successResponses.test(response.status)) {
+						caches.open('next:ads')
+							.then(cache => cache.put(request, response))
+							.then(() => response.clone().json())
+							.then(data => {
+									if (data.taxonomy === 'specialReports') {
+										queueCacheExpiration(request, cache, getCacheOptions(0));
+									} else {
+										queueCacheExpiration(request, cache, getCacheOptions(7));
+									}
+							});
+					}
 
-https://tpc.googlesyndication.com/safeframe/1-0-4/html/container.html
- // backgroudn fetch maybe
+					return response.clone();
+				});
+		});
+}
 
-https://cdn.krxd.net/userdata/* 1 day
-https://cdn.krxd.net/controltag?confid=KHUSeE3x - 1 week
-https://cdn.krxd.net/ctjs/controltag.js* long cache
-
-//beacon any requests to these domains which we don't cache
-
-// Attempt to cache static assets served by lifefyre
-const cacheOptions = {
-	name: 'next:comments',
-	maxEntries: 20
-};
-
-toolbox.router.get('/*.js', cacheFirst('swCommentsAssets'), {
-	origin: 'https://cdn.livefyre.com',
-	cache: cacheOptions
+toolbox.router.get('/v1/user', cacheFirst('swAdsCaching'), {
+	origin: 'https://ads-api.ft.com',
+	cache: getCacheOptions(7, true)
 });
 
-toolbox.router.get('/*.css', cacheFirst('swCommentsAssets'), {
-	origin: 'https://cdn.livefyre.com',
-	cache: cacheOptions
+toolbox.router.get('/v1/concept', conceptCache, {
+	origin: 'https://ads-api.ft.com'
 });
 
-// any file from a particular cloudfront instance
-// who knows if this url will always work
-toolbox.router.get('/*', cacheFirst('swCommentsAssets'), {
-	origin: 'https://d3qdfnco3bamip.cloudfront.net',
-	cache: cacheOptions
+toolbox.router.get('/tag/js/gpt.js', cacheFirst('swAdsCaching'), {
+	origin: 'https://www.googletagservices.com',
+	cache: getCacheOptions(7)
 });
 
-// any file with lifefyre in it served from cloudfront
-toolbox.router.get('/*livefyre*', cacheFirst('swCommentsAssets'), {
-	origin: 'https://*.cloudfront.net',
-	cache: cacheOptions
+toolbox.router.get('/gpt/pubads_impl_*.js', cacheFirst('swAdsCaching'), {
+	origin: 'https://partner.googleadservices.com',
+	cache: getCacheOptions(30)
+});
+
+toolbox.router.get('/pagead/osd.js', cacheFirst('swAdsCaching'), {
+	origin: 'https://pagead2.googlesyndication.com',
+	cache: getCacheOptions(1)
+});
+
+toolbox.router.get('/safeframe/1-0-4/html/container.html', cacheFirst('swAdsCaching'), {
+	origin: 'https://tpc.googlesyndication.com',
+	cache: getCacheOptions(0)
+});
+
+toolbox.router.get('/userdata/*', cacheFirst('swAdsCaching'), {
+	origin: 'https://cdn.krxd.net',
+	cache: getCacheOptions(1, true)
+});
+
+toolbox.router.get('/controltag', cacheFirst('swAdsCaching'), {
+	origin: 'https://cdn.krxd.net',
+	cache: getCacheOptions(7)
+});
+
+toolbox.router.get('/ctjs/controltag.js*', cacheFirst('swAdsCaching'), {
+	origin: 'https://cdn.krxd.net',
+	cache: getCacheOptions(30)
 });

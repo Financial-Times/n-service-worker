@@ -1,6 +1,3 @@
-self.addEventListener('fetch', ev => {
-	console.log(ev.request.url)
-})
 import toolbox from 'sw-toolbox';
 toolbox.options.cache.name = 'next';
 
@@ -13,3 +10,4 @@ import './lib/polyfill';
 // import './lib/content';
 import './lib/comments';
 import './lib/myft';
+import './lib/ads';
