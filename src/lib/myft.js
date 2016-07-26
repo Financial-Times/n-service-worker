@@ -1,6 +1,5 @@
 import toolbox from 'sw-toolbox';
 import {cacheFirst} from '../utils/flagged-toolbox';
-
 const cacheOptions = {
 	cache: {
 		name: 'next:myft',
@@ -9,10 +8,18 @@ const cacheOptions = {
 };
 
 function clearCache (request) {
-	let resource = request.url.split('/');
-	resource.pop();
-	caches.delete(new Request(resource.join('/')));
-	return fetch(request);
+	const networkResponse = fetch(request);
+	let resource = request.url.replace('/user', '');
+
+	caches.open('next:myft').then(cache => {
+		cache.keys().then(keys => keys.forEach(key => {
+			if (resource.indexOf(key.url) === 0) {
+				cache.delete(key);
+			}
+		}))
+	})
+
+	return networkResponse
 }
 
 toolbox.router.get('/__myft/api/*', cacheFirst('swMyftCaching'), cacheOptions);
