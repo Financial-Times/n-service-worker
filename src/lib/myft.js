@@ -12,9 +12,10 @@ function clearCache (request) {
 	let resource = request.url.replace('/user', '');
 
 	caches.open('next:myft').then(cache => {
-		cache.keys().then(keys => keys.forEach(key => {
+		cache.keys().then(keys => keys.some(key => {
 			if (resource.indexOf(key.url) === 0) {
 				cache.delete(key);
+				return true;
 			}
 		}))
 	})
