@@ -11,4 +11,5 @@ import './lib/polyfill';
 import './lib/comments';
 import './lib/myft';
 import './lib/ads';
-import './lib/spoor';
+
+toolbox.options.cache.name = 'next';
