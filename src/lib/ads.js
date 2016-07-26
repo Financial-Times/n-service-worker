@@ -1,59 +1,108 @@
 import toolbox from 'sw-toolbox';
 import {cacheFirst} from '../utils/flagged-toolbox';
-import {get as getFlag} from '../utils/flags';
 import {registerCache} from '../utils/personal';
+import precache from '../utils/precache';
 
 function getCacheOptions (days, isPersonal) {
 	return {
 		name: 'next:ads' + (isPersonal ? ':personal' : ''),
-		maxAgeSeconds: 60 * 60 * ( days >= 1  ? days * 24 : 1 ),
+		maxAgeSeconds: 60 * 60 * ( days >= 1 ? days * 24 : 1 ),
 		maxEntries: 60
 	}
 }
 
 registerCache('next:ads:personal');
 
-// very similar to cacheFirst (on which it's based), but allows for differnt cache length for special reports
-// TODO abstract this pattern out to somewhere
-function conceptCache(request) {
-	if (!getFlag('swAdsCaching')) {
-		return fetch(request);
+const popularStreams = [
+	'MQ==-U2VjdGlvbnM=',
+	'MTA3-U2VjdGlvbnM=',
+	'Ng==-U2VjdGlvbnM=',
+	'Mg==-U2VjdGlvbnM=',
+	'TnN0ZWluX0dMX0NO-R0w=',
+	'MjI=-U2VjdGlvbnM=',
+	'MTE=-U2VjdGlvbnM=',
+	'MTA2-U2VjdGlvbnM=',
+	'OQ==-U2VjdGlvbnM=',
+	'MjM=-U2VjdGlvbnM=',
+	'MTY=-U2VjdGlvbnM=',
+	'Mjk=-U2VjdGlvbnM=',
+	'MzA=-U2VjdGlvbnM=',
+	'NTc=-U2VjdGlvbnM=',
+	'NTA=-U2VjdGlvbnM=',
+	'MzQ=-U2VjdGlvbnM=',
+	'NTU=-U2VjdGlvbnM=',
+	'NDU=-U2VjdGlvbnM=',
+	'NTM=-U2VjdGlvbnM=',
+	'NTY=-U2VjdGlvbnM=',
+	'NDE=-U2VjdGlvbnM=',
+	'NzE=-U2VjdGlvbnM=',
+	'MTA0-U2VjdGlvbnM=',
+	'MTA1-U2VjdGlvbnM=',
+	'MTAz-U2VjdGlvbnM=',
+	'OTg=-U2VjdGlvbnM=',
+	'NzI=-U2VjdGlvbnM=',
+	'OTM=-U2VjdGlvbnM=',
+	'MTE2-U2VjdGlvbnM=',
+	'MTE3-U2VjdGlvbnM=',
+	'MDRkMzU4YjktMjA0OS00MWEzLWJiY2ItYmJkZWNhMmVmMzQ0-QnJhbmRz',
+	'MTE4-U2VjdGlvbnM=',
+	'YzhlNzZkYTctMDJiNy00NTViLTk3NmYtNmJjYTE5NDEyM2Yw-QnJhbmRz',
+	'MTIz-U2VjdGlvbnM=',
+	'MNQ==-R2VucmVz',
+	'MTI1-U2VjdGlvbnM=',
+	'MTI3-U2VjdGlvbnM=',
+	'MTI2-U2VjdGlvbnM=',
+	'MTM1-U2VjdGlvbnM=',
+	'ZjU2ZGIyNDMtNWYwOS00YzcwLWJmN2MtYjE1OGNiN2Y1OTVl-U2VjdGlvbnM=',
+	'MTM4-U2VjdGlvbnM=',
+	'MTQ4-U2VjdGlvbnM=',
+	'MTU3-U2VjdGlvbnM=',
+	'MTU5-U2VjdGlvbnM=',
+	'MTU2-U2VjdGlvbnM=',
+	'MTY1-U2VjdGlvbnM=',
+	'MTU4-U2VjdGlvbnM=',
+	'MTQ5-U2VjdGlvbnM=',
+	'MWJkMTFlYmUtNmRjMy00MDE5LWI0MGItYjM1MjRkOGFmODhk-U2VjdGlvbnM=',
+	'MTUz-U2VjdGlvbnM=',
+	'MTUy-U2VjdGlvbnM=',
+	'OTYxNmI3YWMtY2M1OS00N2RkLWJlNWEtOGZjOGQ3ODE5YmQx-U2VjdGlvbnM=',
+	'MTQw-U2VjdGlvbnM=',
+	'MTQy-U2VjdGlvbnM=',
+	'MTQz-U2VjdGlvbnM=',
+	'MTQ0-U2VjdGlvbnM=',
+	'MTQ1-U2VjdGlvbnM=',
+	'MTQ2-U2VjdGlvbnM=',
+	'NTQ=-U2VjdGlvbnM=',
+	'NTlhNzEyMzMtZjBjZi00Y2U1LTg0ODUtZWVjNmEyYmU1NzQ2-QnJhbmRz'
+];
+
+const sections = [
+	'MQ==-U2VjdGlvbnM=',
+	'Mjk=-U2VjdGlvbnM=',
+	'NzE=-U2VjdGlvbnM=',
+	'MTE2-U2VjdGlvbnM=',
+	'MTI1-U2VjdGlvbnM=',
+	'MTQ4-U2VjdGlvbnM=',
+	'MTQw-U2VjdGlvbnM=',
+	'NTQ=-U2VjdGlvbnM=',
+	'NTlhNzEyMzMtZjBjZi00Y2U1LTg0ODUtZWVjNmEyYmU1NzQ2-QnJhbmRz' // fastft
+];
+
+precache(
+	sections.map(section => `https://ads-api.ft.com/v1/concept/${section}`), {
+		origin: 'https://ads-api.ft.com',
+		cache: getCacheOptions(7)
 	}
-	return caches.open('next:ads')
-		.then(cache => cache.match(request))
-		.then(response => {
+);
 
-			if (response) {
-				return response;
-			}
-
-			return fetch(request)
-				.then(response => {
-					if (request.method === 'GET' && toolbox.options.successResponses.test(response.status)) {
-						caches.open('next:ads')
-							.then(cache => cache.put(request, response))
-							.then(() => response.clone().json())
-							.then(data => {
-									if (data.taxonomy === 'specialReports') {
-										queueCacheExpiration(request, cache, getCacheOptions(0));
-									} else {
-										queueCacheExpiration(request, cache, getCacheOptions(7));
-									}
-							});
-					}
-
-					return response.clone();
-				});
-		});
-}
+toolbox.router.get(new RegExp('\/v1\/concept\/(' + popularStreams.join('|') + ')'), cacheFirst('swAdsCaching'), {
+	origin: 'https://ads-api.ft.com',
+	cache: getCacheOptions(7)
+});
 
 toolbox.router.get('/v1/user', cacheFirst('swAdsCaching'), {
 	origin: 'https://ads-api.ft.com',
 	cache: getCacheOptions(7, true)
-});
-
-toolbox.router.get('/v1/concept', conceptCache, {
-	origin: 'https://ads-api.ft.com'
 });
 
 toolbox.router.get('/tag/js/gpt.js', cacheFirst('swAdsCaching'), {
