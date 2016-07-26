@@ -1,7 +1,7 @@
 const message = msg => {
 	if ('serviceWorker' in navigator) {
 		return navigator.serviceWorker.ready
-			.then((registration) =>
+			.then(registration =>
 				new Promise((resolve, reject) => {
 					// Create a Message Channel
 					const messageChannel = new MessageChannel();
@@ -25,17 +25,13 @@ const message = msg => {
 const register = flags => {
 	if ('serviceWorker' in navigator && flags.get('serviceWorker')) {
 		return navigator.serviceWorker.register('/__sw.js?cache-bust=1')
-			.then(() => {
+			.then(registration =>
 				message({
 					type: 'flagsUpdate',
 					flags: JSON.parse(JSON.stringify(flags)) // to avoid error caused by the getters
-				});
-				return navigator.serviceWorker.ready(registration =>
-					registration.periodicSync.register({ tag: 'spoor' })
-						.then(() => registration)
-						.catch(() => registration)
-				);
-			});
+				})
+					.then(() => registration)
+			);
 	} else {
 		return Promise.reject('Service Worker unavailable, or serviceWorker flag off');
 	}

@@ -10,6 +10,5 @@ import './lib/polyfill';
 // import './lib/content';
 import './lib/comments';
 import './lib/myft';
-import './lib/spoor';
 
 toolbox.options.cache.name = 'next';
