@@ -10,5 +10,6 @@ import './lib/polyfill';
 // import './lib/content';
 import './lib/comments';
 import './lib/myft';
+import './lib/ads';
 
 toolbox.options.cache.name = 'next';

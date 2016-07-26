@@ -7,12 +7,11 @@ const fontsVersion = '1.3.0';
 const cacheOptions = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
-		name: `next:fonts:${fontsVersion}`
+		name: `next:fonts:${fontsVersion}`,
+		maxEntries: 5
 	}
 };
 
-// TODO need to version the fonts cache
-// cache fronts upfront
 precache(
 	fonts.map(font => `https://next-geebee.ft.com/build/v2/files/o-fonts-assets@${fontsVersion}/${font}.woff?`),
 	cacheOptions
