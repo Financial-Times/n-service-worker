@@ -10,31 +10,31 @@ const options = {
 
 toolbox.router.get('/', toolbox.fastest, options);
 
-toolbox.router.get('/content/:uuid', request =>
+toolbox.router.get('/content/:uuid', request => {
 	// use the cache if we have it, otherwise fetch (but don't cache the response)
-	caches.match(request)
+	return caches.match(request)
 		.then(response => response ? response : fetch(request))
-);
+}, options);
 
 self.addEventListener('message', ev => {
 	const msg = ev.data;
 	if (msg.type === 'cacheContent') {
 		// each content object contains a `url` and optional `cacheAge` property
 		(msg.content || []).forEach(content => {
-			// copy
-			const cacheOptions = Object.assign(
-				{}, options.cache, content.cacheAge ? { maxAgeSeconds: content.cacheAge} : null
-			);
-			// only get the content if we don't already have it
-			// NOTE: odd that we put something in the cache, only to potentially immediately remove it, but that's
-			// so we get sw-toolbox's caching extras
-			toolbox.cacheFirst(new Request(content.url, { credentials: 'same-origin' }), null, { cache: cacheOptions })
+			const contentRequest = new Request(content.url, { credentials: 'same-origin' });
+			toolbox.networkOnly(contentRequest)
 				.then(response => {
-					// if it's a barrier, remove from cache
-					if (response.headers.get('X-Ft-Auth-Gate-Result') === 'DENIED') {
-						toolbox.uncache(content.url);
+					// if it's not a barrier, cache
+					// NOTE: this is making another request, just so we can use the toolbox's cache expiration logic;
+					// need to pull that out as a low-level helper
+					if (response.headers.get('X-Ft-Auth-Gate-Result') !== 'DENIED') {
+						const cacheOptions = Object.assign(
+							{}, options.cache, content.cacheAge ? { maxAgeSeconds: content.cacheAge} : null
+						);
+						return toolbox.cacheFirst(contentRequest, null, { cache: cacheOptions })
 					}
 				})
+				.catch(() => { })
 		});
 	}
 });
