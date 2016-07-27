@@ -46,6 +46,22 @@ const unregister = () => {
 	}
 };
 
+
+window.addEventListener('message', ev => {
+	const msg = ev.data;
+	if (msg.type === 'nServiceWorker.error') {
+		document.body.dispatchEvent(new CustomEvent('oErrors.log', {
+			bubbles: true,
+			detail: {
+				error: msg.error,
+				info: {
+					component: 'n-service-worker'
+				}
+			}
+		}))
+	}
+});
+
 // Make sure install barrier never gets shown
 // (at least while we consider the web app's role)
 window.addEventListener('beforeinstallprompt', ev => {

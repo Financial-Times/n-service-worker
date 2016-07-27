@@ -1,6 +1,7 @@
 import toolbox from 'sw-toolbox';
 toolbox.options.cache.name = 'next';
 
+import './utils/errors';
 import './utils/flags';
 
 // generic assets
@@ -21,3 +22,5 @@ import './caches/ads';
 // import './push/myft';
 
 toolbox.options.cache.name = 'next';
+
+
