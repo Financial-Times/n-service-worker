@@ -10,7 +10,7 @@ const cacheOptions = {
 	}
 };
 
-function clearCache (request) {
+function purgeCache (request) {
 	const networkResponse = fetch(request);
 	let resource = request.url.replace('/user', '');
 
@@ -29,6 +29,6 @@ function clearCache (request) {
 registerCache('next:myft');
 
 toolbox.router.get('/__myft/api/*', cacheFirst('swMyftCaching'), cacheOptions);
-toolbox.router.put('/__myft/api/*', clearCache);
-toolbox.router.post('/__myft/api/*', clearCache);
-toolbox.router.delete('/__myft/api/*', clearCache);
+toolbox.router.put('/__myft/api/*', purgeCache);
+toolbox.router.post('/__myft/api/*', purgeCache);
+toolbox.router.delete('/__myft/api/*', purgeCache);
