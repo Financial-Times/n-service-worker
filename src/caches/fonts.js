@@ -1,7 +1,5 @@
 import toolbox from 'sw-toolbox';
 
-import precache from '../utils/precache';
-
 const fonts = ['MetricWeb-Regular', 'MetricWeb-Semibold', 'FinancierDisplayWeb-Regular'];
 const fontsVersion = '1.3.0';
 const cacheOptions = {
@@ -12,7 +10,7 @@ const cacheOptions = {
 	}
 };
 
-precache(
+toolbox.precache(
 	fonts.map(font => `https://next-geebee.ft.com/build/v2/files/o-fonts-assets@${fontsVersion}/${font}.woff?`),
 	cacheOptions
 );

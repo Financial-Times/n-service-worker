@@ -19,6 +19,6 @@
     "webpack.config.js"
   ],
   "dependencies": {
-    "sw-toolbox": "^3.2.1"
+    "sw-toolbox": "Financial-times/sw-toolbox#~3.2.1"
   }
 }

@@ -1,5 +1,6 @@
 import toolbox from 'sw-toolbox';
 toolbox.options.cache.name = 'next';
+toolbox.options.cache.expireOldestFirst = true;
 
 import './utils/flags';
 
@@ -19,5 +20,3 @@ import './caches/ads';
 
 
 // import './push/myft';
-
-toolbox.options.cache.name = 'next';
