@@ -21,8 +21,8 @@ self.addEventListener('message', ev => {
 	if (msg.type === 'cacheContent') {
 		// each content object contains a `url` and optional `cacheAge` property
 		(msg.content || []).forEach(content => {
-			const contentRequest = new Request(content.url, { credentials: 'same-origin' });
-			toolbox.networkOnly(contentRequest)
+			// only cache free content for now
+			fetch(new Request(`${content.url}?ft_site=next`, { credentials: 'omit' }))
 				.then(response => {
 					// if it's not a barrier, cache
 					// NOTE: this is making another request, just so we can use the toolbox's cache expiration logic;
@@ -31,7 +31,7 @@ self.addEventListener('message', ev => {
 						const cacheOptions = Object.assign(
 							{}, options.cache, content.cacheAge ? { maxAgeSeconds: content.cacheAge} : null
 						);
-						return toolbox.cacheFirst(contentRequest, null, { cache: cacheOptions })
+						return toolbox.cacheFirst(new Request(content.url, { credentials: 'same-origin' }), null, { cache: cacheOptions })
 					}
 				})
 				.catch(() => { })
