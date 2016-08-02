@@ -7,9 +7,10 @@ const cacheOptions = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
 		name: 'next:built-assets',
-		maxEntries: 20,
+		maxEntries: 4,
 		// our code base moves so fast, pointless caching enything longer than a few days
-		maxAgeSeconds: 60 * 60 * 24 * 5
+		maxAgeSeconds: 60 * 60 * 24 * 5,
+		expireOldestFirst: true
 	}
 };
 

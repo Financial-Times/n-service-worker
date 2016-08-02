@@ -6,7 +6,8 @@ const cacheOptions = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
 		name: `next:fonts:${fontsVersion}`,
-		maxEntries: 5
+		maxEntries: 5,
+		expireOldestFirst: true
 	}
 };
 

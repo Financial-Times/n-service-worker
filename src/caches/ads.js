@@ -6,7 +6,8 @@ function getCacheOptions (days, isPersonal) {
 	return {
 		name: 'next:ads' + (isPersonal ? ':personal' : ''),
 		maxAgeSeconds: 60 * 60 * ( days >= 1 ? days * 24 : 1 ),
-		maxEntries: 60
+		maxEntries: 60,
+		expireOldestFirst: true
 	}
 }
 
