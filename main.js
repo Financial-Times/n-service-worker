@@ -24,6 +24,10 @@ const message = msg => {
 
 const register = flags => {
 	if ('serviceWorker' in navigator && flags.get('serviceWorker')) {
+		if (document.cookie.length > 4000) {
+			console.warn('Cookie is greater than 4000 characters - unregistering service worker due to potential failure to retrieve updates');
+			return unregister();
+		}
 		return navigator.serviceWorker.register('/__sw.js?cache-bust=1')
 			.then(registration =>
 				message({
