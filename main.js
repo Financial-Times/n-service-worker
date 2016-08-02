@@ -16,7 +16,7 @@ const message = msg => {
 					// Send message to service worker along with port for reply
 					registration.active.postMessage(msg, [messageChannel.port2]);
 				})
-			);
+			)
 	} else {
 		return Promise.reject('Service Worker unavailable');
 	}
@@ -35,6 +35,9 @@ const register = flags => {
 					flags: JSON.parse(JSON.stringify(flags)) // to avoid error caused by the getters
 				})
 					.then(() => registration)
+					.catch(err => {
+						console.log('rhys', err)
+					});
 			);
 	} else {
 		return Promise.reject('Service Worker unavailable, or serviceWorker flag off');
@@ -44,7 +47,10 @@ const register = flags => {
 const unregister = () => {
 	if ('serviceWorker' in navigator) {
 		return navigator.serviceWorker.getRegistration()
-			.then(registration => registration ? registration.unregister() : false);
+			.then(registration => {
+				registration ? registration.unregister() : false
+			});
+
 	} else {
 		return Promise.resolve(false);
 	}

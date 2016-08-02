@@ -1,13 +1,13 @@
 import toolbox from 'sw-toolbox';
 import {cacheFirst} from '../utils/flagged-toolbox';
 import {registerCache} from '../utils/personal';
-import precache from '../utils/precache';
 
 function getCacheOptions (days, isPersonal) {
 	return {
 		name: 'next:ads' + (isPersonal ? ':personal' : ''),
 		maxAgeSeconds: 60 * 60 * ( days >= 1 ? days * 24 : 1 ),
-		maxEntries: 60
+		maxEntries: 60,
+		expireOldestFirst: true
 	}
 }
 
@@ -88,7 +88,7 @@ const sections = [
 	'NTlhNzEyMzMtZjBjZi00Y2U1LTg0ODUtZWVjNmEyYmU1NzQ2-QnJhbmRz' // fastft
 ];
 
-precache(
+toolbox.precache(
 	sections.map(section => `https://ads-api.ft.com/v1/concept/${section}`), {
 		origin: 'https://ads-api.ft.com',
 		cache: getCacheOptions(7)

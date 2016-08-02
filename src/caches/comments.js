@@ -4,7 +4,8 @@ import {cacheFirst} from '../utils/flagged-toolbox';
 // Attempt to cache static assets served by lifefyre
 const cacheOptions = {
 	name: 'next:comments',
-	maxEntries: 20
+	maxEntries: 20,
+	expireOldestFirst: true
 };
 
 toolbox.router.get('/*.js', cacheFirst('swCommentsAssets'), {

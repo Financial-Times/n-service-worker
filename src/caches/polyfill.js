@@ -4,7 +4,8 @@ const cacheOptions = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
 		name: 'next:polyfill',
-		maxEntries: 4
+		maxEntries: 4,
+		expireOldestFirst: true
 	}
 };
 

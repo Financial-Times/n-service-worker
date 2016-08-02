@@ -4,7 +4,8 @@ const cacheOptions = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
 		name: 'next:n-ui',
-		maxEntries: 8
+		maxEntries: 8,
+		expireOldestFirst: true
 	}
 };
 
