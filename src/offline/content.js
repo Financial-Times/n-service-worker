@@ -35,7 +35,7 @@ self.addEventListener('message', ev => {
 			.then(uuid => {
 				// only cache if we have a uuid
 				if (!uuid) {
-					return Promise.resolve([]);
+					return [];
 				}
 				// each content object contains a `url` and optional `cacheAge` property
 				const fetches = (msg.content || []).map(content => {
