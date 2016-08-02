@@ -1,5 +1,7 @@
 import toolbox from 'sw-toolbox';
 
+import * as fonts from '../utils/fonts';
+
 const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
@@ -16,17 +18,19 @@ const getUuid = () =>
 
 toolbox.router.get('/', toolbox.fastest, options);
 
-toolbox.router.get('/content/:uuid', request =>
-	getUuid()
-		.then(uuid => {
+toolbox.router.get('/content/:uuid', request => {
+	return Promise.all([getUuid(), fonts.areCached()])
+		.then(([uuid, fontsAreCached]) => {
+			const url = `${request.url}${request.url.includes('?') ? '&' : '?'}fonts-cached=true`;
+			const newRequest = fontsAreCached ? new Request(url, { credentials: 'same-origin' }) : request;
 			if (!uuid) {
-				return fetch(request);
+				return fetch(newRequest);
 			}
-			return caches.match(request, { cacheName: `${options.cache.name}:${uuid}` })
-				.then(response => response || fetch(request))
-				.catch(() => fetch(request));
+			return caches.match(newRequest, { cacheName: `${options.cache.name}:${uuid}` })
+				.then(response => response || fetch(newRequest))
+				.catch(() => fetch(newRequest));
 		})
-);
+}, options);
 
 self.addEventListener('message', ev => {
 	const msg = ev.data;

@@ -15,7 +15,7 @@ import './caches/comments';
 import './offline/content';
 import './caches/session';
 import './caches/myft';
-import './caches/ads';
+// import './caches/ads';
 
 
 // import './push/myft';
