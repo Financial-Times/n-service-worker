@@ -5,7 +5,7 @@ test: verify
 build-dev: watch
 
 server:
-	http-server dist -p 3010
+	http-server dist -p 3010 -c-1
 
 run: build-dev server
 
