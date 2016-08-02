@@ -19,5 +19,3 @@ import './caches/ads';
 
 
 // import './push/myft';
-
-toolbox.options.cache.name = 'next';
