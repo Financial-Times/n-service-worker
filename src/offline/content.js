@@ -8,33 +8,55 @@ const options = {
 	}
 };
 
+const getUuid = () =>
+	caches.match(new Request('https://session-next.ft.com/uuid'), { cacheName: 'next:session' })
+		.then(response => response ? response.clone().json() : { })
+		.then(({ uuid }) => uuid)
+		.catch(() => { });
+
 toolbox.router.get('/', toolbox.fastest, options);
 
-toolbox.router.get('/content/:uuid', request => {
-	// use the cache if we have it, otherwise fetch (but don't cache the response)
-	return caches.match(request)
-		.then(response => response ? response : fetch(request))
-}, options);
+toolbox.router.get('/content/:uuid', request =>
+	getUuid()
+		.then(uuid => {
+			if (!uuid) {
+				return fetch(request);
+			}
+			return caches.match(request, { cacheName: `${options.cache.name}:${uuid}` })
+				.then(response => response || fetch(request))
+				.catch(() => fetch(request));
+		})
+);
 
 self.addEventListener('message', ev => {
 	const msg = ev.data;
 	if (msg.type === 'cacheContent') {
-		// each content object contains a `url` and optional `cacheAge` property
-		(msg.content || []).forEach(content => {
-			// only cache free content for now
-			fetch(new Request(`${content.url}?ft_site=next`, { credentials: 'omit' }))
-				.then(response => {
-					// if it's not a barrier, cache
-					// NOTE: this is making another request, just so we can use the toolbox's cache expiration logic;
-					// need to pull that out as a low-level helper
-					if (response.headers.get('X-Ft-Auth-Gate-Result') !== 'DENIED') {
-						const cacheOptions = Object.assign(
-							{}, options.cache, content.cacheAge ? { maxAgeSeconds: content.cacheAge} : null
-						);
-						return toolbox.cacheFirst(new Request(content.url, { credentials: 'same-origin' }), null, { cache: cacheOptions })
-					}
-				})
-				.catch(() => { })
+		getUuid()
+			.then(uuid => {
+				// only cache if we have a uuid
+				if (!uuid) {
+					return Promise.resolve([]);
+				}
+				// each content object contains a `url` and optional `cacheAge` property
+				const fetches = (msg.content || []).map(content => {
+					const request = new Request(content.url, { credentials: 'same-origin' });
+					return fetch(request)
+						.then(response => {
+							// if it's not a barrier, cache
+							// NOTE: this is making another request, just so we can use the toolbox's cache expiration logic;
+							// need to pull that out as a low-level helper
+							if (response.headers.get('X-Ft-Auth-Gate-Result') !== 'DENIED') {
+								return toolbox.cacheFirst(request, null, {
+									cache: {
+										name: `${options.cache.name}:${uuid}`,
+										maxAgeSeconds: content.cacheAge || 60
+									}
+								});
+							}
+						})
+						.catch(() => { });
+				});
+				return Promise.all(fetches);
 		});
 	}
 });
