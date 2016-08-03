@@ -32,7 +32,7 @@ toolbox.router.get('/', request =>
 		),
 options);
 
-toolbox.router.get('/content/:uuid', request => {
+toolbox.router.get('/content/:uuid', request =>
 	getUuid()
 		.then(uuid =>
 			uuid ?
