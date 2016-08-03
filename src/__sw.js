@@ -1,6 +1,6 @@
 import toolbox from 'sw-toolbox';
 toolbox.options.cache.name = 'next';
-toolbox.options.cache.successResponses = /^200$/;
+toolbox.options.successResponses = /^200$/;
 
 import './utils/flags';
 
