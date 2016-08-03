@@ -1,5 +1,7 @@
 import toolbox from 'sw-toolbox';
 
+import cache from '../utils/cache';
+
 const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
@@ -37,25 +39,36 @@ self.addEventListener('message', ev => {
 				if (!uuid) {
 					return [];
 				}
+				const cacheName = `${options.cache.name}:${uuid}`;
 				// each content object contains a `url` and optional `cacheAge` property
-				const fetches = (msg.content || []).map(content => {
-					const request = new Request(content.url, { credentials: 'same-origin' });
-					return fetch(request)
-						.then(response => {
-							// if it's not a barrier, cache
-							// NOTE: this is making another request, just so we can use the toolbox's cache expiration logic;
-							// need to pull that out as a low-level helper
-							if (response.headers.get('X-Ft-Auth-Gate-Result') !== 'DENIED') {
-								return toolbox.cacheFirst(request, null, {
-									cache: {
-										name: `${options.cache.name}:${uuid}`,
-										maxAgeSeconds: content.cacheAge || 60
-									}
-								});
-							}
-						})
-						.catch(() => { });
-				});
+				const fetches = (msg.content || [])
+					// filter duplicates
+					.filter((item, index, content) => content.indexOf(item) === index)
+					.map(item => {
+						const request = new Request(item.url, { credentials: 'same-origin' });
+						// no need to make the request if we already have the content in cache
+						return caches.match(request, { cacheName })
+							.then(response => {
+								if (response) {
+									return response
+								}
+								return fetch(request)
+									.then(response => {
+										// if it's not a barrier, cache
+										// NOTE: this is making another request, just so we can use the toolbox's cache expiration logic;
+										// need to pull that out as a low-level helper
+										if (response.headers.get('X-Ft-Auth-Gate-Result') !== 'DENIED') {
+											return cache(request, {
+												cache: {
+													name: cacheName,
+													maxAgeSeconds: item.cacheAge || 60
+												}
+											});
+										}
+									})
+									.catch(() => { });
+							});
+					});
 				return Promise.all(fetches);
 		});
 	}
