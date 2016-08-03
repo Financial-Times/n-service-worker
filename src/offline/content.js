@@ -1,6 +1,7 @@
 import toolbox from 'sw-toolbox';
 
 import cache from '../utils/cache';
+import { registerCache } from '../utils/personal';
 
 const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
@@ -16,19 +17,31 @@ const getUuid = () =>
 		.then(({ uuid }) => uuid)
 		.catch(() => { });
 
-toolbox.router.get('/', toolbox.fastest, options);
+registerCache(options.cache.name);
+
+toolbox.router.get('/', request =>
+	// only cache if logged in
+	// NOTE: using whether there's a uuid in the session store as a proxy for logged in-ness
+	getUuid()
+		.then(uuid =>
+			uuid ?
+				caches.match(request, { cacheName: options.cache.name })
+					.then(response => response || cache(request, options))
+					.catch(() => cache(request, options)) :
+				fetch(request)
+		),
+options);
 
 toolbox.router.get('/content/:uuid', request =>
 	getUuid()
-		.then(uuid => {
-			if (!uuid) {
-				return fetch(request);
-			}
-			return caches.match(request, { cacheName: `${options.cache.name}:${uuid}` })
-				.then(response => response || fetch(request))
-				.catch(() => fetch(request));
-		})
-);
+		.then(uuid =>
+			uuid ?
+				caches.match(request, { cacheName: `${options.cache.name}:${uuid}` })
+					.then(response => response || fetch(request))
+					.catch(() => fetch(request)) :
+				fetch(request)
+		),
+options);
 
 self.addEventListener('message', ev => {
 	const msg = ev.data;
