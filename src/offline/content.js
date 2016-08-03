@@ -18,19 +18,19 @@ const getUuid = () =>
 
 toolbox.router.get('/', toolbox.fastest, options);
 
-toolbox.router.get('/content/:uuid', request => {
-	return Promise.all([getUuid(), fonts.areCached()])
-		.then(([uuid, fontsAreCached]) => {
-			const url = `${request.url}${request.url.includes('?') ? '&' : '?'}fonts-cached=true`;
-			const newRequest = fontsAreCached ? new Request(url, { credentials: 'same-origin' }) : request;
-			if (!uuid) {
-				return fetch(newRequest);
-			}
-			return caches.match(newRequest, { cacheName: `${options.cache.name}:${uuid}` })
-				.then(response => response || fetch(newRequest))
-				.catch(() => fetch(newRequest));
-		})
-}, options);
+// toolbox.router.get('/content/:uuid', request => {
+// 	return Promise.all([getUuid(), fonts.areCached()])
+// 		.then(([uuid, fontsAreCached]) => {
+// 			const url = `${request.url}${request.url.includes('?') ? '&' : '?'}fonts-cached=true`;
+// 			const newRequest = fontsAreCached ? new Request(url, { credentials: 'same-origin' }) : request;
+// 			if (!uuid) {
+// 				return fetch(newRequest);
+// 			}
+// 			return caches.match(newRequest, { cacheName: `${options.cache.name}:${uuid}` })
+// 				.then(response => response || fetch(newRequest))
+// 				.catch(() => fetch(newRequest));
+// 		})
+// }, options);
 
 self.addEventListener('message', ev => {
 	const msg = ev.data;
