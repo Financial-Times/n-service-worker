@@ -76,6 +76,19 @@ class Cache {
 	}
 
 	/**
+	 * Try and get the Request's Response from cache, else add it
+	 *
+	 * @param {string|object} - Either a URL or a Request object
+	 * @param {object} [opts]
+	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response
+	 * @returns {object} - The Response
+	 */
+	getOrAdd (request, { maxAge = 60 } = { }) {
+		return this.get(request)
+			.then(response => response || this.add(request, { maxAge }));
+	}
+
+	/**
 	 * Given a URL or Request object, delete the item from the cache
 	 *
 	 * @param {string|object} - Either a URL or a Request object

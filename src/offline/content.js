@@ -10,6 +10,7 @@ const options = {
 const getUuid = () =>
 	cache('session')
 		.then(cache => cache.get('https://session-next.ft.com/uuid'))
+		.then(response => response ? response.json() : { })
 		.then(({ uuid }) => uuid)
 		.catch(() => { });
 
@@ -20,8 +21,7 @@ toolbox.router.get('/', request =>
 		.then(uuid =>
 			uuid ?
 				cache('front-page')
-					.then(cache => cache.get(request))
-					.then(response => response || cache.add(request))
+					.then(cache => cache.getOrAdd(request))
 					.catch(() => fetch(request)) :
 				fetch(request)
 		),
@@ -32,8 +32,7 @@ toolbox.router.get('/content/:uuid', request =>
 		.then(uuid =>
 			uuid ?
 				cache(`content:${uuid}`)
-					.then(cache => cache.get(request))
-					.then(response => response || cache.add(request))
+					.then(cache => cache.getOrAdd(request))
 					.catch(() => fetch(request)) :
 				fetch(request)
 		),
