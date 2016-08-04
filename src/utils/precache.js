@@ -4,7 +4,12 @@ import cache from '../utils/cache';
 export default (urls, options) => {
 	self.addEventListener('install', ev => {
 		ev.waitUntil(
-			Promise.all(urls.map(url => cache(url, options)))
+			Promise.all(
+				urls.map(url =>
+					cache(options.cache.cacheName.replace('next:', ''))
+						.add(url, { maxAge: options.cache.maxAgeSeconds })
+				)
+			)
 		);
 	});
 }
