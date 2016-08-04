@@ -16,7 +16,7 @@ class Cache {
 	 *
 	 * @param {string|object} - Either a URL or a Request object
 	 * @param {object} [opts]
-	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response
+	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response. -1 for no caching
 	 * @returns {object} - The Response
 	 */
 	add (request, { maxAge = 60 } = { }) {
@@ -37,7 +37,7 @@ class Cache {
 	 * @param {string|object} - Either a URL or a Request object
 	 * @param {object} - Response object
 	 * @param {object} [opts]
-	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response
+	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response. -1 for no caching
 	 * @returns {object} - The Response
 	 */
 	put (request, response, { maxAge = 60 } = { }) {
@@ -80,7 +80,7 @@ class Cache {
 	 *
 	 * @param {string|object} - Either a URL or a Request object
 	 * @param {object} [opts]
-	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response
+	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response. -1 for no caching
 	 * @returns {object} - The Response
 	 */
 	getOrAdd (request, { maxAge = 60 } = { }) {
