@@ -6,8 +6,10 @@ export default (urls, options) => {
 		ev.waitUntil(
 			Promise.all(
 				urls.map(url =>
-					cache(options.cache.cacheName.replace('next:', ''))
-						.add(url, { maxAge: options.cache.maxAgeSeconds })
+					cache(options.cache.name.replace('next:', ''))
+						.then(cache =>
+							cache.add(url, { maxAge: options.cache.maxAgeSeconds })
+						)
 				)
 			)
 		);
