@@ -8,7 +8,7 @@ let dbPromise;
 
 function openDb () {
 	return new Promise(function(resolve, reject) {
-		const request = indexedDB.open('next', 1);
+		const request = indexedDB.open('next-flags', 1);
 
 		request.onupgradeneeded = function() {
 			request.result.createObjectStore('flags');
