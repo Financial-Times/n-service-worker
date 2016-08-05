@@ -135,7 +135,7 @@ class Cache {
 		);
 	}
 
- 	/**
+	/**
  	 * Limit the number of items in the cache
  	 */
 	limit (count) {
