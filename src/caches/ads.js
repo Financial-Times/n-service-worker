@@ -4,9 +4,11 @@ import {registerCache} from '../utils/personal';
 import precache from '../utils/precache';
 
 function getCacheOptions (days, isPersonal) {
+	const maxAge = 60 * 60 * ( days >= 1 ? days * 24 : 1 );
 	return {
 		name: 'next:ads' + (isPersonal ? ':personal' : ''),
-		maxAgeSeconds: 60 * 60 * ( days >= 1 ? days * 24 : 1 ),
+		maxAgeSeconds: maxAge,
+		maxAge,
 		maxEntries: 60
 	}
 }
@@ -89,10 +91,8 @@ const sections = [
 ];
 
 precache(
-	sections.map(section => `https://ads-api.ft.com/v1/concept/${section}`), {
-		origin: 'https://ads-api.ft.com',
-		cache: getCacheOptions(7)
-	}
+	sections.map(section => `https://ads-api.ft.com/v1/concept/${section}`),
+	getCacheOptions(7)
 );
 
 toolbox.router.get(new RegExp('\/v1\/concept\/(' + popularStreams.join('|') + ')'), cacheFirst('swAdsCaching'), {

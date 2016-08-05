@@ -17,16 +17,17 @@ class Cache {
 	 * @param {string|object} - Either a URL or a Request object
 	 * @param {object} [opts]
 	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response. -1 for no caching
+	 * @param {number} [opts.maxEntries] - Max number of entries to keep in cache, defaults to 'infinite'
 	 * @returns {object} - The Response
 	 */
-	add (request, { maxAge = 60 } = { }) {
+	add (request, { maxAge = 60, maxEntries } = { }) {
 		return this.get(request)
 			.then(cachedResponse => {
 				if (cachedResponse) {
 					return cachedResponse;
 				} else {
 					return fetch(request)
-						.then(response => response.ok ? this.put(request, response, { maxAge }) : response)
+						.then(response => response.ok ? this.put(request, response, { maxAge, maxEntries }) : response)
 				}
 			});
 	}
@@ -38,9 +39,10 @@ class Cache {
 	 * @param {object} - Response object
 	 * @param {object} [opts]
 	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response. -1 for no caching
+	 * @param {number} [opts.maxEntries] - Max number of entries to keep in cache, defaults to 'infinite'
 	 * @returns {object} - The Response
 	 */
-	put (request, response, { maxAge = 60 } = { }) {
+	put (request, response, { maxAge = 60, maxEntries } = { }) {
 		return this.get(request)
 			.then(cachedResponse => {
 				if (cachedResponse) {
@@ -81,11 +83,12 @@ class Cache {
 	 * @param {string|object} - Either a URL or a Request object
 	 * @param {object} [opts]
 	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response. -1 for no caching
+	 * @param {number} [opts.maxEntries] - Max number of entries to keep in cache, defaults to 'infinite'
 	 * @returns {object} - The Response
 	 */
-	getOrAdd (request, { maxAge = 60 } = { }) {
+	getOrAdd (request, { maxAge = 60, maxEntries } = { }) {
 		return this.get(request)
-			.then(response => response || this.add(request, { maxAge }));
+			.then(response => response || this.add(request, { maxAge, maxEntries }));
 	}
 
 	/**
@@ -100,6 +103,20 @@ class Cache {
 				this.db.delete(url),
 			])
 			.then(() => { });
+	}
+
+	/**
+	 * Delete everthing from this cache
+	 */
+	clear () {
+		return this.cache.keys().then(keys => Promise.all(keys.map(this.delete)));
+	}
+
+	/**
+	 * Get all the keys in the cache (and remove expired ones in the process)
+	 */
+	keys () {
+		return this.cache.keys().then(keys => Promise.all(keys.map(this.get)));
 	}
 
 }

@@ -14,7 +14,7 @@ const cacheOptions = {
 
 precache(
 	fonts.map(font => `https://next-geebee.ft.com/build/v2/files/o-fonts-assets@${fontsVersion}/${font}.woff?`),
-	cacheOptions
+	{ name: cacheOptions.cache.name, maxEntries: cacheOptions.cache.maxEntries, maxAge: -1 }
 );
 
 // fonts route
