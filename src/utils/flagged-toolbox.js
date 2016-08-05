@@ -1,5 +1,5 @@
 import toolbox from 'sw-toolbox';
-import {get as getFlag} from './flags';
+import {getFlag} from './flags';
 
 const strategies = {};
 ['networkFirst','cacheFirst','fastest','cacheOnly']
