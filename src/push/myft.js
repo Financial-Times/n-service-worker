@@ -1,7 +1,7 @@
 /* global clients:false*/
 import eagerFetch from '../utils/eager-fetch';
 import track from '../utils/track';
-import {get as getFlag} from '../utils/flags';
+import {getFlag} from '../utils/flags';
 
 const title = 'New article in your myFT page';
 const icon = 'https://next-geebee.ft.com/assets/icons/myft-logo-pink-bg.png';
