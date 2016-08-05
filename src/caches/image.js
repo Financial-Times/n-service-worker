@@ -16,8 +16,9 @@ const headerImages = [
 ]
 
 precache(
+	cacheOptions.cache.name,
 	headerImages.map(image => `https://next-geebee.ft.com/image/v1/images/raw/${image}`),
-	{ name: cacheOptions.cache.name, maxAge: -1 }
+	{ maxAge: -1 }
 );
 
 toolbox.router.get('/image/v1/images/raw/fticon*', toolbox.cacheFirst, cacheOptions);

@@ -4,11 +4,9 @@ import {registerCache} from '../utils/personal';
 import precache from '../utils/precache';
 
 function getCacheOptions (days, isPersonal) {
-	const maxAge = 60 * 60 * ( days >= 1 ? days * 24 : 1 );
 	return {
 		name: 'next:ads' + (isPersonal ? ':personal' : ''),
-		maxAgeSeconds: maxAge,
-		maxAge,
+		maxAgeSeconds: 60 * 60 * ( days >= 1 ? days * 24 : 1 ),
 		maxEntries: 60
 	}
 }
@@ -90,9 +88,11 @@ const sections = [
 	'NTlhNzEyMzMtZjBjZi00Y2U1LTg0ODUtZWVjNmEyYmU1NzQ2-QnJhbmRz' // fastft
 ];
 
+const precacheCacheOptions = getCacheOptions(7);
 precache(
+	precacheCacheOptions.name,
 	sections.map(section => `https://ads-api.ft.com/v1/concept/${section}`),
-	getCacheOptions(7)
+	{ maxAge: precacheCacheOptions.maxAge, maxEntries: precacheCacheOptions.maxEntries }
 );
 
 toolbox.router.get(new RegExp('\/v1\/concept\/(' + popularStreams.join('|') + ')'), cacheFirst('swAdsCaching'), {
