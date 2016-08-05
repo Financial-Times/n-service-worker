@@ -54,7 +54,7 @@ class Cache {
 				} else {
 					const url = typeof request === 'string' ? request : request.url;
 					// remove one item so we can add a new one
-					const removeLast = maxEntries ? this.limit(-1) : Promise.resolve();
+					const removeLast = maxEntries ? this.limit(maxEntries - 1) : Promise.resolve();
 					removeLast.then(
 						Promise.all([
 								this.cache.put(request, response.clone()),
