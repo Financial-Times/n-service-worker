@@ -8,7 +8,7 @@ export default (urls, { name, maxAge, maxEntries } = { }) => {
 				urls.map(url =>
 					cache(name.replace('next:', ''))
 						.then(cache =>
-							cache.add(url, { maxAge, maxEntries })
+							cache.set(url, { maxAge, maxEntries })
 						)
 				)
 			)

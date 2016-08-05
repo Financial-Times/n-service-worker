@@ -17,11 +17,13 @@ const getUuid = () =>
 registerCache('next:front-page');
 
 toolbox.router.get('/', request =>
+	// only cache if logged in
+	// NOTE: using whether there's a uuid in the session store as a proxy for logged in-ness
 	getUuid()
 		.then(uuid =>
 			uuid ?
 				cache('front-page')
-					.then(cache => cache.getOrAdd(request))
+					.then(cache => cache.getOrSet(request))
 					.catch(() => fetch(request)) :
 				fetch(request)
 		),
@@ -32,7 +34,7 @@ toolbox.router.get('/content/:uuid', request =>
 		.then(uuid =>
 			uuid ?
 				cache(`content:${uuid}`)
-					.then(cache => cache.getOrAdd(request))
+					.then(cache => cache.getOrSet(request))
 					.catch(() => fetch(request)) :
 				fetch(request)
 		),
@@ -65,7 +67,7 @@ self.addEventListener('message', ev => {
 											.then(response => {
 												// if it's not a barrier, cache
 												if (response.headers.get('X-Ft-Auth-Gate-Result') !== 'DENIED') {
-													return cache.put(request, response);
+													return cache.set(request, { response, maxAge: item.cacheAge });
 												}
 											})
 											.catch(() => { });

@@ -1,7 +1,7 @@
 import toolbox from 'sw-toolbox';
 
 import cache from '../utils/cache';
-import { get as getFlag } from '../utils/flags';
+import { getFlag } from '../utils/flags';
 import { registerCache } from '../utils/personal';
 
 const options = {
@@ -10,10 +10,15 @@ const options = {
 
 registerCache('next:session');
 
-toolbox.router.get('/(uuid)?', request =>
-	getFlag('swSessionCaching') ?
+toolbox.router.get('/(uuid)?', request => {
+	return getFlag('swSessionCaching') ?
 		cache('session')
-			.then(cache => cache.getOrAdd(request, { maxAge: 60 * 60 }))
-			.catch(() => fetch(request)) :
-		fetch(request),
-options);
+			.then(cache => {
+				return cache.getOrSet(request, { maxAge: 60 * 60 });
+			})
+			.catch(err => {
+				console.log(err);
+				return fetch(request);
+			}) :
+		fetch(request);
+}, options);
