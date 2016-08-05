@@ -21,7 +21,9 @@ class Cache {
 	 * @returns {object} - The Response
 	 */
 	add (request, { maxAge = 60, maxEntries } = { }) {
-		return this.get(request)
+		const limit = maxEntries ? this.limit(maxEntries) : Promise.resolve();
+		return limit
+			.then(() => this.get(request))
 			.then(cachedResponse => {
 				if (cachedResponse) {
 					return cachedResponse;
@@ -43,17 +45,23 @@ class Cache {
 	 * @returns {object} - The Response
 	 */
 	put (request, response, { maxAge = 60, maxEntries } = { }) {
-		return this.get(request)
+		const limit = maxEntries ? this.limit(maxEntries) : Promise.resolve();
+		return limit
+			.then(() => this.get(request))
 			.then(cachedResponse => {
 				if (cachedResponse) {
 					return cachedResponse;
 				} else {
 					const url = typeof request === 'string' ? request : request.url;
-					return Promise.all([
-							this.cache.put(request, response.clone()),
-							maxAge !== -1 ? this.db.set(url, { expires: Date.now() + (maxAge * 1000) }) : null
-						])
-							.then(() => response);
+					// remove one item so we can add a new one
+					const removeLast = maxEntries ? this.limit(-1) : Promise.resolve();
+					removeLast.then(
+						Promise.all([
+								this.cache.put(request, response.clone()),
+								maxAge !== -1 ? this.db.set(url, { expires: Date.now() + (maxAge * 1000) }) : null
+							])
+								.then(() => response)
+					);
 
 				}
 			});
@@ -109,14 +117,30 @@ class Cache {
 	 * Delete everthing from this cache
 	 */
 	clear () {
-		return this.cache.keys().then(keys => Promise.all(keys.map(this.delete)));
+		return this.cache.keys().then(keys =>
+			Promise.all(keys.map(this.delete.bind(this)))
+		);
 	}
 
 	/**
 	 * Get all the keys in the cache (and remove expired ones in the process)
 	 */
 	keys () {
-		return this.cache.keys().then(keys => Promise.all(keys.map(this.get)));
+		return this.cache.keys().then(keys =>
+			Promise.all(keys.map(this.get.bind(this)))
+				.then(responses =>
+					// return the keys that have a response
+					keys.filter((key, index) => responses[index])
+				)
+		);
+	}
+
+ 	/**
+ 	 * Limit the number of items in the cache
+ 	 */
+	limit (count) {
+		return this.keys()
+			.then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));
 	}
 
 }
