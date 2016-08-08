@@ -1,12 +1,13 @@
 import toolbox from 'sw-toolbox';
-import {cacheFirst} from '../utils/flagged-toolbox';
-import {registerCache} from '../utils/personal';
+
+import { cacheFirstFlagged } from '../utils/handlers';
+import { registerCache } from '../utils/personal';
 import precache from '../utils/precache';
 
 function getCacheOptions (days, isPersonal) {
 	return {
-		name: 'next:ads' + (isPersonal ? ':personal' : ''),
-		maxAgeSeconds: 60 * 60 * ( days >= 1 ? days * 24 : 1 ),
+		name: 'ads' + (isPersonal ? ':personal' : ''),
+		maxAge: 60 * 60 * ( days >= 1 ? days * 24 : 1 ),
 		maxEntries: 60
 	}
 }
@@ -88,54 +89,54 @@ const sections = [
 	'NTlhNzEyMzMtZjBjZi00Y2U1LTg0ODUtZWVjNmEyYmU1NzQ2-QnJhbmRz' // fastft
 ];
 
+const precacheCacheOptions = getCacheOptions(7);
 precache(
-	sections.map(section => `https://ads-api.ft.com/v1/concept/${section}`), {
-		origin: 'https://ads-api.ft.com',
-		cache: getCacheOptions(7)
-	}
+	precacheCacheOptions.name,
+	sections.map(section => `https://ads-api.ft.com/v1/concept/${section}`),
+	{ maxAge: precacheCacheOptions.maxAge, maxEntries: precacheCacheOptions.maxEntries }
 );
 
-toolbox.router.get(new RegExp('\/v1\/concept\/(' + popularStreams.join('|') + ')'), cacheFirst('swAdsCaching'), {
+toolbox.router.get(new RegExp('\/v1\/concept\/(' + popularStreams.join('|') + ')'), cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://ads-api.ft.com',
 	cache: getCacheOptions(7)
 });
 
-toolbox.router.get('/v1/user', cacheFirst('swAdsCaching'), {
+toolbox.router.get('/v1/user', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://ads-api.ft.com',
 	cache: getCacheOptions(7, true)
 });
 
-toolbox.router.get('/tag/js/gpt.js', cacheFirst('swAdsCaching'), {
+toolbox.router.get('/tag/js/gpt.js', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://www.googletagservices.com',
 	cache: getCacheOptions(7)
 });
 
-toolbox.router.get('/gpt/pubads_impl_*.js', cacheFirst('swAdsCaching'), {
+toolbox.router.get('/gpt/pubads_impl_*.js', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://partner.googleadservices.com',
 	cache: getCacheOptions(30)
 });
 
-toolbox.router.get('/pagead/osd.js', cacheFirst('swAdsCaching'), {
+toolbox.router.get('/pagead/osd.js', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://pagead2.googlesyndication.com',
 	cache: getCacheOptions(1)
 });
 
-toolbox.router.get('/safeframe/1-0-4/html/container.html', cacheFirst('swAdsCaching'), {
+toolbox.router.get('/safeframe/1-0-4/html/container.html', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://tpc.googlesyndication.com',
 	cache: getCacheOptions(0)
 });
 
-toolbox.router.get('/userdata/*', cacheFirst('swAdsCaching'), {
+toolbox.router.get('/userdata/*', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://cdn.krxd.net',
 	cache: getCacheOptions(1, true)
 });
 
-toolbox.router.get('/controltag', cacheFirst('swAdsCaching'), {
+toolbox.router.get('/controltag', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://cdn.krxd.net',
 	cache: getCacheOptions(7)
 });
 
-toolbox.router.get('/ctjs/controltag.js*', cacheFirst('swAdsCaching'), {
+toolbox.router.get('/ctjs/controltag.js*', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://cdn.krxd.net',
 	cache: getCacheOptions(30)
 });

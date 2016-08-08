@@ -1,12 +1,14 @@
 import toolbox from 'sw-toolbox';
 
-const cacheOptions = {
+import { fastest } from '../utils/handlers';
+
+const options = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
-		name: 'next:polyfill',
+		name: 'polyfill',
 		maxEntries: 4
 	}
 };
 
 // use toolbox.fastest as we want to send requests to check last-modified headers for polyfill
-toolbox.router.get('/polyfill/*', toolbox.fastest, cacheOptions);
+toolbox.router.get('/polyfill/*', fastest, options);

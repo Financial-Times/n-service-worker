@@ -1,10 +1,10 @@
-import IndexedDBPromised from 'indexeddb-promised';
+import IndexedDbPromised from 'indexeddb-promised';
 
 export default class {
 
 	constructor (storeName, { dbName = 'next', dbVersion = 1 } = { }) {
 		this.storeName = storeName;
-		const indexedDBPromised = new IndexedDBPromised(dbName);
+		const indexedDBPromised = new IndexedDbPromised(dbName);
 		this.idb = indexedDBPromised
 			.setVersion(dbVersion)
 			.addObjectStore({ name: storeName })
