@@ -9,7 +9,9 @@ const cacheFirst = (request, values, options = { }) => {
 		.catch(() => fetch(request));
 };
 
-const cacheFirstFlagged = flagName => getFlag(flagName) ? cacheFirst : request => fetch(request);
+const cacheFirstFlagged = flagName =>
+	(request, values, options) =>
+		getFlag(flagName) ? cacheFirst(request, values, options) : fetch(request);
 
 const fastest = (request, values, options = { }) => {
 	const cacheOptions = options.cache || { };
@@ -32,11 +34,10 @@ const fastest = (request, values, options = { }) => {
 				maybeReject('No result returned');
 			}
 		};
-		const requestCache = cache(cacheOptions.name)
+		const requestCache = cache(cacheOptions.name);
 		requestCache
 			.then(cache => {
-				fetch(request.clone())
-					.then(response => cache.set(request, Object.assign({ }, cacheOptions, { response })))
+				cache.set(request.clone(), cacheOptions)
 					.then(maybeResolve)
 					.catch(maybeReject);
 				cache.get(request, cacheOptions)

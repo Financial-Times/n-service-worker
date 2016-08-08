@@ -5,7 +5,7 @@ import { cacheFirst } from '../utils/handlers';
 
 // TODO have one cache for our more actively developed apps,
 // another with longer cache life for errors, opt-out etc
-const cacheOptions = {
+const options = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
 		name: 'built-assets',
@@ -15,7 +15,6 @@ const cacheOptions = {
 	}
 };
 
-
 self.addEventListener('message', msg => {
 	const data = msg.data;
 	if (data.type === 'hashedAssetsUpdate' && flags.get('swPrecacheHashedAssets')) {
@@ -24,5 +23,5 @@ self.addEventListener('message', msg => {
 });
 
 // prod
-toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.css', cacheFirst, cacheOptions);
-toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.js', cacheFirst, cacheOptions);
+toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.css', cacheFirst, options);
+toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.js', cacheFirst, options);
