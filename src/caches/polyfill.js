@@ -1,11 +1,11 @@
 import toolbox from 'sw-toolbox';
 
-import { fastest } from '../utils/cache';
+import { fastest } from '../utils/handlers';
 
 const options = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
-		name: 'next:polyfill',
+		name: 'polyfill',
 		maxEntries: 4
 	}
 };

@@ -7,24 +7,24 @@ let flags = {}; //eslint-disable-line
 let dbPromise;
 
 function openDb () {
-	return new Promise(function(resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		const request = indexedDB.open('next-flags', 1);
 
-		request.onupgradeneeded = function() {
+		request.onupgradeneeded = function () {
 			request.result.createObjectStore('flags');
 		};
 
-		request.onsuccess = function() {
+		request.onsuccess = function () {
 			resolve(request.result);
 		};
 
-		request.onerror = function() {
+		request.onerror = function () {
 			reject(request.error);
 		};
 	});
 }
 
-function getStore() {
+function getStore () {
 	if (!dbPromise) {
 		dbPromise = openDb();
 	}

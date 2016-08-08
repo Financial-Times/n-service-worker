@@ -1,7 +1,7 @@
 import toolbox from 'sw-toolbox';
 
 import flags from '../utils/flags';
-import { cacheFirstFlagged } from '../utils/handlers';
+import { cacheFirst } from '../utils/handlers';
 
 // TODO have one cache for our more actively developed apps,
 // another with longer cache life for errors, opt-out etc
@@ -24,5 +24,5 @@ self.addEventListener('message', msg => {
 });
 
 // prod
-toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.css', cacheFirstFlagged, cacheOptions);
-toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.js', cacheFirstFlagged, cacheOptions);
+toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.css', cacheFirst, cacheOptions);
+toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.js', cacheFirst, cacheOptions);

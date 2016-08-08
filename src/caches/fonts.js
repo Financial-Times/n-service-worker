@@ -1,6 +1,6 @@
 import toolbox from 'sw-toolbox';
 
-import { cacheFirstFlagged } from '../utils/handlers';
+import { cacheFirst } from '../utils/handlers';
 import precache from '../utils/precache';
 
 const fonts = ['MetricWeb-Regular', 'MetricWeb-Semibold', 'FinancierDisplayWeb-Regular'];
@@ -20,4 +20,4 @@ precache(
 );
 
 // fonts route
-toolbox.router.get('/build/v2/files/o-fonts-assets@:version/:font.woff', cacheFirstFlagged, options);
+toolbox.router.get('/build/v2/files/o-fonts-assets@:version/:font.woff', cacheFirst, options);

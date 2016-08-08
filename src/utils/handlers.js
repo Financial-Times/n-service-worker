@@ -33,16 +33,16 @@ const fastest = (request, values, options = { }) => {
 			}
 		};
 		const requestCache = cache(cacheOptions.name)
-	    requestCache
-	    	.then(cache => {
-	    		cache.fetch(request.clone())
-	    			.then(response => cache.set(request, Object.assign({ }, cacheOptions, { response })))
+		requestCache
+			.then(cache => {
+				fetch(request.clone())
+					.then(response => cache.set(request, Object.assign({ }, cacheOptions, { response })))
 					.then(maybeResolve)
 					.catch(maybeReject);
 				cache.get(request)
 					.then(maybeResolve)
 					.catch(maybeReject);
-	    	})
+			})
 	});
 }
 

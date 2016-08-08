@@ -1,12 +1,12 @@
 import toolbox from 'sw-toolbox';
 
-import { cacheFirstFlagged } from '../utils/handlers';
+import { cacheFirst } from '../utils/handlers';
 import precache from '../utils/precache';
 
 const options = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
-		name: 'next:image'
+		name: 'image'
 	}
 };
 
@@ -22,7 +22,7 @@ precache(
 	{ maxAge: -1 }
 );
 
-toolbox.router.get('/image/v1/images/raw/fticon*', cacheFirstFlagged, options);
-toolbox.router.get('/image/v1/images/raw/ftlogo*', cacheFirstFlagged, options);
-toolbox.router.get('/image/v1/images/raw/ftsocial*', cacheFirstFlagged, options);
-toolbox.router.get('/assets/*', cacheFirstFlagged, options);
+toolbox.router.get('/image/v1/images/raw/fticon*', cacheFirst, options);
+toolbox.router.get('/image/v1/images/raw/ftlogo*', cacheFirst, options);
+toolbox.router.get('/image/v1/images/raw/ftsocial*', cacheFirst, options);
+toolbox.router.get('/assets/*', cacheFirst, options);
