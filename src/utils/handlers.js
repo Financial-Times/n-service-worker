@@ -4,8 +4,8 @@ import { getFlag } from './flags';
 const cacheFirst = (request, values, options = { }) => {
 	const cacheOptions = options.cache || { };
 
-	return cache(cacheOptions)
-		.then(cache => cache.getOrSet(request))
+	return cache(cacheOptions.name)
+		.then(cache => cache.getOrSet(request, cacheOptions))
 		.catch(() => fetch(request));
 };
 
@@ -39,7 +39,7 @@ const fastest = (request, values, options = { }) => {
 					.then(response => cache.set(request, Object.assign({ }, cacheOptions, { response })))
 					.then(maybeResolve)
 					.catch(maybeReject);
-				cache.get(request)
+				cache.get(request, cacheOptions)
 					.then(maybeResolve)
 					.catch(maybeReject);
 			})
