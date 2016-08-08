@@ -2,6 +2,7 @@ import toolbox from 'sw-toolbox';
 
 import cache from '../utils/cache';
 import { registerCache } from '../utils/personal';
+import { cacheFirst } from '../utils/handlers';
 
 const options = {
 	origin: self.registration.scope.replace(/\/$/, '')
@@ -21,22 +22,14 @@ toolbox.router.get('/', request =>
 	// NOTE: using whether there's a uuid in the session store as a proxy for logged in-ness
 	getUuid()
 		.then(uuid =>
-			uuid ?
-				cache('front-page')
-					.then(cache => cache.getOrSet(request))
-					.catch(() => fetch(request)) :
-				fetch(request)
+			uuid ? cacheFirst(request, null, { cache: { name: 'front-page' } }): fetch(request)
 		),
 options);
 
 toolbox.router.get('/content/:uuid', request =>
 	getUuid()
 		.then(uuid =>
-			uuid ?
-				cache(`content:${uuid}`)
-					.then(cache => cache.getOrSet(request))
-					.catch(() => fetch(request)) :
-				fetch(request)
+			uuid ? cacheFirst(request, null, { cache: { name: `content:${uuid}` } }): fetch(request)
 		),
 options);
 

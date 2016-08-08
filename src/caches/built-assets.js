@@ -1,15 +1,17 @@
 import toolbox from 'sw-toolbox';
+
 import flags from '../utils/flags';
+import { cacheFirstFlagged } from '../utils/handlers';
 
 // TODO have one cache for our more actively developed apps,
 // another with longer cache life for errors, opt-out etc
 const cacheOptions = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
-		name: 'next:built-assets',
+		name: 'built-assets',
 		maxEntries: 20,
 		// our code base moves so fast, pointless caching enything longer than a few days
-		maxAgeSeconds: 60 * 60 * 24 * 5
+		maxAge: 60 * 60 * 24 * 5
 	}
 };
 
@@ -22,5 +24,5 @@ self.addEventListener('message', msg => {
 });
 
 // prod
-toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.css', toolbox.cacheFirst, cacheOptions);
-toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.js', toolbox.cacheFirst, cacheOptions);
+toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.css', cacheFirstFlagged, cacheOptions);
+toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.js', cacheFirstFlagged, cacheOptions);

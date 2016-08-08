@@ -1,12 +1,13 @@
 import toolbox from 'sw-toolbox';
-import {cacheFirst} from '../utils/flagged-toolbox';
-import {registerCache} from '../utils/personal';
 
-const cacheOptions = {
+import { cacheFirstFlagged } from '../utils/handlers';
+import { registerCache } from '../utils/personal';
+
+const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
-		name: 'next:myft',
-		maxAgeSeconds: 60 * 60 * 12
+		name: 'myft',
+		maxAge: 60 * 60 * 12
 	}
 };
 
@@ -28,7 +29,7 @@ function purgeCache (request) {
 
 registerCache('next:myft');
 
-toolbox.router.get('/__myft/api/*', cacheFirst('swMyftCaching'), cacheOptions);
+toolbox.router.get('/__myft/api/*', cacheFirstFlagged('swMyftCaching'), options);
 toolbox.router.put('/__myft/api/*', purgeCache);
 toolbox.router.post('/__myft/api/*', purgeCache);
 toolbox.router.delete('/__myft/api/*', purgeCache);

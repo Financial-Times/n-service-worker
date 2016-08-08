@@ -1,8 +1,9 @@
 import toolbox from 'sw-toolbox';
 
+import { cacheFirstFlagged } from '../utils/handlers';
 import precache from '../utils/precache';
 
-const cacheOptions = {
+const options = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
 		name: 'next:image'
@@ -16,12 +17,12 @@ const headerImages = [
 ]
 
 precache(
-	cacheOptions.cache.name,
+	options.cache.name,
 	headerImages.map(image => `https://next-geebee.ft.com/image/v1/images/raw/${image}`),
 	{ maxAge: -1 }
 );
 
-toolbox.router.get('/image/v1/images/raw/fticon*', toolbox.cacheFirst, cacheOptions);
-toolbox.router.get('/image/v1/images/raw/ftlogo*', toolbox.cacheFirst, cacheOptions);
-toolbox.router.get('/image/v1/images/raw/ftsocial*', toolbox.cacheFirst, cacheOptions);
-toolbox.router.get('/assets/*', toolbox.cacheFirst, cacheOptions);
+toolbox.router.get('/image/v1/images/raw/fticon*', cacheFirstFlagged, options);
+toolbox.router.get('/image/v1/images/raw/ftlogo*', cacheFirstFlagged, options);
+toolbox.router.get('/image/v1/images/raw/ftsocial*', cacheFirstFlagged, options);
+toolbox.router.get('/assets/*', cacheFirstFlagged, options);

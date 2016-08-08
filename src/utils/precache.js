@@ -6,7 +6,7 @@ export default (name, urls, { maxAge, maxEntries } = { }) => {
 		ev.waitUntil(
 			Promise.all(
 				urls.map(url =>
-					cache(name.replace('next:', ''))
+					cache(name)
 						.then(cache => cache.set(url, { maxAge, maxEntries }))
 				)
 			)
