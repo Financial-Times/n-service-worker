@@ -22,14 +22,18 @@ toolbox.router.get('/', request =>
 	// NOTE: using whether there's a uuid in the session store as a proxy for logged in-ness
 	getUuid()
 		.then(uuid =>
-			uuid ? cacheFirst(request, null, { cache: { name: 'front-page' } }): fetch(request)
+			uuid ? cacheFirst(request, null, { cache: { name: 'front-page' } }) : fetch(request)
 		),
 options);
 
 toolbox.router.get('/content/:uuid', request =>
 	getUuid()
 		.then(uuid =>
-			uuid ? cacheFirst(request, null, { cache: { name: `content:${uuid}` } }): fetch(request)
+			uuid ?
+				cache(`content:${uuid}`)
+					.then(cache => cache.get(request))
+					.then(response => response || fetch(request)) :
+				fetch(request)
 		),
 options);
 
