@@ -140,6 +140,9 @@ export default (cacheName, { cacheNamePrefix = 'next' } = { }) => {
 	const fullCacheName = `${cacheNamePrefix}:${cacheName}`;
 	return caches.open(fullCacheName)
 		.then(cache => {
-			return new Cache(cache, fullCacheName);
+			const cacheWrapper = new Cache(cache, fullCacheName);
+			// clear out expired content (a side-effect of getting the keys)
+			return cacheWrapper.keys()
+				.then(() => cacheWrapper);
 		});
 }
