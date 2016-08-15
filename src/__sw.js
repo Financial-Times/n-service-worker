@@ -13,7 +13,7 @@ import './caches/polyfill';
 import './caches/comments';
 
 // user-specific things
-import './offline/content';
+// import './offline/content';
 import './caches/session';
 import './caches/myft';
 import './caches/ads';
