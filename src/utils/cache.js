@@ -31,7 +31,7 @@ class Cache {
 				} else {
 					const fetchRequest = response ? Promise.resolve(response) : fetch(request);
 					return fetchRequest.then(fetchedResponse => {
-						if (fetchedResponse.ok) {
+						if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
 							const url = typeof request === 'string' ? request : request.url;
 							// make sure we have space to cache the Response
 							const makeRoom = maxEntries ? this.limit(maxEntries - 1) : Promise.resolve();

@@ -50,7 +50,7 @@ function updateFlags () {
 		.then(store => {
 			const request = store.get('flags');
 			request.onsuccess = () => {
-				flags = request.result;
+				flags = request.result || {};
 			};
 		})
 }
