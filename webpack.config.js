@@ -10,6 +10,7 @@ module.exports = nWebpack({
 	entry: {
 		'./dist/__sw.js': './src/__sw.js'
 	},
+	language: 'js',
 	include: [path.resolve('./src'), path.resolve('./node_modules/indexeddb')],
 	loaders: [
 		{
