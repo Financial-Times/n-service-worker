@@ -1,4 +1,4 @@
-import './utils/navigate';
+// import './utils/navigate';
 import toolbox from 'sw-toolbox';
 toolbox.options.cache.name = 'next';
 toolbox.options.successResponses = /^200$/;
