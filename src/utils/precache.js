@@ -1,4 +1,4 @@
-import cache from '../utils/cache';
+import cache from './cache';
 
 // NOTE: not using sw toolbox's precache, as can't set the cache name
 export default (name, urls, { maxAge, maxEntries } = { }) => {
@@ -9,7 +9,7 @@ export default (name, urls, { maxAge, maxEntries } = { }) => {
 					cache(name)
 						.then(cache => cache.set(url, { maxAge, maxEntries }))
 				)
-			)
+			).then(() => console.log('precached'))
 		);
 	});
 }

@@ -1,8 +1,7 @@
 .editorconfig
 .eslintrc.js
-
 /npm-debug.log
-
 /bower_components/
 /dist/
 /node_modules/
+.env

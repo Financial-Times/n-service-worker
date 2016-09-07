@@ -1,5 +1,23 @@
 import Db from './db';
 
+function deepCloneResponse (res) {
+	const response = res.clone()
+  var init = {
+      status:     response.status,
+      statusText: response.statusText,
+      headers:    {'From-Cache': 'true'}
+  };
+
+  response.headers.forEach(function(v,k){
+      init.headers[k] = v;
+  });
+  return response.text()
+  	.then(body => {
+  		return new Response(body, init);
+  	})
+
+}
+
 class Cache {
 
 	/**
@@ -31,6 +49,7 @@ class Cache {
 				} else {
 					const fetchRequest = response ? Promise.resolve(response) : fetch(request);
 					return fetchRequest.then(fetchedResponse => {
+						console.log('fetched', request, fetchedResponse)
 						if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
 							const url = typeof request === 'string' ? request : request.url;
 							// make sure we have space to cache the Response
@@ -65,7 +84,20 @@ class Cache {
 				if (expires && expires <= Date.now()) {
 					return this.delete(request);
 				} else {
-					return this.cache.match(request);
+					return this.cache.match(request)
+						.then(response => {
+							if (!response) {
+								return;
+							}
+							if (request.headers.get('X-FT-Test')) {
+								return deepCloneResponse(response)
+									.then(clone => {
+										return clone
+									});
+							} else {
+								return response;
+							}
+						});
 				}
 			});
 	}

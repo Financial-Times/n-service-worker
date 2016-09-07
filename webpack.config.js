@@ -1,7 +1,7 @@
 const path = require('path');
 const nWebpack = require('@financial-times/n-webpack');
 
-module.exports = nWebpack({
+const webpackConfig = nWebpack({
 	withBabelPolyfills: false,
 	output: {
 		filename: '[name]',
@@ -20,3 +20,5 @@ module.exports = nWebpack({
 		}
 	]
 });
+
+module.exports = webpackConfig;

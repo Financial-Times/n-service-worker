@@ -12,7 +12,6 @@ const options = {
 		maxEntries: 5
 	}
 };
-
 precache(
 	options.cache.name,
 	fonts.map(font => `https://next-geebee.ft.com/build/v2/files/o-fonts-assets@${fontsVersion}/${font}.woff?`),

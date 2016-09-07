@@ -6,7 +6,21 @@ const cacheFirst = (request, values, options = { }) => {
 
 	return cache(cacheOptions.name)
 		.then(cache => cache.getOrSet(request, cacheOptions))
-		.catch(() => fetch(request));
+		.then(res => {
+			console.log('cache first', Array.from(res.headers).length)
+			// return new Response('not found', {
+			// 	status: 200,
+			// 	type: 'cors',
+			// 	// mode: 'cors',
+			// 	headers: {
+			// 		balls: 'yes'
+			// 	}
+			// })
+			return res;
+		})
+		.catch((err) => {
+			return fetch(request)
+		});
 };
 
 const cacheFirstFlagged = flagName =>
