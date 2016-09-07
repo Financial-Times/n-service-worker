@@ -1,14 +1,28 @@
+const expect = chai.expect;
 
-describe('registration', function() {
+describe('fonts', function() {
 
   beforeEach(() => SWTestHelper.resetEnv());
   after(() => SWTestHelper.resetEnv());
 
-  it.skip('should be possible to register the sw', () => {
-    return SWTestHelper.installSW('/__sw.js', 'installed')
-  });
+  it('should precache fonts forever', () => {
+    return SWTestHelper.installSW('/__sw.js')
+      .then(() =>
+        Promise.all(['MetricWeb-Regular', 'MetricWeb-Semibold', 'FinancierDisplayWeb-Regular'].map(font =>
+          fetch(`https://next-geebee.ft.com/build/v2/files/o-fonts-assets@1.3.0/${font}.woff?`, {
+            mode: 'cors',
+            headers: {
+              'X-FT-Test': true
+            }
+          })
+            .then(res => {
+              expect(res.headers.get('from-cache')).to.equal('true');
+              expect(res.headers.get('expires')).to.equal('no-expiry');
+            }))
+        )
+      )
 
-  it.skip('should be possible to overwrite the existing service worker', () => {})
+  });
 
   // // These tests install two different service workers and compares the resulting
   // // cached assets.

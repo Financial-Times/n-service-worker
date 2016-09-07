@@ -82,7 +82,7 @@ module.exports = function (karma) {
 				mocha: {
 						reporter: 'html',
 						ui: 'bdd',
-						timeout: 0
+						timeout: 5000
 				}
 		},
 		singleRun: true

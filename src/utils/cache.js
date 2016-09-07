@@ -1,11 +1,11 @@
 import Db from './db';
 
-function deepCloneResponse (res) {
+function addHeadersToResponse (res, headers) {
 	const response = res.clone()
   var init = {
-      status:     response.status,
+      status: response.status,
       statusText: response.statusText,
-      headers:    {'From-Cache': 'true'}
+      headers
   };
 
   response.headers.forEach(function(v,k){
@@ -49,7 +49,6 @@ class Cache {
 				} else {
 					const fetchRequest = response ? Promise.resolve(response) : fetch(request);
 					return fetchRequest.then(fetchedResponse => {
-						console.log('fetched', request, fetchedResponse)
 						if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
 							const url = typeof request === 'string' ? request : request.url;
 							// make sure we have space to cache the Response
@@ -90,10 +89,10 @@ class Cache {
 								return;
 							}
 							if (request.headers.get('X-FT-Test')) {
-								return deepCloneResponse(response)
-									.then(clone => {
-										return clone
-									});
+								return addHeadersToResponse(response, {
+									'From-Cache': 'true',
+									expires: expires || 'no-expiry'
+								})
 							} else {
 								return response;
 							}
