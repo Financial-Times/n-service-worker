@@ -6,9 +6,7 @@ const cacheFirst = (request, values, options = { }) => {
 
 	return cache(cacheOptions.name)
 		.then(cache => cache.getOrSet(request, cacheOptions))
-		.catch((err) => {
-			return fetch(request)
-		});
+		.catch(() => fetch(request));
 };
 
 const cacheFirstFlagged = flagName =>

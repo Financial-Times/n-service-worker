@@ -131,7 +131,7 @@ toolbox.router.get('/userdata/*', cacheFirstFlagged('swAdsCaching'), {
 	cache: getCacheOptions(1, true)
 });
 
-toolbox.router.get('/controltag', cacheFirstFlagged('swAdsCaching'), {
+toolbox.router.get('/controltag*', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://cdn.krxd.net',
 	cache: getCacheOptions(7)
 });
