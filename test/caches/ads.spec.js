@@ -1,10 +1,10 @@
 const expect = chai.expect;
-import cache from '../../src/utils/cache';
+
 import { passFlags } from '../../main'
 describe('ads', function() {
-	const oninstallExpiryLimit = Date.now() + (7 * 60 * 60 * 24 * 1000) + 5000;
+
 	it('should precache metadata for sections', () => {
-		const oninstallExpiryLimit = Date.now() + (7 * 60 * 60 * 24 * 1000) + 10000;
+		const oninstallExpiryLimit = window.installedAt + (7 * 60 * 60 * 24 * 1000) + 5000;
 		return Promise.all([
 			'MQ==-U2VjdGlvbnM=',
 			'Mjk=-U2VjdGlvbnM=',
@@ -16,13 +16,8 @@ describe('ads', function() {
 			'NTQ=-U2VjdGlvbnM=',
 			'NTlhNzEyMzMtZjBjZi00Y2U1LTg0ODUtZWVjNmEyYmU1NzQ2-QnJhbmRz' // fastft
 		].map(concept =>
-			cache('ads')
-				.then(cache => cache.get(`https://ads-api.ft.com/v1/concept/${concept}`, true))
-				.then(res => {
-					expect(res.headers.get('from-cache')).to.equal('true');
-					expect(res.headers.get('expires')).to.be.below(oninstallExpiryLimit);
-				}))
-		)
+			SWTestHelper.checkGetsPrecached(`https://ads-api.ft.com/v1/concept/${concept}`, oninstallExpiryLimit, 'ads')
+		))
 	});
 
 	it('should not use the cache by default', () => {
@@ -48,7 +43,6 @@ describe('ads', function() {
 			})
 			.then(res => {
 				expect(res.headers.get('from-cache')).to.equal('true');
-				expect(res.headers.get('expires')).to.be.below(oninstallExpiryLimit);
 			})
 		});
 
@@ -63,27 +57,7 @@ describe('ads', function() {
 		].forEach(([type, url, expiry, mode]) => {
 			it(`should use the cache for ${type} if flag is on`, () => {
 				const expiryLimit = Date.now() + (expiry * 60 * 60 * 24 * 1000) + 5000;
-				const headers = mode === 'cors' ? {'FT-Debug': true} : undefined
-
-				return fetch(url, { mode, headers	})
-					.then(res => {
-						if (mode === 'cors') {
-							return fetch(url, {	mode,	headers	})
-								.then(res => {
-									expect(res.headers.get('from-cache')).to.equal('true');
-									expect(res.headers.get('expires')).to.be.below(expiryLimit);
-								})
-						} else {
-							return cache('ads')
-								.then(cache => cache.get(url))
-								.then(res => {
-									// alas, we don't get much access to opaque responses
-									expect(res).to.exist;
-									expect(res.status).to.equal(0)
-								})
-						}
-					})
-
+				return SWTestHelper.checkGetsCached(url, expiryLimit, mode, 'ads');
 			})
 		})
 
