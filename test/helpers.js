@@ -1,19 +1,4 @@
-/**
- * Copyright 2015 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+import idb from 'idb';
 
 window.SWTestHelper = {
   createNewIframe: function() {
@@ -55,6 +40,8 @@ window.SWTestHelper = {
               .then((success) => {
                 if (!success) {
                   console.warn('Unable to unregister a SW.');
+                } else {
+                  console.warn('unregister a SW.');
                 }
               })
           );
@@ -70,18 +57,23 @@ window.SWTestHelper = {
           return;
         }
 
-        var cacheTaskPromises = [];
-        for (var i = 0; i < cacheNames.length; i++) {
-          cacheTaskPromises.push(
-            window.caches.delete(cacheNames[i])
+        return Promise.all(cacheNames.map(name => {
+          return Promise.all([
+            window.caches.delete(name)
               .then((success) => {
                 if (!success) {
                   throw new Error('Unable to delete cache');
                 }
-              })
-          );
-        }
-        return Promise.all(cacheTaskPromises);
+              }),
+            idb.open(name).then(db => {
+              try {
+                const tx = db.transaction('requests', 'readwrite')
+                tx.objectStore('requests').clear()
+                return tx.complete;
+              } catch (e) {}
+            })
+          ])
+        }))
       });
   },
 
@@ -92,46 +84,52 @@ window.SWTestHelper = {
       if (iframe) {
         options = {scope: iframe.contentWindow.location.pathname};
       }
-
-      navigator.serviceWorker.register(swFile, options)
-      .then((registration) => {
-        if (registration.installing === null) {
-          throw new Error(swFile + ' already installed.');
-        }
-
-        // We unregister all service workers after each test - this should
-        // always be an install
-        registration.installing.onstatechange = function() {
-          if (this.state !== waitForState) {
-            return;
+      navigator.serviceWorker.getRegistrations()
+        .then(registrations => {
+          if (registrations.length) {
+            throw new Error('service worker already installed.');
           }
-          if (waitForState === 'activated') {
-            navigator.serviceWorker.ready
-              .then(registration => {
-                // Create a Message Channel
-                const messageChannel = new MessageChannel();
-                // Handler for recieving message reply from service worker
-                messageChannel.port1.onmessage = ev => {
-                  if (ev.data.error) {
-                    reject(ev.data.error);
-                  } else {
-                    resolve();
-                  }
-                };
-                // Send message to service worker along with port for reply
-                registration.active.postMessage({type: 'claim'}, [messageChannel.port2]);
-              })
+        })
+        .then(() => navigator.serviceWorker.register(swFile, options))
+        .then(registration => {
+
+          function claim (registration) {
+            const messageChannel = new MessageChannel();
+            // Handler for recieving message reply from service worker
+            messageChannel.port1.onmessage = ev => {
+              if (ev.data.error) {
+                reject(ev.data.error);
+              } else {
+                resolve();
+              }
+            };
+            // Send message to service worker along with port for reply
+            registration.active.postMessage({type: 'claim'}, [messageChannel.port2]);
+          }
+
+          // weirdly, when re-registering a service worker that was previously unregistered
+          // the installing steps get skipped
+          if (registration.active) {
+            claim(registration);
+          } else if (registration.installing) {
+            registration.installing.onstatechange = function() {
+              if (this.state === waitForState) {
+                if (waitForState === 'activated') {
+                  navigator.serviceWorker.ready
+                    .then(claim)
+                } else {
+                  resolve();
+                }
+              }
+            }
           } else {
-            resolve();
+            reject('No idea what happened')
           }
-
-
-        };
-      })
-      .catch((err) => {
-        console.log('Error with ' + swFile, err);
-        reject(err);
-      });
+        })
+        .catch((err) => {
+          console.log('Error with ' + swFile, err);
+          reject(err);
+        })
 
 
     });

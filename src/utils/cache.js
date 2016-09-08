@@ -18,7 +18,7 @@ function addHeadersToResponse (res, headers) {
 
 }
 
-class Cache {
+export class Cache {
 
 	/**
 	 * @param {object} cache - Native Cache object
@@ -76,8 +76,10 @@ class Cache {
 	 * @param {string|object} - Either a URL or a Request object
 	 * @returns {object|undefined} - The Response, or undefined if nothing in the cache
 	 */
-	get (request) {
+	get (request, debug) {
+
 		const url = typeof request === 'string' ? request : request.url;
+
 		return this.db.get(url)
 			.then(({ expires } = { }) => {
 				if (expires && expires <= Date.now()) {
@@ -88,7 +90,7 @@ class Cache {
 							if (!response) {
 								return;
 							}
-							if (request.headers.get('X-FT-Test')) {
+							if (debug === true || request.headers.get('FT-Debug')) {
 								return addHeadersToResponse(response, {
 									'From-Cache': 'true',
 									expires: expires || 'no-expiry'

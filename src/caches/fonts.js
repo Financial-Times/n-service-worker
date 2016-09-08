@@ -8,7 +8,7 @@ const fontsVersion = '1.3.0';
 const options = {
 	origin: 'https://next-geebee.ft.com',
 	cache: {
-		name: `fonts:${fontsVersion}`,
+		name: 'fonts',
 		maxEntries: 5
 	}
 };

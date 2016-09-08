@@ -1,12 +1,4 @@
 // import './utils/navigate';
-self.addEventListener('message', ev => {
-	const msg = ev.data;
-	if (msg.type === 'claim') {
-		self.clients.claim();
-		ev.ports[0].postMessage('claimed')
-	}
-});
-
 
 import toolbox from 'sw-toolbox';
 toolbox.options.cache.name = 'next';
@@ -26,7 +18,7 @@ import './caches/fonts';
 // import './offline/content';
 // import './caches/session';
 // import './caches/myft';
-// import './caches/ads';
+import './caches/ads';
 
 
 // import './push/myft';
