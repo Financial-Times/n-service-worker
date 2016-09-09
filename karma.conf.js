@@ -16,8 +16,9 @@ module.exports = function (karma) {
 
 		// list of files / patterns to load in the browser
 		files: [
-			'test/integration.spec.js',
 			{pattern: 'test/helpers.js', served: true},
+			'test/setup.js',
+			'test/**/*.spec.js',
 			{pattern: 'test/sw/*.js', served: true, included: false},
 			{pattern: 'test/**/*.js.map', served: true, included: false},
 		],
@@ -27,6 +28,7 @@ module.exports = function (karma) {
 
 		preprocessors: {
 			'test/helpers.js': ['webpack', 'sourcemap'],
+			'test/setup.js': ['webpack', 'sourcemap'],
 			'test/**/*.spec.js': ['webpack', 'sourcemap'],
 			'test/sw/*.js': ['webpack', 'sourcemap']
 		},
