@@ -80,25 +80,25 @@ export class Cache {
 
 		const url = typeof request === 'string' ? request : request.url;
 
-		return this.db.get(url)
-			.then(({ expires } = { }) => {
+		return Promise.all([
+			this.cache.match(request),
+			this.db.get(url)
+		])
+			.then(([response, { expires } = { }]) => {
 				if (expires && expires <= Date.now()) {
 					return this.delete(request);
 				} else {
-					return this.cache.match(request)
-						.then(response => {
-							if (!response) {
-								return;
-							}
-							if (debug === true || (response.type !== 'opaque' && request.headers.get('FT-Debug'))) {
-								return addHeadersToResponse(response, {
-									'From-Cache': 'true',
-									expires: expires || 'no-expiry'
-								})
-							} else {
-								return response;
-							}
-						});
+					if (!response) {
+						return;
+					}
+					if (debug === true || (response.type !== 'opaque' && request.headers.get('FT-Debug'))) {
+						return addHeadersToResponse(response, {
+							'From-Cache': 'true',
+							expires: expires || 'no-expiry'
+						})
+					} else {
+						return response;
+					}
 				}
 			});
 	}
@@ -125,10 +125,10 @@ export class Cache {
 	delete (request) {
 		const url = typeof request === 'string' ? request : request.url;
 		return Promise.all([
-				this.cache.delete(request),
-				this.db.delete(url),
-			])
-			.then(() => { });
+			this.cache.delete(request),
+			this.db.delete(url),
+		])
+		.then(() => { });
 	}
 
 	/**
