@@ -15,20 +15,20 @@ window.SWTestHelper = {
 		});
 	},
 
-	checkGetsCached: ({assetType, url, expiry, mode, cacheName, flag, expireRelativeToInstall}) => {
+	checkCacheIsUsed: ({assetLabel, url, expiry, mode, cacheName, flag, expireRelativeToInstall}) => {
 		if (flag) {
-			SWTestHelper._checkGetsCached({message: `should use the cache for ${assetType} if ${flag} flag is on`, url, expiry, mode, cacheName, flag, expireRelativeToInstall});
-			SWTestHelper._checkCacheNotUsed({message: `should not use the cache for ${assetType} if ${flag} flag is off`, url, expiry, mode, cacheName, flag, expireRelativeToInstall});
+			SWTestHelper._checkGetsCached({message: `should use the cache for ${assetLabel} if ${flag} flag is on`, url, expiry, mode, cacheName, flag, expireRelativeToInstall});
+			SWTestHelper._checkCacheNotUsed({message: `should not use the cache for ${assetLabel} if ${flag} flag is off`, url, expiry, mode, cacheName, flag, expireRelativeToInstall});
 		} else {
-			SWTestHelper._checkGetsCached({message: `should use the cache for ${assetType}`, url, expiry, mode, cacheName});
+			SWTestHelper._checkGetsCached({message: `should use the cache for ${assetLabel}`, url, expiry, mode, cacheName});
 		}
 	},
 	_checkCacheNotUsed: ({message, url, expiry, mode, cacheName, flag, expireRelativeToInstall}) => {
 		if (mode !== 'cors') {
 			it.skip(message + ' (untestable as non-cors)', () => {});
 		}
-		it(message, () => {
-			return fetch(url, {
+		it(message, () =>
+			fetch(url, {
 				mode,
 				headers: {
 					'FT-Debug': true
@@ -37,7 +37,7 @@ window.SWTestHelper = {
 				.then(res => {
 					expect(res.headers.get('from-cache')).to.not.exist;
 				})
-		})
+		)
 	},
 
 	_checkGetsCached: ({message, url, expiry, mode, cacheName, flag, expireRelativeToInstall}) => {
@@ -76,17 +76,19 @@ window.SWTestHelper = {
 		})
 	},
 
-	checkGetsPrecached: ({url, expiry, cacheName}) => {
-		return cache(cacheName)
-			.then(cache => cache.get(url, true))
-			.then(res => {
-				expect(res.headers.get('from-cache')).to.equal('true');
-				if (expiry === 'no-expiry') {
-					expect(res.headers.get('expires')).to.equal('no-expiry')
-				} else {
-					expect(res.headers.get('expires')).to.be.below(SWTestHelper.installedAt + expiry + 10000);
-				}
-			})
+	checkGetsPrecached: ({assetLabel, url, expiry, cacheName}) => {
+		it(`should precache ${assetLabel}`, () => {
+			return cache(cacheName)
+				.then(cache => cache.get(url, true))
+				.then(res => {
+					expect(res.headers.get('from-cache')).to.equal('true');
+					if (expiry === 'no-expiry') {
+						expect(res.headers.get('expires')).to.equal('no-expiry')
+					} else {
+						expect(res.headers.get('expires')).to.be.below(SWTestHelper.installedAt + expiry + 10000);
+					}
+				})
+		})
 	},
 
 	resetEnv: function () {
