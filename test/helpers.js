@@ -1,8 +1,12 @@
 import idb from 'idb';
 import cache from '../src/utils/cache';
-import { passFlags } from '../main';
+import { passFlags, message } from '../main';
 
 window.SWTestHelper = {
+	queryFetchHistory: url => message({type: 'queryFetchHistory', url}),
+
+	clearFetchHistory: url => message({type: 'clearFetchHistory',	url}),
+
 	createNewIframe: function() {
 		return new Promise((resolve, reject) => {
 			var newIframe = document.createElement('iframe');
@@ -15,32 +19,44 @@ window.SWTestHelper = {
 		});
 	},
 
-	checkCacheIsUsed: ({assetLabel, url, expiry, mode, cacheName, flag, expireRelativeToInstall}) => {
-		if (flag) {
-			SWTestHelper._checkGetsCached({message: `should use the cache for ${assetLabel} if ${flag} flag is on`, url, expiry, mode, cacheName, flag, expireRelativeToInstall});
-			SWTestHelper._checkCacheNotUsed({message: `should not use the cache for ${assetLabel} if ${flag} flag is off`, url, expiry, mode, cacheName, flag, expireRelativeToInstall});
+	checkCacheIsUsed: (opts) => {
+		if (opts.flag) {
+			SWTestHelper._checkCacheIsUsed(Object.assign({}, opts, {message: `should use the cache for ${opts.assetLabel} if ${opts.flag} flag is on`}));
+			SWTestHelper._checkCacheNotUsed(Object.assign({}, opts, {message: `should not use the cache for ${opts.assetLabel} if ${opts.flag} flag is off`}));
 		} else {
-			SWTestHelper._checkGetsCached({message: `should use the cache for ${assetLabel}`, url, expiry, mode, cacheName});
+			SWTestHelper._checkCacheIsUsed(Object.assign({}, opts, {message: `should use the cache for ${opts.assetLabel}`}));
 		}
 	},
 	_checkCacheNotUsed: ({message, url, expiry, mode, cacheName, flag, expireRelativeToInstall}) => {
-		if (mode !== 'cors') {
-			it.skip(message + ' (untestable as non-cors)', () => {});
-		}
-		it(message, () =>
-			fetch(url, {
-				mode,
-				headers: {
-					'FT-Debug': true
-				}
-			})
-				.then(res => {
-					expect(res.headers.get('from-cache')).to.not.exist;
+		if (mode === 'cors') {
+			it(message, () =>
+				fetch(url, {
+					mode,
+					headers: {
+						'FT-Debug': true
+					}
 				})
-		)
+					.then(res => {
+						expect(res.headers.get('from-cache')).to.not.exist;
+						return SWTestHelper.queryFetchHistory(url)
+							.then(wasFetched => expect(wasFetched).to.be.true)
+					})
+			)
+		} else {
+			it(message, () =>
+				fetch(url, {
+					mode
+				})
+					.then(res => {
+						return SWTestHelper.queryFetchHistory(url)
+							.then(wasFetched => expect(wasFetched).to.be.true)
+					})
+			)
+		}
+
 	},
 
-	_checkGetsCached: ({message, url, expiry, mode, cacheName, flag, expireRelativeToInstall}) => {
+	_checkCacheIsUsed: ({message, assetLabel, url, expiry, mode, cacheName, flag, expireRelativeToInstall, strategy}) => {
 		it (message, () => {
 			const headers = mode === 'cors' ? {'FT-Debug': true} : undefined
 			let kickoff = Promise.resolve();
@@ -51,35 +67,55 @@ window.SWTestHelper = {
 			}
 			return kickoff.then(() =>
 				fetch(url, { mode, headers })
-				.then(res => {
-					if (mode === 'cors') {
-						return fetch(url, { mode, headers })
-							.then(res => {
-								expect(res.headers.get('from-cache')).to.equal('true');
-								if (expiry === 'no-expiry') {
-									expect(res.headers.get('expires')).to.equal('no-expiry')
-								} else {
-									expect(res.headers.get('expires')).to.be.below((expireRelativeToInstall ? SWTestHelper.installedAt : Date.now()) + expiry + 10000);
-								}
-							})
-					} else {
-						return cache(cacheName)
-							.then(cache => cache.get(url))
-							.then(res => {
-								// alas, we don't get much access to opaque responses
-								expect(res).to.exist;
-								expect(res.status).to.equal(0)
-							})
-					}
-				}))
+					.then(res => {
+						SWTestHelper.clearFetchHistory(url);
+						return res;
+					})
+					.then(res => {
+						if (mode === 'cors') {
+							return fetch(url, { mode, headers })
+								.then(res => {
+									expect(res.headers.get('from-cache')).to.equal('true');
+									if (expiry === 'no-expiry') {
+										expect(res.headers.get('expires')).to.equal('no-expiry')
+									} else {
+										expect(res.headers.get('expires')).to.be.below((expireRelativeToInstall ? SWTestHelper.installedAt : Date.now()) + expiry + 10000);
+									}
+								})
+						} else {
+							return cache(cacheName)
+								.then(cache => cache.get(url))
+								.then(res => {
+									// alas, we don't get much access to opaque responses
+									expect(res).to.exist;
+									expect(res.status).to.equal(0)
+								})
+						}
+					})
+				)
 
 		})
+		if (strategy === 'fastest') {
+			it(`should check network for ${assetLabel}`, () =>
+				SWTestHelper.queryFetchHistory(url)
+					.then(wasFetched => expect(wasFetched).to.be.true)
+			)
+		} else {
+			it(`should not check network for ${assetLabel}`, () =>
+				SWTestHelper.queryFetchHistory(url)
+					.then(wasFetched => expect(wasFetched).to.be.false)
+			)
+		}
 	},
 
 	checkGetsPrecached: ({assetLabel, url, expiry, cacheName}) => {
 		it(`should precache ${assetLabel}`, () => {
 			return cache(cacheName)
 				.then(cache => cache.get(url, true))
+				.then(res => {
+					SWTestHelper.clearFetchHistory(url);
+					return res;
+				})
 				.then(res => {
 					expect(res.headers.get('from-cache')).to.equal('true');
 					if (expiry === 'no-expiry') {
