@@ -42,6 +42,6 @@
   },
   "dependencies": {
     "idb": "^1.1.4",
-    "sw-toolbox": "^3.2.1"
+    "path-to-regexp": "^1.5.3"
   }
 }

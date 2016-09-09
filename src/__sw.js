@@ -1,8 +1,7 @@
 // import './utils/navigate';
 
-import toolbox from 'sw-toolbox';
-toolbox.options.cache.name = 'next';
-toolbox.options.successResponses = /^200$/;
+// toolbox.options.cache.name = 'next';
+// toolbox.options.successResponses = /^200$/;
 
 import './utils/flags';
 
@@ -22,3 +21,16 @@ import './caches/ads';
 
 
 // import './push/myft';
+
+
+import router from './utils/router';
+
+self.addEventListener('fetch', function(event) {
+  var handler = router.match(event.request);
+
+  if (handler) {
+    event.respondWith(handler(event.request));
+  } else if (router.default && event.request.method === 'GET') {
+    event.respondWith(router.default(event.request));
+  }
+});

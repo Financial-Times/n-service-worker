@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';;
 
 import { cacheFirstFlagged } from '../utils/handlers';
 
@@ -8,25 +8,25 @@ const cacheOptions = {
 	maxEntries: 20
 };
 
-toolbox.router.get('/*.js', cacheFirstFlagged('swCommentsAssets'), {
+router.get('/*.js', cacheFirstFlagged('swCommentsAssets'), {
 	origin: 'https://cdn.livefyre.com',
 	cache: cacheOptions
 });
 
-toolbox.router.get('/*.css', cacheFirstFlagged('swCommentsAssets'), {
+router.get('/*.css', cacheFirstFlagged('swCommentsAssets'), {
 	origin: 'https://cdn.livefyre.com',
 	cache: cacheOptions
 });
 
 // any file from a particular cloudfront instance
 // who knows if this url will always work
-toolbox.router.get('/*', cacheFirstFlagged('swCommentsAssets'), {
+router.get('/*', cacheFirstFlagged('swCommentsAssets'), {
 	origin: 'https://d3qdfnco3bamip.cloudfront.net',
 	cache: cacheOptions
 });
 
 // any file with lifefyre in it served from cloudfront
-toolbox.router.get('/*livefyre*', cacheFirstFlagged('swCommentsAssets'), {
+router.get('/*livefyre*', cacheFirstFlagged('swCommentsAssets'), {
 	origin: 'https://*.cloudfront.net',
 	cache: cacheOptions
 });

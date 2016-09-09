@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';;
 
 import { cacheFirst } from '../utils/handlers';
 import precache from '../utils/precache';
@@ -19,4 +19,4 @@ precache(
 );
 
 // fonts route
-toolbox.router.get('/build/v2/files/o-fonts-assets@:version/:font.woff', cacheFirst, options);
+router.get('/build/v2/files/o-fonts-assets@:version/:font.woff', cacheFirst, options);

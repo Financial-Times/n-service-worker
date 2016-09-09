@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';;
 
 import { cacheFirstFlagged } from '../utils/handlers';
 import { registerCache } from '../utils/personal';
@@ -29,7 +29,7 @@ function purgeCache (request) {
 
 registerCache('next:myft');
 
-toolbox.router.get('/__myft/api/*', cacheFirstFlagged('swMyftCaching'), options);
-toolbox.router.put('/__myft/api/*', purgeCache);
-toolbox.router.post('/__myft/api/*', purgeCache);
-toolbox.router.delete('/__myft/api/*', purgeCache);
+router.get('/__myft/api/*', cacheFirstFlagged('swMyftCaching'), options);
+router.put('/__myft/api/*', purgeCache);
+router.post('/__myft/api/*', purgeCache);
+router.delete('/__myft/api/*', purgeCache);

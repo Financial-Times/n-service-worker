@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';;
 import {getFlag} from './flags';
 
 const strategies = {};
