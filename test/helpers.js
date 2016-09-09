@@ -1,3 +1,4 @@
+/* global expect, SWTestHelper */
 import idb from 'idb';
 import cache from '../src/utils/cache';
 import { passFlags, message } from '../main';
@@ -8,7 +9,7 @@ window.SWTestHelper = {
 	clearFetchHistory: url => message({type: 'clearFetchHistory',	url}),
 
 	createNewIframe: function() {
-		return new Promise((resolve, reject) => {
+		return new Promise(resolve => {
 			var newIframe = document.createElement('iframe');
 			newIframe.classList.add('js-test-iframe');
 			newIframe.src = '/test-iframe/' + Math.random();
@@ -27,7 +28,7 @@ window.SWTestHelper = {
 			SWTestHelper._checkCacheIsUsed(Object.assign({}, opts, {message: `should use the cache for ${opts.assetLabel}`}));
 		}
 	},
-	_checkCacheNotUsed: ({message, url, expiry, mode, cacheName, flag, expireRelativeToInstall}) => {
+	_checkCacheNotUsed: ({message, url, mode	}) => {
 		if (mode === 'cors') {
 			it(message, () =>
 				fetch(url, {
@@ -47,10 +48,8 @@ window.SWTestHelper = {
 				fetch(url, {
 					mode
 				})
-					.then(res => {
-						return SWTestHelper.queryFetchHistory(url)
-							.then(wasFetched => expect(wasFetched).to.be.true)
-					})
+					.then(() => SWTestHelper.queryFetchHistory(url))
+					.then(wasFetched => expect(wasFetched).to.be.true)
 			)
 		}
 
@@ -67,11 +66,8 @@ window.SWTestHelper = {
 			}
 			return kickoff.then(() =>
 				fetch(url, { mode, headers })
-					.then(res => {
-						SWTestHelper.clearFetchHistory(url);
-						return res;
-					})
-					.then(res => {
+					.then(() => SWTestHelper.clearFetchHistory(url))
+					.then(() => {
 						if (mode === 'cors') {
 							return fetch(url, { mode, headers })
 								.then(res => {

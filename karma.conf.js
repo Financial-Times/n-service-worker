@@ -23,7 +23,7 @@ module.exports = function (karma) {
 			{pattern: 'test/**/*.js.map', served: true, included: false},
 		],
 		proxies: {
-		  '/integration-sw.js': '/base/test/sw/integration.js'
+			'/integration-sw.js': '/base/test/sw/integration.js'
 		},
 
 		preprocessors: {
@@ -44,7 +44,8 @@ module.exports = function (karma) {
 						],
 						query: {
 							cacheDirectory: true,
-							// presets: ['es2015'],
+							// on latest chrome (installed in dev) on need for this
+							presets: process.env.CIRCLE_BUILD_NUM ? ['es2015'] : [],
 							plugins: [
 								['add-module-exports', {loose: true}],
 								['transform-es2015-classes', { loose: true }],

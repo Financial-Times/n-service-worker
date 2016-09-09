@@ -1,8 +1,5 @@
 // import './utils/navigate';
 
-// toolbox.options.cache.name = 'next';
-// toolbox.options.successResponses = /^200$/;
-
 import './utils/flags';
 
 // generic assets
@@ -25,12 +22,12 @@ import './caches/ads';
 
 import router from './utils/router';
 
-self.addEventListener('fetch', function(event) {
-  var handler = router.match(event.request);
+self.addEventListener('fetch', ev => {
+	const handler = router.match(ev.request);
 
-  if (handler) {
-    event.respondWith(handler(event.request));
-  } else if (router.default && event.request.method === 'GET') {
-    event.respondWith(router.default(event.request));
-  }
+	if (handler) {
+		ev.respondWith(handler(ev.request));
+	} else if (router.default && ev.request.method === 'GET') {
+		ev.respondWith(router.default(ev.request));
+	}
 });

@@ -2,19 +2,19 @@ import Db from './db';
 
 function addHeadersToResponse (res, headers) {
 	const response = res.clone()
-  var init = {
-      status: response.status,
-      statusText: response.statusText,
-      headers
-  };
+	const init = {
+			status: response.status,
+			statusText: response.statusText,
+			headers
+	};
 
-  response.headers.forEach(function(v,k){
-      init.headers[k] = v;
-  });
-  return response.text()
-  	.then(body => {
-  		return new Response(body, init);
-  	})
+	response.headers.forEach((v,k) => {
+			init.headers[k] = v;
+	});
+	return response.text()
+		.then(body => {
+			return new Response(body, init);
+		})
 
 }
 
@@ -154,8 +154,8 @@ export class Cache {
 	}
 
 	/**
- 	 * Limit the number of items in the cache
- 	 */
+	 * Limit the number of items in the cache
+	 */
 	limit (count) {
 		return this.keys()
 			.then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));

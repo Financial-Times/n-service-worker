@@ -1,3 +1,4 @@
+/* global SWTestHelper */
 import { passFlags } from '../main'
 
 before(() => SWTestHelper.resetEnv());

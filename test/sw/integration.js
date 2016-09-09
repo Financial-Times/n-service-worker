@@ -10,7 +10,6 @@ const nativeFetch = fetch;
 let fetchCalls = [];
 
 function queryFetchHistory (url, port) {
-	console.log(fetchCalls.indexOf('https://next-geebee.ft.com/n-ui/cached/v2/es5-core-js.min.js'), fetchCalls);
 	port.postMessage(fetchCalls.indexOf(url) > -1)
 }
 

@@ -1,4 +1,5 @@
-describe('ads', function() {
+/* global SWTestHelper */
+describe('ads', () => {
 
 	[
 		'MQ==-U2VjdGlvbnM=',
@@ -52,4 +53,3 @@ describe('ads', function() {
 // });
 
 });
-
