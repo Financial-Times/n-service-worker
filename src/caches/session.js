@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';;
 
 import { cacheFirstFlagged } from '../utils/handlers';
 import { registerCache } from '../utils/personal';
@@ -13,4 +13,4 @@ const options = {
 
 registerCache('next:session');
 
-toolbox.router.get('/(uuid)?', cacheFirstFlagged('swSessionCaching'), options);
+router.get('/(uuid)?', cacheFirstFlagged('swSessionCaching'), options);

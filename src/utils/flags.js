@@ -1,3 +1,4 @@
+import idb from 'idb';
 
 // note because flags don't exist on first page view
 // if flag === false can clear cache
@@ -7,65 +8,53 @@ let flags = {}; //eslint-disable-line
 let dbPromise;
 
 function openDb () {
-	return new Promise(function (resolve, reject) {
-		const request = indexedDB.open('next-flags', 1);
-
-		request.onupgradeneeded = function () {
-			request.result.createObjectStore('flags');
-		};
-
-		request.onsuccess = function () {
-			resolve(request.result);
-		};
-
-		request.onerror = function () {
-			reject(request.error);
-		};
+	return idb.open('next-flags', 1, updateDb => {
+		updateDb.createObjectStore('flags');
 	});
 }
 
-function getStore () {
+function getDb () {
 	if (!dbPromise) {
 		dbPromise = openDb();
 	}
-	return dbPromise
-		.then(db => {
-			const transaction = db.transaction('flags', 'readwrite');
-			return transaction.objectStore('flags');
-		})
+	return dbPromise;
 }
 
-function setFlags (flags) {
-	getStore()
-		.then(store => {
-			const request = store.put(flags, 'flags');
-			request.onsuccess = () => {
-				flags = flags;
-			}
+function setFlags (newFlags) {
+	return getDb()
+		.then(db => {
+			const tx = db.transaction('flags', 'readwrite')
+			tx.objectStore('flags').put(newFlags, 'flags')
+			return tx.complete;
+		})
+		.then(() => {
+			flags = newFlags;
 		})
 }
 
 function updateFlags () {
-	getStore()
-		.then(store => {
-			const request = store.get('flags');
-			request.onsuccess = () => {
-				flags = request.result || {};
-			};
+	return getDb()
+		.then(db => {
+			const tx = db.transaction('flags')
+			tx.objectStore('flags').get('flags')
+			return tx.complete
 		})
+		.then(newFlags => {flags = newFlags || flags})
 }
-
-
-self.addEventListener('message', ev => {
-	const msg = ev.data;
-	if (msg.type === 'flagsUpdate') {
-		setFlags(msg.flags);
-	}
-});
 
 updateFlags();
 setInterval(updateFlags, 1000 * 60 * 5)
 
-export function getFlag (name) {
+self.addEventListener('message', ev => {
+	const msg = ev.data;
+	if (msg.type === 'flagsUpdate') {
+		return setFlags(msg.flags)
+			.then(() => ev.ports[0].postMessage('success'))
+	}
+});
+
+function getFlag (name) {
 	return flags[name]
 }
+
+export {getFlag, setFlags}

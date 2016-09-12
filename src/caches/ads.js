@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';
 
 import { cacheFirstFlagged } from '../utils/handlers';
 import { registerCache } from '../utils/personal';
@@ -96,47 +96,49 @@ precache(
 	{ maxAge: precacheCacheOptions.maxAge, maxEntries: precacheCacheOptions.maxEntries }
 );
 
-toolbox.router.get(new RegExp('\/v1\/concept\/(' + popularStreams.join('|') + ')'), cacheFirstFlagged('swAdsCaching'), {
+
+// Personalised stuff
+// router.get('/v1/user', cacheFirstFlagged('swAdsCaching'), {
+// 	origin: 'https://ads-api.ft.com',
+// 	cache: getCacheOptions(7, true)
+// });
+
+// router.get('/userdata/*', cacheFirstFlagged('swAdsCaching'), {
+// 	origin: 'https://cdn.krxd.net',
+// 	cache: getCacheOptions(1, true)
+// });
+
+router.get(new RegExp('\/v1\/concept\/(' + popularStreams.join('|') + ')'), cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://ads-api.ft.com',
 	cache: getCacheOptions(7)
 });
 
-toolbox.router.get('/v1/user', cacheFirstFlagged('swAdsCaching'), {
-	origin: 'https://ads-api.ft.com',
-	cache: getCacheOptions(7, true)
-});
-
-toolbox.router.get('/tag/js/gpt.js', cacheFirstFlagged('swAdsCaching'), {
+router.get('/tag/js/gpt.js', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://www.googletagservices.com',
 	cache: getCacheOptions(7)
 });
 
-toolbox.router.get('/gpt/pubads_impl_*.js', cacheFirstFlagged('swAdsCaching'), {
+router.get('/gpt/pubads_impl_*.js', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://partner.googleadservices.com',
 	cache: getCacheOptions(30)
 });
 
-toolbox.router.get('/pagead/osd.js', cacheFirstFlagged('swAdsCaching'), {
+router.get('/pagead/osd.js', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://pagead2.googlesyndication.com',
 	cache: getCacheOptions(1)
 });
 
-toolbox.router.get('/safeframe/1-0-4/html/container.html', cacheFirstFlagged('swAdsCaching'), {
+router.get('/safeframe/1-0-4/html/container.html', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://tpc.googlesyndication.com',
 	cache: getCacheOptions(0)
 });
 
-toolbox.router.get('/userdata/*', cacheFirstFlagged('swAdsCaching'), {
-	origin: 'https://cdn.krxd.net',
-	cache: getCacheOptions(1, true)
-});
-
-toolbox.router.get('/controltag', cacheFirstFlagged('swAdsCaching'), {
+router.get('/controltag*', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://cdn.krxd.net',
 	cache: getCacheOptions(7)
 });
 
-toolbox.router.get('/ctjs/controltag.js*', cacheFirstFlagged('swAdsCaching'), {
+router.get('/ctjs/controltag.js*', cacheFirstFlagged('swAdsCaching'), {
 	origin: 'https://cdn.krxd.net',
 	cache: getCacheOptions(30)
 });

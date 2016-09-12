@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';;
 
 import flags from '../utils/flags';
 import { cacheFirst } from '../utils/handlers';
@@ -23,5 +23,5 @@ self.addEventListener('message', msg => {
 });
 
 // prod
-toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.css', cacheFirst, options);
-toolbox.router.get('/hashed-assets/:appName/:assetHash/:cssName.js', cacheFirst, options);
+router.get('/hashed-assets/:appName/:assetHash/:cssName.css', cacheFirst, options);
+router.get('/hashed-assets/:appName/:assetHash/:cssName.js', cacheFirst, options);

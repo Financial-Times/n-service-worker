@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';;
 
 import cache from '../utils/cache';
 import { registerCache } from '../utils/personal';
@@ -17,7 +17,7 @@ const getUuid = () =>
 
 registerCache('next:front-page');
 
-toolbox.router.get('/', request =>
+router.get('/', request =>
 	// only cache if logged in
 	// NOTE: using whether there's a uuid in the session store as a proxy for logged in-ness
 	getUuid()
@@ -26,7 +26,7 @@ toolbox.router.get('/', request =>
 		),
 options);
 
-toolbox.router.get('/content/:uuid', request =>
+router.get('/content/:uuid', request =>
 	getUuid()
 		.then(uuid =>
 			uuid ?

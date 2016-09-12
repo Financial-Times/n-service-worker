@@ -30,10 +30,7 @@ const register = flags => {
 		}
 		return navigator.serviceWorker.register('/__sw.js?cache-bust=1')
 			.then(registration =>
-				message({
-					type: 'flagsUpdate',
-					flags: JSON.parse(JSON.stringify(flags)) // to avoid error caused by the getters
-				})
+				passFlags(JSON.parse(JSON.stringify(flags))) // to avoid error caused by the getters
 					.then(() => registration)
 			);
 	} else {
@@ -57,4 +54,11 @@ window.addEventListener('beforeinstallprompt', ev => {
 	return false;
 });
 
-export { register, unregister, message };
+function passFlags (flags) {
+	return message({
+		type: 'flagsUpdate',
+		flags: flags
+	})
+}
+
+export { register, unregister, message, passFlags };

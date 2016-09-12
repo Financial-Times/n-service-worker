@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';;
 
 import { fastest } from '../utils/handlers';
 
@@ -11,4 +11,4 @@ const options = {
 };
 
 // use toolbox.fastest as we want to send requests to check last-modified headers for polyfill
-toolbox.router.get('/polyfill/*', fastest, options);
+router.get('/polyfill/*', fastest, options);

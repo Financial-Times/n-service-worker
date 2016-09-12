@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';;
 
 import DB from '../utils/db'
 
@@ -41,7 +41,7 @@ self.addEventListener('periodicsync', ev => {
 	}
 });
 
-toolbox.router.post('/ingest', request => {
+router.post('/ingest', request => {
 	const clonedRequest = request.clone();
 	return fetch(request)
 		.then(response => {

@@ -2,10 +2,6 @@ machine:
   node:
     version: 6.3.0
 
-dependencies:
-  cache_directories:
-    - "bower_components"
-
 deployment:
   production:
     branch: master

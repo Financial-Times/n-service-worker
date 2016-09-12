@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';;
 
 import cache from './cache';
 
@@ -21,9 +21,9 @@ const clearAndFetch = request =>
 		.then(() => fetch(request))
 		.catch(() => fetch(request));
 
-toolbox.router.get('/logout', clearAndFetch, options);
+router.get('/logout', clearAndFetch, options);
 // clear on edition switching
-toolbox.router.get('/international', clearAndFetch, options);
-toolbox.router.get('/uk', clearAndFetch, options);
+router.get('/international', clearAndFetch, options);
+router.get('/uk', clearAndFetch, options);
 
 export { clearCaches, registerCache }

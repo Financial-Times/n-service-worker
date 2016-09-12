@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';;
 
 import { fastest } from '../utils/handlers';
 
@@ -12,4 +12,4 @@ const options = {
 
 // n-ui route
 // use toolbox.fastest as we want to send requests to check last-modified headers for n-ui bundle
-toolbox.router.get('/n-ui/*', fastest, options);
+router.get('/n-ui/*', fastest, options);

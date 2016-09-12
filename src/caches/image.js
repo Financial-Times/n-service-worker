@@ -1,4 +1,4 @@
-import toolbox from 'sw-toolbox';
+import router from '../utils/router';;
 
 import { cacheFirst } from '../utils/handlers';
 import precache from '../utils/precache';
@@ -22,7 +22,7 @@ precache(
 	{ maxAge: -1 }
 );
 
-toolbox.router.get('/image/v1/images/raw/fticon*', cacheFirst, options);
-toolbox.router.get('/image/v1/images/raw/ftlogo*', cacheFirst, options);
-toolbox.router.get('/image/v1/images/raw/ftsocial*', cacheFirst, options);
-toolbox.router.get('/assets/*', cacheFirst, options);
+router.get('/image/v1/images/raw/fticon*', cacheFirst, options);
+router.get('/image/v1/images/raw/ftlogo*', cacheFirst, options);
+router.get('/image/v1/images/raw/ftsocial*', cacheFirst, options);
+router.get('/assets/*', cacheFirst, options);

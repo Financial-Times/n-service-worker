@@ -1,6 +1,24 @@
 import Db from './db';
 
-class Cache {
+function addHeadersToResponse (res, headers) {
+	const response = res.clone()
+	const init = {
+			status: response.status,
+			statusText: response.statusText,
+			headers
+	};
+
+	response.headers.forEach((v,k) => {
+			init.headers[k] = v;
+	});
+	return response.text()
+		.then(body => {
+			return new Response(body, init);
+		})
+
+}
+
+export class Cache {
 
 	/**
 	 * @param {object} cache - Native Cache object
@@ -58,14 +76,29 @@ class Cache {
 	 * @param {string|object} - Either a URL or a Request object
 	 * @returns {object|undefined} - The Response, or undefined if nothing in the cache
 	 */
-	get (request) {
+	get (request, debug) {
+
 		const url = typeof request === 'string' ? request : request.url;
-		return this.db.get(url)
-			.then(({ expires } = { }) => {
+
+		return Promise.all([
+			this.cache.match(request),
+			this.db.get(url)
+		])
+			.then(([response, { expires } = { }]) => {
 				if (expires && expires <= Date.now()) {
 					return this.delete(request);
 				} else {
-					return this.cache.match(request);
+					if (!response) {
+						return;
+					}
+					if (debug === true || (response.type !== 'opaque' && request.headers && request.headers.get('FT-Debug'))) {
+						return addHeadersToResponse(response, {
+							'From-Cache': 'true',
+							expires: expires || 'no-expiry'
+						})
+					} else {
+						return response;
+					}
 				}
 			});
 	}
@@ -92,10 +125,10 @@ class Cache {
 	delete (request) {
 		const url = typeof request === 'string' ? request : request.url;
 		return Promise.all([
-				this.cache.delete(request),
-				this.db.delete(url),
-			])
-			.then(() => { });
+			this.cache.delete(request),
+			this.db.delete(url),
+		])
+		.then(() => { });
 	}
 
 	/**
@@ -121,8 +154,8 @@ class Cache {
 	}
 
 	/**
- 	 * Limit the number of items in the cache
- 	 */
+	 * Limit the number of items in the cache
+	 */
 	limit (count) {
 		return this.keys()
 			.then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));
