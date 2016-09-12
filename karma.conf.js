@@ -81,6 +81,7 @@ module.exports = function (karma) {
 			require('karma-sourcemap-loader'),
 			require('karma-webpack'),
 			require('karma-chrome-launcher'),
+			require('karma-sauce-launcher'),
 			require('karma-html-reporter')
 		],
 		client: {
@@ -92,6 +93,28 @@ module.exports = function (karma) {
 		},
 		singleRun: true
 	};
+
+	if (process.env.CI) {
+		const nightwatchBrowsers = require('@financial-times/n-heroku-tools/config/nightwatch').test_settings;
+		const whitelistedBrowsers = ['firefox','chrome'];
+		const sauceBrowsers = Object.keys(nightwatchBrowsers).reduce((browserList, browserName) => {
+			if (browserName === 'default' || whitelistedBrowsers.indexOf(browserName) === -1) {
+				return browserList;
+			}
+			browserList[`${browserName}_sauce`] = Object.assign({base: 'SauceLabs'}, nightwatchBrowsers[browserName].desiredCapabilities);
+			return browserList;
+		}, {})
+		config.customLaunchers = sauceBrowsers;
+		config.sauceLabs = {
+			testName: 'n-service-worker unit tests',
+			username: process.env.SAUCE_USER,
+			accessKey: process.env.SAUCE_KEY,
+			recordScreenshots: true
+		}
+
+		config.browsers = Object.keys(sauceBrowsers);
+		config.reporters.push('saucelabs');
+	}
 
 	karma.set(config);
 };
