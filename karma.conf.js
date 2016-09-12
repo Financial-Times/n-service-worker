@@ -45,7 +45,7 @@ module.exports = function (karma) {
 						query: {
 							cacheDirectory: true,
 							// on latest chrome (installed in dev) on need for this
-							presets: process.env.CIRCLE_BUILD_NUM ? ['es2015'] : [],
+							presets: ['es2015'],//process.env.CIRCLE_BUILD_NUM ? ['es2015'] : [],
 							plugins: [
 								['add-module-exports', {loose: true}],
 								['transform-es2015-classes', { loose: true }],
@@ -57,6 +57,10 @@ module.exports = function (karma) {
 						test: /indexeddb-promised\.js$/,
 						loader: require.resolve('imports-loader'),
 						query: 'window=>self'
+					},
+					{
+						test: /\.json$/,
+						loader: require.resolve('json-loader')
 					}
 				]
 			},
@@ -81,6 +85,7 @@ module.exports = function (karma) {
 			require('karma-sourcemap-loader'),
 			require('karma-webpack'),
 			require('karma-chrome-launcher'),
+			require('karma-firefox-launcher'),
 			require('karma-sauce-launcher'),
 			require('karma-html-reporter')
 		],

@@ -91,7 +91,7 @@ export class Cache {
 					if (!response) {
 						return;
 					}
-					if (debug === true || (response.type !== 'opaque' && request.headers.get('FT-Debug'))) {
+					if (debug === true || (response.type !== 'opaque' && request.headers && request.headers.get('FT-Debug'))) {
 						return addHeadersToResponse(response, {
 							'From-Cache': 'true',
 							expires: expires || 'no-expiry'

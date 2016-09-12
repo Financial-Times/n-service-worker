@@ -3,6 +3,12 @@ import idb from 'idb';
 import cache from '../src/utils/cache';
 import { passFlags, message } from '../main';
 
+const useragent = require('useragent');
+
+// In firefox https://bugzilla.mozilla.org/show_bug.cgi?id=1302090 means debug headers are not returned
+// So we fallback to the dumber method in all but chrome :(
+const supportsMutatedHeaders = useragent.is(navigator.userAgent).chrome;
+
 window.SWTestHelper = {
 	queryFetchHistory: url => message({type: 'queryFetchHistory', url}),
 
@@ -29,7 +35,7 @@ window.SWTestHelper = {
 		}
 	},
 	_checkCacheNotUsed: ({message, url, mode	}) => {
-		if (mode === 'cors') {
+		if (mode === 'cors' && supportsMutatedHeaders) {
 			it(message, () =>
 				fetch(url, {
 					mode,
@@ -57,19 +63,24 @@ window.SWTestHelper = {
 
 	_checkCacheIsUsed: ({message, assetLabel, url, expiry, mode, cacheName, flag, expireRelativeToInstall, strategy}) => {
 		it (message, () => {
-			const headers = mode === 'cors' ? {'FT-Debug': true} : undefined
+
 			let kickoff = Promise.resolve();
 			if (flag) {
 				const flags = {};
 				flags[flag] = true;
 				kickoff = passFlags(flags);
 			}
+			const options = {mode};
+			if (mode === 'cors' && supportsMutatedHeaders) {
+				options.headers = {'FT-Debug': true};
+			}
 			return kickoff.then(() =>
-				fetch(url, { mode, headers })
+				fetch(url, options)
 					.then(() => SWTestHelper.clearFetchHistory(url))
 					.then(() => {
-						if (mode === 'cors') {
-							return fetch(url, { mode, headers })
+
+						if (mode === 'cors' && supportsMutatedHeaders) {
+							return fetch(url, options)
 								.then(res => {
 									expect(res.headers.get('from-cache')).to.equal('true');
 									if (expiry === 'no-expiry') {
@@ -84,7 +95,11 @@ window.SWTestHelper = {
 								.then(res => {
 									// alas, we don't get much access to opaque responses
 									expect(res).to.exist;
-									expect(res.status).to.equal(0)
+									if (mode === 'cors') {
+										expect(res.status).to.equal(200)
+									} else {
+										expect(res.status).to.equal(0)
+									}
 								})
 						}
 					})

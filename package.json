@@ -27,9 +27,11 @@
     "express": "^4.14.0",
     "http-server": "^0.9.0",
     "imports-loader": "^0.6.5",
+    "json-loader": "^0.5.4",
     "karma": "^1.2.0",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.0.0",
+    "karma-firefox-launcher": "^1.0.0",
     "karma-html-reporter": "^0.2.7",
     "karma-mocha": "^1.1.1",
     "karma-sauce-launcher": "^1.0.0",
@@ -40,7 +42,8 @@
     "lintspaces-cli": "^0.4.0",
     "mocha": "^3.0.2",
     "sinon": "^1.17.5",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "useragent": "^2.1.9"
   },
   "dependencies": {
     "idb": "^1.1.4",
