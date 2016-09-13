@@ -1,5 +1,6 @@
 import cache from './cache';
 import { getFlag } from './flags';
+const ratRace = require('promise-rat-race');
 
 function upgradeRequestToCors (request) {
 	return new Request(request.url, {
@@ -11,7 +12,7 @@ function upgradeRequestToCors (request) {
 	});
 }
 
-const basicHandlers = {
+const handlers = {
 	cacheFirst: (request, values, options = {}) => {
 		const cacheOptions = options.cache || {};
 
@@ -22,38 +23,32 @@ const basicHandlers = {
 
 	fastest: (request, values, options = { }) => {
 		const cacheOptions = options.cache || { };
+		const openCache = cache(cacheOptions.name);
 
-		return new Promise((resolve, reject) => {
-			let rejected = false;
 
-			const maybeReject = () => {
-				if (rejected) {
-					reject(new Error('Both cache and network failed'));
-				} else {
-					rejected = true;
+		// kickoff retrieving response from network and cache
+		const fromNetwork = fetch(request);
+		const fromCache = openCache
+			.then(cache => cache.get(request, cacheOptions))
+			.then(res => {
+				if (!res) {
+					throw 'request not found in cache';
 				}
-			};
+			})
 
-			const maybeResolve = result => {
-				if (result instanceof Response) {
-					resolve(result);
-				} else {
-					maybeReject('No result returned');
-				}
-			};
-			const requestCache = cache(cacheOptions.name);
-			requestCache
-				.then(cache => {
-					cache.set(request.clone(), cacheOptions)
-						.then(maybeResolve)
-						.catch(maybeReject);
-					cache.get(request, cacheOptions)
-						.then(maybeResolve)
-						.catch(maybeReject);
-				})
-		});
+		// update the cache when the network response returns
+		Promise.all([
+			fromNetwork,
+			openCache
+		])
+			.then(([response, cache]) => cache.set(request, Object.assign({response: response.clone()}, cacheOptions)))
+
+		// return a race between the two strategies
+		return ratRace([
+			fromNetwork.then(res => res.clone()),
+			fromCache
+		]);
 	}
-
 }
 
 const getHandler = ({strategy, flag, upgradeToCors}) => {
@@ -64,7 +59,7 @@ const getHandler = ({strategy, flag, upgradeToCors}) => {
 		if (upgradeToCors) {
 			request = upgradeRequestToCors(request)
 		}
-		return basicHandlers[strategy](request, values, options);
+		return handlers[strategy](request, values, options);
 	}
 }
 
