@@ -31,7 +31,7 @@ module.exports = function (karma) {
 		preprocessors: {
 			'test/helpers.js': ['webpack', 'sourcemap'],
 			'test/setup.js': ['webpack', 'sourcemap'],
-			'test/**/*.spec.js': ['webpack', 'sourcemap'],
+			'test/**/*.spec.js': ['webpack', 'env', 'sourcemap'],
 			'test/sw/*.js': ['webpack', 'sourcemap']
 		},
 		webpack: {
@@ -87,10 +87,15 @@ module.exports = function (karma) {
 			require('karma-sourcemap-loader'),
 			require('karma-webpack'),
 			require('karma-chrome-launcher'),
+			require('karma-env-preprocessor'),
 			require('karma-firefox-launcher'),
 			require('karma-sauce-launcher'),
 			require('karma-html-reporter')
 		],
+
+    envPreprocessor: [
+      'TEST_FT_SESSION'
+    ],
 		client: {
 				mocha: {
 						reporter: 'html',
