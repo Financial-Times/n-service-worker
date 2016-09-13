@@ -30,6 +30,7 @@ describe('ads', () => {
 		['krux tag', 'https://cdn.krxd.net/controltag/KHUSeE3x.js', 7, 'no-cors'],
 		['krux lib', 'https://cdn.krxd.net/ctjs/controltag.js.d4d7fc61dff29ba846cb4a9ffc42cbf9', 30, 'no-cors'],
 		['ads api - user', 'https://ads-api.ft.com/v1/user', 7, 'cors'],
+		['krux - user', 'https://cdn.krxd.net/userdata/get?pub=bcbe1a6d-fa90-4db5-b4dc-424c69802310&technographics=1&callback=Krux.ns._default.kxjsonp_userdata', 1, 'no-cors']
 	].forEach(([label, url, expiry, mode, relativeToInstall]) =>
 		SWTestHelper.checkCacheIsUsed({
 			assetLabel: label,
@@ -42,7 +43,7 @@ describe('ads', () => {
 		})
 	);
 
-	it('should clear personal caches on logout', () => {
+	it('should clear personal ads metadata caches on logout', () => {
 		fetch('/logout')
 			.then(() => {
 				return Promise.all([
@@ -51,6 +52,5 @@ describe('ads', () => {
 				])
 			})
 	})
-
 
 });

@@ -96,51 +96,51 @@ precache(
 	{ maxAge: precacheCacheOptions.maxAge, maxEntries: precacheCacheOptions.maxEntries }
 );
 
+const cacheFirst = getHandler({flag: 'swAdsCaching', strategy: 'cacheFirst'})
 
 // Personalised stuff
-// router.get('/v1/user', cacheFirstFlagged('swAdsCaching'), {
-// 	origin: 'https://ads-api.ft.com',
-// 	cache: getCacheOptions(7, true)
-// });
+router.get('/v1/user', cacheFirst, {
+	origin: 'https://ads-api.ft.com',
+	cache: getCacheOptions(7, true)
+});
 
-// router.get('/userdata/*', cacheFirstFlagged('swAdsCaching'), {
-// 	origin: 'https://cdn.krxd.net',
-// 	cache: getCacheOptions(1, true)
-// });
+router.get('/userdata/*', cacheFirst, {
+	origin: 'https://cdn.krxd.net',
+	cache: getCacheOptions(1, true)
+});
 
-const standardHandler = getHandler({flag: 'swAdsCaching', strategy: 'cacheFirst'})
-
-router.get(new RegExp('\/v1\/concept\/(' + popularStreams.join('|') + ')'), standardHandler, {
+// generic ads libraries and metadata
+router.get(new RegExp('\/v1\/concept\/(' + popularStreams.join('|') + ')'), cacheFirst, {
 	origin: 'https://ads-api.ft.com',
 	cache: getCacheOptions(7)
 });
 
-router.get('/tag/js/gpt.js', standardHandler, {
+router.get('/tag/js/gpt.js', cacheFirst, {
 	origin: 'https://www.googletagservices.com',
 	cache: getCacheOptions(7)
 });
 
-router.get('/gpt/pubads_impl_*.js', standardHandler, {
+router.get('/gpt/pubads_impl_*.js', cacheFirst, {
 	origin: 'https://partner.googleadservices.com',
 	cache: getCacheOptions(30)
 });
 
-router.get('/pagead/osd.js', standardHandler, {
+router.get('/pagead/osd.js', cacheFirst, {
 	origin: 'https://pagead2.googlesyndication.com',
 	cache: getCacheOptions(1)
 });
 
-router.get('/safeframe/1-0-4/html/container.html', standardHandler, {
+router.get('/safeframe/1-0-4/html/container.html', cacheFirst, {
 	origin: 'https://tpc.googlesyndication.com',
 	cache: getCacheOptions(0)
 });
 
-router.get('/controltag*', standardHandler, {
+router.get('/controltag*', cacheFirst, {
 	origin: 'https://cdn.krxd.net',
 	cache: getCacheOptions(7)
 });
 
-router.get('/ctjs/controltag.js*', standardHandler, {
+router.get('/ctjs/controltag.js*', cacheFirst, {
 	origin: 'https://cdn.krxd.net',
 	cache: getCacheOptions(30)
 });

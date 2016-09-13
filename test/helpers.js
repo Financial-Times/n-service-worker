@@ -114,20 +114,12 @@ window.SWTestHelper = {
 					})
 
 			})
-			describe('additional network calls', () => {
-				beforeEach(() => fetch(url, options))
-				if (strategy === 'fastest') {
-					it(`should check network for ${assetLabel} in parallel`, () =>
-						SWTestHelper.queryFetchHistory(url)
-							.then(wasFetched => expect(wasFetched).to.be.true)
-					)
-				} else {
-					it(`should not check network for ${assetLabel}`, () =>
-						SWTestHelper.queryFetchHistory(url)
-							.then(wasFetched => expect(wasFetched).to.be.false)
-					)
-				}
-			})
+
+			it(`should ${strategy === 'fastest' ? 'still' : 'not'}check network for ${assetLabel} in parallel`, () =>
+				fetch(url, options)
+					.then(() => SWTestHelper.queryFetchHistory(url))
+					.then(wasFetched => expect(wasFetched).to.be[strategy === 'fastest'])
+			)
 		})
 
 	},
