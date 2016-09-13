@@ -9,7 +9,7 @@ describe('built-assets', () => {
 			assetLabel: label,
 			url,
 			expiry: 60 * 60 * 24 * 5,
-			mode: 'no-cors',
+			upgradeToCors: true,
 			cacheName: 'built-assets'
 		})
 	);

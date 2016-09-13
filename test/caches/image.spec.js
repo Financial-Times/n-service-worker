@@ -23,7 +23,7 @@ describe('images', () => {
 			assetLabel: `header icon ${image}`,
 			url,
 			expiry,
-			mode: 'cors',
+			upgradeToCors: true,
 			cacheName
 		})
 	});
@@ -38,7 +38,7 @@ describe('images', () => {
 			assetLabel: label,
 			url,
 			expiry: 'no-expiry',
-			mode: 'no-cors',
+			upgradeToCors: true,
 			cacheName: 'image'
 		})
 	);

@@ -1,6 +1,6 @@
 import router from '../utils/router';;
 
-import { cacheFirstFlagged } from '../utils/handlers';
+import { getHandler } from '../utils/handlers';
 import { registerCache } from '../utils/personal';
 
 const options = {
@@ -13,4 +13,4 @@ const options = {
 
 registerCache('next:session');
 
-router.get('/(uuid)?', cacheFirstFlagged('swSessionCaching'), options);
+router.get('/(uuid)?', getHandler({strategy: 'cacheFirst', flag: 'swSessionCaching'}), options);

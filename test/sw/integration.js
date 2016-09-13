@@ -14,7 +14,6 @@ function queryFetchHistory (url, port) {
 }
 
 function clearFetchHistory (url, port) {
-
 	fetchCalls = fetchCalls.filter(storedUrl => storedUrl !== url)
 	port.postMessage('done')
 }
