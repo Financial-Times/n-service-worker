@@ -15,7 +15,6 @@ function upgradeRequestToCors (request) {
 const handlers = {
 	cacheFirst: (request, values, options = {}) => {
 		const cacheOptions = options.cache || {};
-
 		return cache(cacheOptions.name)
 			.then(cache => cache.getOrSet(request, cacheOptions))
 			.catch(() => fetch(request));
@@ -34,6 +33,7 @@ const handlers = {
 				if (!res) {
 					throw 'request not found in cache';
 				}
+				return res;
 			})
 
 		// update the cache when the network response returns
@@ -59,7 +59,7 @@ const getHandler = ({strategy, flag, upgradeToCors}) => {
 		if (upgradeToCors) {
 			request = upgradeRequestToCors(request)
 		}
-		return handlers[strategy](request, values, options);
+		return handlers[strategy](request, values, options)
 	}
 }
 
