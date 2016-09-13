@@ -34,7 +34,7 @@ window.SWTestHelper = {
 			SWTestHelper._checkCacheIsUsed(Object.assign({}, opts, {message: `should use the cache for ${opts.assetLabel}`}));
 		}
 	},
-	_checkCacheNotUsed: ({message, url, mode	}) => {
+	_checkCacheNotUsed: ({message, url, mode = 'no-cors'}) => {
 		if (mode === 'cors' && supportsMutatedHeaders) {
 			it(message, () =>
 				fetch(url, {
@@ -61,7 +61,7 @@ window.SWTestHelper = {
 
 	},
 
-	_checkCacheIsUsed: ({message, assetLabel, url, expiry, mode, cacheName, flag, expireRelativeToInstall, strategy}) => {
+	_checkCacheIsUsed: ({message, assetLabel, url, expiry, mode = 'no-cors', cacheName, flag, upgradeToCors, expireRelativeToInstall, strategy}) => {
 		it (message, () => {
 
 			let kickoff = Promise.resolve();
@@ -71,7 +71,7 @@ window.SWTestHelper = {
 				kickoff = passFlags(flags);
 			}
 			const options = {mode};
-			if (mode === 'cors' && supportsMutatedHeaders) {
+			if ((mode === 'cors' || upgradeToCors) && supportsMutatedHeaders) {
 				options.headers = {'FT-Debug': true};
 			}
 			return kickoff.then(() =>
@@ -95,7 +95,7 @@ window.SWTestHelper = {
 								.then(res => {
 									// alas, we don't get much access to opaque responses
 									expect(res).to.exist;
-									if (mode === 'cors') {
+									if (mode === 'cors' || upgradeToCors) {
 										expect(res.status).to.equal(200)
 									} else {
 										expect(res.status).to.equal(0)

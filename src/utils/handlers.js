@@ -1,8 +1,14 @@
 import cache from './cache';
 import { getFlag } from './flags';
 
-function upgradeToCors (request) {
-	return request;
+function upgradeRequestToCors (request) {
+	return new Request(request.url, {
+		method: request.method,
+		headers: request.headers,
+		mode: 'cors', // need to set this properly
+		credentials: request.credentials,
+		redirect: 'manual'   // let browser handle redirects
+	});
 }
 
 const basicHandlers = {
@@ -56,7 +62,7 @@ const getHandler = ({strategy, flag, upgradeToCors}) => {
 			return fetch(request);
 		}
 		if (upgradeToCors) {
-			request = upgradeToCors(request)
+			request = upgradeRequestToCors(request)
 		}
 		return basicHandlers[strategy](request, values, options);
 	}

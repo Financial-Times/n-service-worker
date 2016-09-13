@@ -22,7 +22,9 @@ precache(
 	{ maxAge: -1 }
 );
 
-const cacheFirst = getHandler({strategy: 'cacheFirst'})
+const cacheFirst = getHandler({strategy: 'cacheFirst', upgradeToCors: true})
+
+//TODO - somethong for content images
 
 router.get('/image/v1/images/raw/fticon*', cacheFirst, options);
 router.get('/image/v1/images/raw/ftlogo*', cacheFirst, options);

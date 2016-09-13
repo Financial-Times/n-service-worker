@@ -15,7 +15,6 @@ function addHeadersToResponse (res, headers) {
 		.then(body => {
 			return new Response(body, init);
 		})
-
 }
 
 export class Cache {

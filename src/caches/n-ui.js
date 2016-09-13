@@ -12,4 +12,4 @@ const options = {
 
 // n-ui route
 // use toolbox.fastest as we want to send requests to check last-modified headers for n-ui bundle
-router.get('/n-ui/*', getHandler({strategy: 'fastest'}), options);
+router.get('/n-ui/*', getHandler({strategy: 'fastest', upgradeToCors: true}), options);

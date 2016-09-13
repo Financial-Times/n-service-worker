@@ -11,4 +11,4 @@ const options = {
 };
 
 // use toolbox.fastest as we want to send requests to check last-modified headers for polyfill
-router.get('/polyfill/*', getHandler({strategy: 'fastest'}), options);
+router.get('/polyfill/*', getHandler({strategy: 'fastest', upgradeToCors: true}), options);
