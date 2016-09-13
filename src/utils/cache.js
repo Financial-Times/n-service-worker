@@ -40,32 +40,28 @@ export class Cache {
 	 */
 	set (request, { response, maxAge = 60, maxEntries } = { }) {
 		const limit = maxEntries ? this.limit(maxEntries) : Promise.resolve();
+		// TODO - do this lazily
 		return limit
 			.then(() => this.get(request))
-			.then(cachedResponse => {
-				if (cachedResponse) {
-					return cachedResponse;
-				} else {
-					const fetchRequest = response ? Promise.resolve(response) : fetch(request);
-					return fetchRequest.then(fetchedResponse => {
-						if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
-							const url = typeof request === 'string' ? request : request.url;
-							// make sure we have space to cache the Response
-							const makeRoom = maxEntries ? this.limit(maxEntries - 1) : Promise.resolve();
-							return makeRoom
-								.then(() =>
-									Promise.all([
-										this.cache.put(request, fetchedResponse.clone()),
-										maxAge !== -1 ? this.db.set(url, { expires: Date.now() + (maxAge * 1000) }) : null
-									])
-								)
-								.then(() => fetchedResponse);
-						} else {
-							return fetchedResponse;
-						}
-					})
-
-				}
+			.then(() => {
+				const fetchRequest = response ? Promise.resolve(response) : fetch(request);
+				return fetchRequest.then(fetchedResponse => {
+					if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
+						const url = typeof request === 'string' ? request : request.url;
+						// make sure we have space to cache the Response
+						const makeRoom = maxEntries ? this.limit(maxEntries - 1) : Promise.resolve();
+						return makeRoom
+							.then(() =>
+								Promise.all([
+									this.cache.put(request, fetchedResponse.clone()),
+									maxAge !== -1 ? this.db.set(url, { expires: Date.now() + (maxAge * 1000) }) : null
+								])
+							)
+							.then(() => fetchedResponse)
+					} else {
+						return fetchedResponse;
+					}
+				})
 			});
 	}
 
@@ -76,7 +72,6 @@ export class Cache {
 	 * @returns {object|undefined} - The Response, or undefined if nothing in the cache
 	 */
 	get (request, debug) {
-
 		const url = typeof request === 'string' ? request : request.url;
 
 		return Promise.all([
@@ -113,7 +108,7 @@ export class Cache {
 	 */
 	getOrSet (request, { maxAge = 60, maxEntries } = { }) {
 		return this.get(request)
-			.then(response => response || this.set(request, { maxAge, maxEntries }));
+			.then(response => response || this.set(request, { maxAge, maxEntries }))
 	}
 
 	/**
