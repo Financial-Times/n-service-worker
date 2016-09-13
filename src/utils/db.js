@@ -3,7 +3,6 @@ import idb from 'idb';
 export default class {
 
 	constructor (storeName, { dbName = 'next', dbVersion = 1 } = { }) {
-
 		this.storeName = storeName;
 		this.idb = idb.open(dbName, dbVersion, upgradeDB => {
 			upgradeDB.createObjectStore(storeName);
@@ -34,5 +33,4 @@ export default class {
 			return tx.complete
 		});
 	}
-
 }
