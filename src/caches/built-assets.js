@@ -1,7 +1,7 @@
 import router from '../utils/router';;
 
 import flags from '../utils/flags';
-import { cacheFirst } from '../utils/handlers';
+import { getHandler } from '../utils/handlers';
 
 // TODO have one cache for our more actively developed apps,
 // another with longer cache life for errors, opt-out etc
@@ -21,6 +21,8 @@ self.addEventListener('message', msg => {
 		// TODO work out how an app can retrieve info about the asset hashes for the other 3 main apps
 	}
 });
+
+const cacheFirst = getHandler({strategy: 'cacheFirst', upgradeToCors: true})
 
 // prod
 router.get('/hashed-assets/:appName/:assetHash/:cssName.css', cacheFirst, options);

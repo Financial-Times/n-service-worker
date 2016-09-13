@@ -4,7 +4,7 @@ describe('n-ui', () => {
 		assetLabel: 'shared js',
 		url: 'https://next-geebee.ft.com/n-ui/cached/v2/es5-core-js.min.js',
 		expiry: 'no-expiry',
-		mode: 'no-cors',
+		upgradeToCors: true,
 		cacheName: 'n-ui',
 		strategy: 'fastest'
 	})

@@ -1,6 +1,6 @@
 import router from '../utils/router';;
 
-import { cacheFirst } from '../utils/handlers';
+import { getHandler } from '../utils/handlers';
 import precache from '../utils/precache';
 
 const options = {
@@ -21,6 +21,10 @@ precache(
 	headerImages.map(image => `https://next-geebee.ft.com/image/v1/images/raw/${image}`),
 	{ maxAge: -1 }
 );
+
+const cacheFirst = getHandler({strategy: 'cacheFirst', upgradeToCors: true})
+
+//TODO - somethong for content images
 
 router.get('/image/v1/images/raw/fticon*', cacheFirst, options);
 router.get('/image/v1/images/raw/ftlogo*', cacheFirst, options);

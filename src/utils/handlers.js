@@ -1,50 +1,66 @@
 import cache from './cache';
 import { getFlag } from './flags';
+const ratRace = require('promise-rat-race');
 
-const cacheFirst = (request, values, options = { }) => {
-	const cacheOptions = options.cache || { };
-
-	return cache(cacheOptions.name)
-		.then(cache => cache.getOrSet(request, cacheOptions))
-		.catch(() => fetch(request));
-};
-
-const cacheFirstFlagged = flagName =>
-	(request, values, options) =>
-		getFlag(flagName) ? cacheFirst(request, values, options) : fetch(request);
-
-const fastest = (request, values, options = { }) => {
-	const cacheOptions = options.cache || { };
-
-	return new Promise((resolve, reject) => {
-		let rejected = false;
-
-		const maybeReject = () => {
-			if (rejected) {
-				reject(new Error('Both cache and network failed'));
-			} else {
-				rejected = true;
-			}
-		};
-
-		const maybeResolve = result => {
-			if (result instanceof Response) {
-				resolve(result);
-			} else {
-				maybeReject('No result returned');
-			}
-		};
-		const requestCache = cache(cacheOptions.name);
-		requestCache
-			.then(cache => {
-				cache.set(request.clone(), cacheOptions)
-					.then(maybeResolve)
-					.catch(maybeReject);
-				cache.get(request, cacheOptions)
-					.then(maybeResolve)
-					.catch(maybeReject);
-			})
+function upgradeRequestToCors (request) {
+	return new Request(request.url, {
+		method: request.method,
+		headers: request.headers,
+		mode: 'cors', // need to set this properly
+		credentials: request.credentials,
+		redirect: 'manual'   // let browser handle redirects
 	});
 }
 
-export { cacheFirst, cacheFirstFlagged, fastest }
+const handlers = {
+	cacheFirst: (request, values, options = {}) => {
+		const cacheOptions = options.cache || {};
+		return cache(cacheOptions.name)
+			.then(cache => cache.getOrSet(request, cacheOptions))
+			.catch(() => fetch(request));
+	},
+
+	fastest: (request, values, options = { }) => {
+		const cacheOptions = options.cache || { };
+		const openCache = cache(cacheOptions.name);
+
+
+		// kickoff retrieving response from network and cache
+		const fromNetwork = fetch(request);
+		const fromCache = openCache
+			.then(cache => cache.get(request, cacheOptions))
+			.then(res => {
+				if (!res) {
+					throw 'request not found in cache';
+				}
+				return res;
+			})
+
+		// update the cache when the network response returns
+		Promise.all([
+			fromNetwork,
+			openCache
+		])
+			.then(([response, cache]) => cache.set(request, Object.assign({response: response.clone()}, cacheOptions)))
+
+		// return a race between the two strategies
+		return ratRace([
+			fromNetwork.then(res => res.clone()),
+			fromCache
+		]);
+	}
+}
+
+const getHandler = ({strategy, flag, upgradeToCors}) => {
+	return (request, values, options = {}) => {
+		if (flag && !getFlag(flag)) {
+			return fetch(request);
+		}
+		if (upgradeToCors) {
+			request = upgradeRequestToCors(request)
+		}
+		return handlers[strategy](request, values, options)
+	}
+}
+
+export { getHandler }

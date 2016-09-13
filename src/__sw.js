@@ -24,10 +24,8 @@ import router from './utils/router';
 
 self.addEventListener('fetch', ev => {
 	const handler = router.match(ev.request);
-
 	if (handler) {
 		ev.respondWith(handler(ev.request));
-	} else if (router.default && ev.request.method === 'GET') {
-		ev.respondWith(router.default(ev.request));
 	}
+
 });

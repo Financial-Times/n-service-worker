@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "idb": "^1.1.4",
-    "path-to-regexp": "^1.5.3"
+    "path-to-regexp": "^1.5.3",
+    "promise-rat-race": "^1.4.0"
   }
 }

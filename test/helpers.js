@@ -34,7 +34,7 @@ window.SWTestHelper = {
 			SWTestHelper._checkCacheIsUsed(Object.assign({}, opts, {message: `should use the cache for ${opts.assetLabel}`}));
 		}
 	},
-	_checkCacheNotUsed: ({message, url, mode	}) => {
+	_checkCacheNotUsed: ({message, url, mode = 'no-cors'}) => {
 		if (mode === 'cors' && supportsMutatedHeaders) {
 			it(message, () =>
 				fetch(url, {
@@ -61,22 +61,31 @@ window.SWTestHelper = {
 
 	},
 
-	_checkCacheIsUsed: ({message, assetLabel, url, expiry, mode, cacheName, flag, expireRelativeToInstall, strategy}) => {
-		it (message, () => {
+	_checkCacheIsUsed: ({message, assetLabel, url, expiry, mode = 'no-cors', cacheName, flag, upgradeToCors, expireRelativeToInstall, strategy}) => {
 
-			let kickoff = Promise.resolve();
-			if (flag) {
-				const flags = {};
-				flags[flag] = true;
-				kickoff = passFlags(flags);
-			}
+
+		describe(assetLabel, () => {
 			const options = {mode};
-			if (mode === 'cors' && supportsMutatedHeaders) {
+			if ((mode === 'cors' || upgradeToCors) && supportsMutatedHeaders) {
 				options.headers = {'FT-Debug': true};
 			}
-			return kickoff.then(() =>
-				fetch(url, options)
+
+			beforeEach(() => {
+				let kickoff = Promise.resolve();
+				if (flag) {
+					const flags = {};
+					flags[flag] = true;
+					kickoff = passFlags(flags);
+				}
+				return kickoff;
+			})
+
+			it(message, () => {
+				return fetch(url, options)
 					.then(() => SWTestHelper.clearFetchHistory(url))
+					// when using fastest strategy the cache is not populated before the sw responds
+					// so we introduce a delay
+					.then(() => new Promise(res => strategy === 'fastest' ? setTimeout(res, 100) : res()))
 					.then(() => {
 
 						if (mode === 'cors' && supportsMutatedHeaders) {
@@ -95,7 +104,7 @@ window.SWTestHelper = {
 								.then(res => {
 									// alas, we don't get much access to opaque responses
 									expect(res).to.exist;
-									if (mode === 'cors') {
+									if (mode === 'cors' || upgradeToCors) {
 										expect(res.status).to.equal(200)
 									} else {
 										expect(res.status).to.equal(0)
@@ -103,20 +112,24 @@ window.SWTestHelper = {
 								})
 						}
 					})
-				)
 
+			})
+			describe('additional network calls', () => {
+				beforeEach(() => fetch(url, options))
+				if (strategy === 'fastest') {
+					it(`should check network for ${assetLabel} in parallel`, () =>
+						SWTestHelper.queryFetchHistory(url)
+							.then(wasFetched => expect(wasFetched).to.be.true)
+					)
+				} else {
+					it(`should not check network for ${assetLabel}`, () =>
+						SWTestHelper.queryFetchHistory(url)
+							.then(wasFetched => expect(wasFetched).to.be.false)
+					)
+				}
+			})
 		})
-		if (strategy === 'fastest') {
-			it.skip(`should check network for ${assetLabel} (need to refactor fastest helper in order to get it in a testable state)`, () =>
-				SWTestHelper.queryFetchHistory(url)
-					.then(wasFetched => expect(wasFetched).to.be.true)
-			)
-		} else {
-			it(`should not check network for ${assetLabel}`, () =>
-				SWTestHelper.queryFetchHistory(url)
-					.then(wasFetched => expect(wasFetched).to.be.false)
-			)
-		}
+
 	},
 
 	checkGetsPrecached: ({assetLabel, url, expiry, cacheName}) => {
