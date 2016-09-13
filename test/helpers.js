@@ -138,6 +138,14 @@ window.SWTestHelper = {
 		})
 	},
 
+	checkNotCached: (url, cacheName) => {
+		return cache(cacheName)
+			.then(cache => cache.get(url, true))
+			.then(res => {
+				expect(res).to.not.exist
+			})
+	},
+
 	resetEnv: function () {
 		return Promise.all([
 			this.unregisterAllRegistrations(),

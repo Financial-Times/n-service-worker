@@ -23,7 +23,7 @@ const clearAndFetch = request =>
 
 router.get('/logout', clearAndFetch, options);
 // clear on edition switching
-router.get('/international', clearAndFetch, options);
-router.get('/uk', clearAndFetch, options);
+// router.get('/international', clearAndFetch, options);
+// router.get('/uk', clearAndFetch, options);
 
 export { clearCaches, registerCache }

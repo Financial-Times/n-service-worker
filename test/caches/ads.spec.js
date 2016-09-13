@@ -29,6 +29,7 @@ describe('ads', () => {
 		['yet more google stuff', 'https://tpc.googlesyndication.com/safeframe/1-0-4/html/container.html', 1/24, 'no-cors'],
 		['krux tag', 'https://cdn.krxd.net/controltag/KHUSeE3x.js', 7, 'no-cors'],
 		['krux lib', 'https://cdn.krxd.net/ctjs/controltag.js.d4d7fc61dff29ba846cb4a9ffc42cbf9', 30, 'no-cors'],
+		['ads api - user', 'https://ads-api.ft.com/v1/user', 7, 'cors'],
 	].forEach(([label, url, expiry, mode, relativeToInstall]) =>
 		SWTestHelper.checkCacheIsUsed({
 			assetLabel: label,
@@ -41,15 +42,15 @@ describe('ads', () => {
 		})
 	);
 
+	it('should clear personal caches on logout', () => {
+		fetch('/logout')
+			.then(() => {
+				return Promise.all([
+					SWTestHelper.checkNotCached('https://ads-api.ft.com/v1/user', 'ads'),
+					SWTestHelper.checkNotCached('https://cdn.krxd.net/userdata/get?pub=bcbe1a6d-fa90-4db5-b4dc-424c69802310&technographics=1&callback=Krux.ns._default.kxjsonp_userdata', 'ads')
+				])
+			})
+	})
 
-// toolbox.router.get('/userdata/*', cacheFirstFlagged('swAdsCaching'), {
-// 	origin: 'https://cdn.krxd.net',
-// 	cache: getCacheOptions(1, true)
-// });
-
-// toolbox.router.get('/v1/user', cacheFirstFlagged('swAdsCaching'), {
-// 	origin: 'https://ads-api.ft.com',
-// 	cache: getCacheOptions(7, true)
-// });
 
 });

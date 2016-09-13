@@ -20,10 +20,12 @@ module.exports = function (karma) {
 			'test/setup.js',
 			'test/**/*.spec.js',
 			{pattern: 'test/sw/*.js', served: true, included: false},
+			{pattern: 'test/fixtures/*', served: true, included: false},
 			{pattern: 'test/**/*.js.map', served: true, included: false},
 		],
 		proxies: {
-			'/integration-sw.js': '/base/test/sw/integration.js'
+		  '/integration-sw.js': '/base/test/sw/integration.js',
+		  '/logout': '/base/test/fixtures/logout'
 		},
 
 		preprocessors: {

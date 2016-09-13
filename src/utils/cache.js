@@ -60,7 +60,13 @@ export class Cache {
 										maxAge !== -1 ? this.db.set(url, { expires: Date.now() + (maxAge * 1000) }) : null
 									])
 								)
-								.then(() => fetchedResponse);
+								.then(() => {
+									console.log('successful cache', url)
+									return fetchedResponse
+								})
+								.catch(e => {
+									console.log('bad cache', url, e)
+								});
 						} else {
 							return fetchedResponse;
 						}
