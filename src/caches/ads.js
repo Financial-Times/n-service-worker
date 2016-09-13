@@ -1,6 +1,6 @@
 import router from '../utils/router';
 
-import { cacheFirstFlagged } from '../utils/handlers';
+import { getHandler } from '../utils/handlers';
 import { registerCache } from '../utils/personal';
 import precache from '../utils/precache';
 
@@ -108,37 +108,39 @@ precache(
 // 	cache: getCacheOptions(1, true)
 // });
 
-router.get(new RegExp('\/v1\/concept\/(' + popularStreams.join('|') + ')'), cacheFirstFlagged('swAdsCaching'), {
+const standardHandler = getHandler({flag: 'swAdsCaching', strategy: 'cacheFirst'})
+
+router.get(new RegExp('\/v1\/concept\/(' + popularStreams.join('|') + ')'), standardHandler, {
 	origin: 'https://ads-api.ft.com',
 	cache: getCacheOptions(7)
 });
 
-router.get('/tag/js/gpt.js', cacheFirstFlagged('swAdsCaching'), {
+router.get('/tag/js/gpt.js', standardHandler, {
 	origin: 'https://www.googletagservices.com',
 	cache: getCacheOptions(7)
 });
 
-router.get('/gpt/pubads_impl_*.js', cacheFirstFlagged('swAdsCaching'), {
+router.get('/gpt/pubads_impl_*.js', standardHandler, {
 	origin: 'https://partner.googleadservices.com',
 	cache: getCacheOptions(30)
 });
 
-router.get('/pagead/osd.js', cacheFirstFlagged('swAdsCaching'), {
+router.get('/pagead/osd.js', standardHandler, {
 	origin: 'https://pagead2.googlesyndication.com',
 	cache: getCacheOptions(1)
 });
 
-router.get('/safeframe/1-0-4/html/container.html', cacheFirstFlagged('swAdsCaching'), {
+router.get('/safeframe/1-0-4/html/container.html', standardHandler, {
 	origin: 'https://tpc.googlesyndication.com',
 	cache: getCacheOptions(0)
 });
 
-router.get('/controltag*', cacheFirstFlagged('swAdsCaching'), {
+router.get('/controltag*', standardHandler, {
 	origin: 'https://cdn.krxd.net',
 	cache: getCacheOptions(7)
 });
 
-router.get('/ctjs/controltag.js*', cacheFirstFlagged('swAdsCaching'), {
+router.get('/ctjs/controltag.js*', standardHandler, {
 	origin: 'https://cdn.krxd.net',
 	cache: getCacheOptions(30)
 });

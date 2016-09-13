@@ -1,6 +1,6 @@
 import router from '../utils/router';;
 
-import { fastest } from '../utils/handlers';
+import { getHandler } from '../utils/handlers';
 
 const options = {
 	origin: 'https://next-geebee.ft.com',
@@ -12,4 +12,4 @@ const options = {
 
 // n-ui route
 // use toolbox.fastest as we want to send requests to check last-modified headers for n-ui bundle
-router.get('/n-ui/*', fastest, options);
+router.get('/n-ui/*', getHandler({strategy: 'fastest'}), options);

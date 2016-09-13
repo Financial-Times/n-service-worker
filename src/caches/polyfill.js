@@ -1,6 +1,6 @@
 import router from '../utils/router';;
 
-import { fastest } from '../utils/handlers';
+import { getHandler } from '../utils/handlers';
 
 const options = {
 	origin: 'https://next-geebee.ft.com',
@@ -11,4 +11,4 @@ const options = {
 };
 
 // use toolbox.fastest as we want to send requests to check last-modified headers for polyfill
-router.get('/polyfill/*', fastest, options);
+router.get('/polyfill/*', getHandler({strategy: 'fastest'}), options);

@@ -1,6 +1,6 @@
 import router from '../utils/router';;
 
-import { cacheFirst } from '../utils/handlers';
+import { getHandler } from '../utils/handlers';
 import precache from '../utils/precache';
 
 const fonts = ['MetricWeb-Regular', 'MetricWeb-Semibold', 'FinancierDisplayWeb-Regular'];
@@ -19,4 +19,4 @@ precache(
 );
 
 // fonts route
-router.get('/build/v2/files/o-fonts-assets@:version/:font.woff', cacheFirst, options);
+router.get('/build/v2/files/o-fonts-assets@:version/:font.woff', getHandler({strategy: 'cacheFirst'}), options);

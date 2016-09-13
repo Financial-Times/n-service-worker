@@ -1,7 +1,8 @@
 import router from '../utils/router';;
 
-import { cacheFirstFlagged } from '../utils/handlers';
+import { getHandler } from '../utils/handlers';
 import { registerCache } from '../utils/personal';
+import cache from '../utils/cache';
 
 const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
@@ -12,24 +13,17 @@ const options = {
 };
 
 function purgeCache (request) {
-	const networkResponse = fetch(request);
 	let resource = request.url.replace('/user', '');
 
-	caches.open('next:myft').then(cache => {
-		cache.keys().then(keys => keys.some(key => {
-			if (resource.indexOf(key.url) === 0) {
-				cache.delete(key);
-				return true;
-			}
-		}))
-	})
+	cache('next:myft')
+		.then(cache => cache.clear())
 
-	return networkResponse
+	return fetch(request)
 }
 
 registerCache('next:myft');
 
-router.get('/__myft/api/*', cacheFirstFlagged('swMyftCaching'), options);
+router.get('/__myft/api/*', getHandler({strategy: 'cacheFirst', flag: 'swMyftCaching'}), options);
 router.put('/__myft/api/*', purgeCache);
 router.post('/__myft/api/*', purgeCache);
 router.delete('/__myft/api/*', purgeCache);
