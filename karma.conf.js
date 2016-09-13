@@ -24,8 +24,8 @@ module.exports = function (karma) {
 			{pattern: 'test/**/*.js.map', served: true, included: false},
 		],
 		proxies: {
-		  '/integration-sw.js': '/base/test/sw/integration.js',
-		  '/logout': '/base/test/fixtures/logout'
+			'/integration-sw.js': '/base/test/sw/integration.js',
+			'/logout': '/base/test/fixtures/logout'
 		},
 
 		preprocessors: {
