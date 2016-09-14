@@ -3,7 +3,7 @@ import db from '../../src/utils/db';
 import fetchMock from 'fetch-mock';
 
 describe('cache', () => {
-	beforeEach(() => SWTestHelper.resetEnv());
+	afterEach(() => SWTestHelper.clearCache('next:test-cache'));
 
 	describe('putting items in the cache', () => {
 

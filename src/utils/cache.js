@@ -75,7 +75,7 @@ export class Cache {
 	get (request, debug) {
 
 		return this.expire(request)
-			.then(response => {
+			.then(({response, expires} = {}) => {
 				if (!response) {
 					return;
 				}
@@ -149,7 +149,7 @@ export class Cache {
 				if (expires && expires <= Date.now()) {
 					return this.delete(key);
 				}
-				return response
+				return {response, expires}
 			});
 	}
 
