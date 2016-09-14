@@ -4,6 +4,7 @@ import DB from '../../src/utils/db';
 import fetchMock from 'fetch-mock';
 
 describe('cache', () => {
+	before(() => SWTestHelper.resetEnv());
 	afterEach(() => SWTestHelper.clearCache('next:test-cache'));
 
 	describe('putting items in the cache', () => {
@@ -274,10 +275,12 @@ describe('cache', () => {
 						.then(() => cache);
 				})
 				.then(cache => cache.keys())
-				.then(keys => expect(keys.map(k => k.url)).to.eql([
-					'http://localhost:9876/files/0',
-					'http://localhost:9876/files/1'
-				]))
+				.then(keys => keys.map(k => k.url))
+				.then(keys => {
+					expect(keys.length).to.equal(2);
+					expect(keys).to.contain('http://localhost:9876/files/0')
+					expect(keys).to.contain('http://localhost:9876/files/1')
+				})
 		});
 
 		it('clear all keys in the cache', () => {
@@ -321,16 +324,15 @@ describe('cache', () => {
 						])
 						.then(() => cache.set('http://localhost:9876/files/2', {maxEntries: 2}))
 						.then(() => cache.keys())
+						.then(keys => keys.map(k => k.url))
 						.then(keys => {
-							// we want the cache to be flushed lazily, so should be no invalidation here
-							expect(keys.map(k => k.url)).to.eql([
-								'http://localhost:9876/files/0',
-								'http://localhost:9876/files/1',
-								'http://localhost:9876/files/2'
-							])
+							expect(keys.length).to.equal(3);
+							expect(keys).to.contain('http://localhost:9876/files/0')
+							expect(keys).to.contain('http://localhost:9876/files/1')
+							expect(keys).to.contain('http://localhost:9876/files/2')
 						})
 						// cache invalidation is done lazily so we add a delay
-						.then(() => new Promise(res => setTimeout(res, 200)))
+						.then(() => new Promise(res => setTimeout(res, 500)))
 						.then(() => Promise.all([
 							cache.keys(),
 							caches.open('next:test-cache')
@@ -343,19 +345,17 @@ describe('cache', () => {
 								.get('http://localhost:9876/files/2')
 						]))
 						.then(([keys, inCache1, inDb1, inCache2, inDb2]) => {
-							expect(keys.map(k => k.url)).to.eql([
-								'http://localhost:9876/files/1',
-								'http://localhost:9876/files/2'
-							])
+
+							keys = keys.map(k => k.url)
+							expect(keys.length).to.equal(2);
+							expect(keys).to.contain('http://localhost:9876/files/1')
+							expect(keys).to.contain('http://localhost:9876/files/2')
 							expect(inCache1).to.not.exist;
 							expect(inDb1).to.not.exist;
 							expect(inCache2).to.exist;
 							expect(inDb2).to.exist;
 						})
 					})
-			});
-
-			it.skip('remove the items with the soonest expiry', () => {
 			});
 		});
 		describe('max age', () => {
@@ -438,7 +438,7 @@ describe('cache', () => {
 					})
 					.then(() => cache('test-cache'))
 					// cache invalidation is done lazily so we add a delay
-					.then(() => new Promise(res => setTimeout(res, 200)))
+					.then(() => new Promise(res => setTimeout(res, 500)))
 					.then(() => Promise.all([
 						caches.open('next:test-cache')
 							.then(cache => cache.match(testUrl)),

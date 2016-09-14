@@ -158,7 +158,24 @@ export class Cache {
 	 */
 	limit (count) {
 		return this.keys()
-			.then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));
+			.then(keys =>
+				Promise.all(
+					keys
+						.map(key =>
+							this.db.get(key.url)
+								.then(({expires} = {}) => ({key, expires}))
+					)
+				)
+					.then(lookups =>
+						lookups
+							.sort((i1, i2) => {
+								return i1.expires > i2.expires ? -1 : i1.expires < i2.expires ? 1 : 0;
+							})
+							.slice(count)
+							.map(({key}) => this.delete(key))
+					)
+			)
+			// .then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));
 	}
 
 }
