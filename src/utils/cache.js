@@ -176,10 +176,5 @@ export default (cacheName, { cacheNamePrefix = 'next' } = { }) => {
 			const cacheWrapper = new Cache(cache, fullCacheName);
 			cacheWrapper.expireAll();
 			return cacheWrapper;
-
-			// TODO: decide if this is necessary/desirable. It means a LOT of cache and db reading
-			// clear out expired content (a side-effect of getting the keys)
-			// return cacheWrapper.keys()
-			// 	.then(() => cacheWrapper);
 		});
 }

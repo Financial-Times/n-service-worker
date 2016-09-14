@@ -15,5 +15,8 @@ deploy: build-production
 test-unit:
 	karma start
 
-test-dev:
-	karma start --autoWatch=true --singleRun=false
+test-chrome:
+	karma start --autoWatch=true --singleRun=false --browsers=Chrome
+
+test-firefox:
+	karma start --autoWatch=true --singleRun=false --browsers=Firefox

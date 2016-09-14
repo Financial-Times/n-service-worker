@@ -1,5 +1,6 @@
+/* global expect,SWTestHelper */
 import cache from '../../src/utils/cache';
-import db from '../../src/utils/db';
+import DB from '../../src/utils/db';
 import fetchMock from 'fetch-mock';
 
 describe('cache', () => {
@@ -14,7 +15,7 @@ describe('cache', () => {
 				.then(() => Promise.all([
 					caches.open('next:test-cache')
 						.then(cache => cache.match(testUrl)),
-					new db('requests', { dbName: 'next:test-cache'})
+					new DB('requests', { dbName: 'next:test-cache'})
 						.get(testUrl)
 				]))
 				.then(([inCache, inDb]) => {
@@ -32,7 +33,7 @@ describe('cache', () => {
 				.then(() => Promise.all([
 					caches.open('next:test-cache')
 						.then(cache => cache.match(testUrl)),
-					new db('requests', { dbName: 'next:test-cache'})
+					new DB('requests', { dbName: 'next:test-cache'})
 						.get(testUrl)
 				]))
 				.then(([inCache, inDb]) => {
@@ -53,7 +54,7 @@ describe('cache', () => {
 				.then(() => Promise.all([
 					caches.open('next:test-cache')
 						.then(cache => cache.match(testUrl)),
-					new db('requests', { dbName: 'next:test-cache'})
+					new DB('requests', { dbName: 'next:test-cache'})
 						.get(testUrl)
 				]))
 				.then(([inCache, inDb]) => {
@@ -76,7 +77,7 @@ describe('cache', () => {
 				.then(() => Promise.all([
 					caches.open('next:test-cache')
 						.then(cache => cache.match(testUrl)),
-					new db('requests', { dbName: 'next:test-cache'})
+					new DB('requests', { dbName: 'next:test-cache'})
 						.get(testUrl)
 				]))
 				.then(([inCache, inDb]) => {
@@ -94,7 +95,7 @@ describe('cache', () => {
 				.then(() => Promise.all([
 					caches.open('next:test-cache')
 						.then(cache => cache.match(testUrl)),
-					new db('requests', { dbName: 'next:test-cache'})
+					new DB('requests', { dbName: 'next:test-cache'})
 						.get(testUrl)
 				]))
 				.then(([inCache, inDb]) => {
@@ -116,7 +117,7 @@ describe('cache', () => {
 				.then(() => Promise.all([
 					caches.open('next:test-cache')
 						.then(cache => cache.match(testUrl)),
-					new db('requests', { dbName: 'next:test-cache'})
+					new DB('requests', { dbName: 'next:test-cache'})
 						.get(testUrl)
 				]))
 				.then(([inCache, inDb]) => {
@@ -198,7 +199,6 @@ describe('cache', () => {
 			return cache('test-cache')
 				.then(cache => cache.getOrSet(testUrl))
 				.then(response => {
-					console.log('yeah')
 					expect(fetchMock.called()).to.be.true;
 					fetchMock.restore();
 					expect(response instanceof Response).to.be.true;
@@ -207,7 +207,7 @@ describe('cache', () => {
 				.then(() => Promise.all([
 					caches.open('next:test-cache')
 						.then(cache => cache.match(testUrl)),
-					new db('requests', { dbName: 'next:test-cache'})
+					new DB('requests', { dbName: 'next:test-cache'})
 						.get(testUrl)
 				]))
 				.then(([inCache, inDb]) => {
@@ -234,7 +234,7 @@ describe('cache', () => {
 				.then(() => Promise.all([
 					caches.open('next:test-cache')
 						.then(cache => cache.match(testUrl)),
-					new db('requests', { dbName: 'next:test-cache'})
+					new DB('requests', { dbName: 'next:test-cache'})
 						.get(testUrl)
 				]))
 				.then(([inCache, inDb]) => {
@@ -255,7 +255,7 @@ describe('cache', () => {
 				.then(() => Promise.all([
 					caches.open('next:test-cache')
 						.then(cache => cache.match(testUrl)),
-					new db('requests', { dbName: 'next:test-cache'})
+					new DB('requests', { dbName: 'next:test-cache'})
 						.get(testUrl)
 				]))
 				.then(([inCache, inDb]) => {
@@ -293,11 +293,11 @@ describe('cache', () => {
 				.then(() => Promise.all([
 					caches.open('next:test-cache')
 						.then(cache => cache.match('http://localhost:9876/files/0')),
-					new db('requests', { dbName: 'next:test-cache'})
+					new DB('requests', { dbName: 'next:test-cache'})
 						.get('http://localhost:9876/files/0'),
 					caches.open('next:test-cache')
 						.then(cache => cache.match('http://localhost:9876/files/1')),
-					new db('requests', { dbName: 'next:test-cache'})
+					new DB('requests', { dbName: 'next:test-cache'})
 						.get('http://localhost:9876/files/1')
 				]))
 				.then(([inCache1, inDb1, inCache2, inDb2]) => {
@@ -335,11 +335,11 @@ describe('cache', () => {
 							cache.keys(),
 							caches.open('next:test-cache')
 								.then(cache => cache.match('http://localhost:9876/files/0')),
-							new db('requests', { dbName: 'next:test-cache'})
+							new DB('requests', { dbName: 'next:test-cache'})
 								.get('http://localhost:9876/files/0'),
 							caches.open('next:test-cache')
 								.then(cache => cache.match('http://localhost:9876/files/2')),
-							new db('requests', { dbName: 'next:test-cache'})
+							new DB('requests', { dbName: 'next:test-cache'})
 								.get('http://localhost:9876/files/2')
 						]))
 						.then(([keys, inCache1, inDb1, inCache2, inDb2]) => {
@@ -364,9 +364,9 @@ describe('cache', () => {
 				const testUrl = 'http://localhost:9876/files/0';
 				return cache('test-cache')
 					.then(cache => cache.set(testUrl))
-					.then(() => new db('requests', { dbName: 'next:test-cache'}).get(testUrl))
+					.then(() => new DB('requests', { dbName: 'next:test-cache'}).get(testUrl))
 					.then(inDb => {
-						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 30)
+						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 500)
 					})
 			})
 
@@ -374,7 +374,7 @@ describe('cache', () => {
 				const testUrl = 'http://localhost:9876/files/0';
 				return cache('test-cache')
 					.then(cache => cache.set(testUrl, {maxAge: -1}))
-					.then(() => new db('requests', { dbName: 'next:test-cache'}).get(testUrl))
+					.then(() => new DB('requests', { dbName: 'next:test-cache'}).get(testUrl))
 					.then(inDb => {
 						expect(inDb).to.not.exist
 					})
@@ -385,9 +385,9 @@ describe('cache', () => {
 				const testUrl = 'http://localhost:9876/files/0';
 				return cache('test-cache')
 					.then(cache => cache.set(testUrl, {maxAge: 200}))
-					.then(() => new db('requests', { dbName: 'next:test-cache'}).get(testUrl))
+					.then(() => new DB('requests', { dbName: 'next:test-cache'}).get(testUrl))
 					.then(inDb => {
-						expect(inDb.expires).to.be.closeTo(now + (200 * 1000), 30)
+						expect(inDb.expires).to.be.closeTo(now + (200 * 1000), 500)
 					})
 			})
 
@@ -400,9 +400,9 @@ describe('cache', () => {
 							.then(() => cache)
 					})
 					.then(cache => cache.set(testUrl))
-					.then(() => new db('requests', { dbName: 'next:test-cache'}).get(testUrl))
+					.then(() => new DB('requests', { dbName: 'next:test-cache'}).get(testUrl))
 					.then(inDb => {
-						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 30)
+						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 500)
 					})
 			})
 
@@ -412,7 +412,7 @@ describe('cache', () => {
 					.then(cache => {
 						return cache.set(testUrl)
 							// force an earlier expiry
-							.then(() => new db('requests', { dbName: 'next:test-cache'}).set(testUrl, {expires: Date.now() - 2000}))
+							.then(() => new DB('requests', { dbName: 'next:test-cache'}).set(testUrl, {expires: Date.now() - 2000}))
 							.then(() => cache.get(testUrl))
 							.then(res => expect(res).to.not.exist)
 					});
@@ -424,11 +424,11 @@ describe('cache', () => {
 					.then(cache => {
 						return cache.set(testUrl)
 							// force an earlier expiry
-							.then(() => new db('requests', { dbName: 'next:test-cache'}).set(testUrl, {expires: Date.now() - 2000}))
+							.then(() => new DB('requests', { dbName: 'next:test-cache'}).set(testUrl, {expires: Date.now() - 2000}))
 							.then(() => Promise.all([
 								caches.open('next:test-cache')
 									.then(cache => cache.match(testUrl)),
-								new db('requests', { dbName: 'next:test-cache'})
+								new DB('requests', { dbName: 'next:test-cache'})
 									.get(testUrl)
 							]))
 							.then(([inCache, inDb]) => {
@@ -442,7 +442,7 @@ describe('cache', () => {
 					.then(() => Promise.all([
 						caches.open('next:test-cache')
 							.then(cache => cache.match(testUrl)),
-						new db('requests', { dbName: 'next:test-cache'})
+						new DB('requests', { dbName: 'next:test-cache'})
 							.get(testUrl)
 					]))
 					.then(([inCache, inDb]) => {
@@ -458,6 +458,3 @@ describe('cache', () => {
 	})
 
 })
-
-
-
