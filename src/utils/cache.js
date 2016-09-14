@@ -39,30 +39,31 @@ export class Cache {
 	 * @returns {object} - The Response
 	 */
 	set (request, { response, maxAge = 60, maxEntries } = { }) {
-		const limit = maxEntries ? this.limit(maxEntries) : Promise.resolve();
-		// TODO - do this lazily
-		return limit
-			.then(() => this.get(request))
-			.then(() => {
-				const fetchRequest = response ? Promise.resolve(response) : fetch(request);
-				return fetchRequest.then(fetchedResponse => {
-					if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
-						const url = typeof request === 'string' ? request : request.url;
-						// make sure we have space to cache the Response
-						const makeRoom = maxEntries ? this.limit(maxEntries - 1) : Promise.resolve();
-						return makeRoom
-							.then(() =>
-								Promise.all([
-									this.cache.put(request, fetchedResponse.clone()),
-									maxAge !== -1 ? this.db.set(url, { expires: Date.now() + (maxAge * 1000) }) : null
-								])
-							)
-							.then(() => fetchedResponse)
-					} else {
-						return fetchedResponse;
-					}
-				})
-			});
+
+		const fetchRequest = response ? Promise.resolve(response) : fetch(request);
+		return fetchRequest.then(fetchedResponse => {
+			if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
+				const url = typeof request === 'string' ? request : request.url;
+
+				const respondWith = Promise.all([
+					this.cache.put(request, fetchedResponse.clone()),
+					maxAge !== -1 ? this.db.set(url, { expires: Date.now() + (maxAge * 1000) }) : null
+				])
+					.then(() => fetchedResponse)
+
+				// we use setTimeout as this isn't important enough to be put immediately on the microtask queue
+				setTimeout(() => respondWith
+					.then(() => {
+						if (maxEntries) {
+							this.limit(maxEntries)
+						}
+					}))
+
+				return respondWith;
+			} else {
+				return fetchedResponse;
+			}
+		})
 	}
 
 	/**
@@ -72,27 +73,19 @@ export class Cache {
 	 * @returns {object|undefined} - The Response, or undefined if nothing in the cache
 	 */
 	get (request, debug) {
-		const url = typeof request === 'string' ? request : request.url;
 
-		return Promise.all([
-			this.cache.match(request),
-			this.db.get(url)
-		])
-			.then(([response, { expires } = { }]) => {
-				if (expires && expires <= Date.now()) {
-					return this.delete(request);
+		return this.expire(request)
+			.then(response => {
+				if (!response) {
+					return;
+				}
+				if (debug === true || (response.type !== 'opaque' && request.headers && request.headers.get('FT-Debug'))) {
+					return addHeadersToResponse(response, {
+						'From-Cache': 'true',
+						expires: expires || 'no-expiry'
+					})
 				} else {
-					if (!response) {
-						return;
-					}
-					if (debug === true || (response.type !== 'opaque' && request.headers && request.headers.get('FT-Debug'))) {
-						return addHeadersToResponse(response, {
-							'From-Cache': 'true',
-							expires: expires || 'no-expiry'
-						})
-					} else {
-						return response;
-					}
+					return response;
 				}
 			});
 	}
@@ -138,13 +131,26 @@ export class Cache {
 	 * Get all the keys in the cache (and remove expired ones in the process)
 	 */
 	keys () {
-		return this.cache.keys().then(keys =>
-			Promise.all(keys.map(this.get.bind(this)))
-				.then(responses =>
-					// return the keys that have a response
-					keys.filter((key, index) => responses[index])
-				)
-		);
+		return this.cache.keys()
+	}
+
+	expireAll () {
+		return this.cache.keys()
+			.then(keys => Promise.all(keys.map(this.expire.bind(this))));
+	}
+
+	expire (key) {
+		const url = typeof key === 'string' ? key : key.url;
+		return Promise.all([
+			this.cache.match(key),
+			this.db.get(url)
+		])
+			.then(([response, { expires } = { }]) => {
+				if (expires && expires <= Date.now()) {
+					return this.delete(key);
+				}
+				return response
+			});
 	}
 
 	/**
@@ -168,8 +174,12 @@ export default (cacheName, { cacheNamePrefix = 'next' } = { }) => {
 	return caches.open(fullCacheName)
 		.then(cache => {
 			const cacheWrapper = new Cache(cache, fullCacheName);
+			cacheWrapper.expireAll();
+			return cacheWrapper;
+
+			// TODO: decide if this is necessary/desirable. It means a LOT of cache and db reading
 			// clear out expired content (a side-effect of getting the keys)
-			return cacheWrapper.keys()
-				.then(() => cacheWrapper);
+			// return cacheWrapper.keys()
+			// 	.then(() => cacheWrapper);
 		});
 }
