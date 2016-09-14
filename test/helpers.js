@@ -195,24 +195,26 @@ window.SWTestHelper = {
 					return;
 				}
 
-				return Promise.all(cacheNames.map(name => {
-					return Promise.all([
-						window.caches.delete(name)
-							.then((success) => {
-								if (!success) {
-									throw new Error('Unable to delete cache');
-								}
-							}),
-						idb.open(name).then(db => {
-							try {
-								const tx = db.transaction('requests', 'readwrite')
-								tx.objectStore('requests').clear()
-								return tx.complete;
-							} catch (e) {}
-						})
-					])
-				}))
+				return Promise.all(cacheNames.map(SWTestHelper.clearCache))
 			});
+	},
+
+	clearCache: function (name) {
+		return Promise.all([
+			window.caches.delete(name)
+				.then((success) => {
+					if (!success) {
+						throw new Error('Unable to delete cache ' + name);
+					}
+				}),
+			idb.open(name).then(db => {
+				try {
+					const tx = db.transaction('requests', 'readwrite')
+					tx.objectStore('requests').clear()
+					return tx.complete;
+				} catch (e) {}
+			})
+		])
 	},
 
 	installSW: function(swFile, waitForState = 'activated') {

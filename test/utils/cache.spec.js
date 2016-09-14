@@ -2,7 +2,7 @@ import cache from '../../src/utils/cache';
 import db from '../../src/utils/db';
 import fetchMock from 'fetch-mock';
 
-describe.only('cache', () => {
+describe('cache', () => {
 	beforeEach(() => SWTestHelper.resetEnv());
 
 	describe('putting items in the cache', () => {
@@ -312,8 +312,6 @@ describe.only('cache', () => {
 
 	describe('cache invalidation', () => {
 		describe('max entries', () => {
-
-
 			it('set an item in cache limited by size', () => {
 				return cache('test-cache')
 					.then(cache => {
@@ -322,6 +320,15 @@ describe.only('cache', () => {
 							cache.set('http://localhost:9876/files/1')
 						])
 						.then(() => cache.set('http://localhost:9876/files/2', {maxEntries: 2}))
+						.then(() => cache.keys())
+						.then(keys => {
+							// we want the cache to be flushed lazily, so should be no invalidation here
+							expect(keys.map(k => k.url)).to.eql([
+								'http://localhost:9876/files/0',
+								'http://localhost:9876/files/1',
+								'http://localhost:9876/files/2'
+							])
+						})
 						// cache invalidation is done lazily so we add a delay
 						.then(() => new Promise(res => setTimeout(res, 200)))
 						.then(() => Promise.all([
@@ -351,24 +358,99 @@ describe.only('cache', () => {
 			it.skip('remove the items with the soonest expiry', () => {
 			});
 		});
+		describe('max age', () => {
+			it('default to 60s expiry', () => {
+				const now = Date.now();
+				const testUrl = 'http://localhost:9876/files/0';
+				return cache('test-cache')
+					.then(cache => cache.set(testUrl))
+					.then(() => new db('requests', { dbName: 'next:test-cache'}).get(testUrl))
+					.then(inDb => {
+						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 30)
+					})
+			})
 
-			// it('default to 60s expiry', () => {
+			it('possible to set no expiry', () => {
+				const testUrl = 'http://localhost:9876/files/0';
+				return cache('test-cache')
+					.then(cache => cache.set(testUrl, {maxAge: -1}))
+					.then(() => new db('requests', { dbName: 'next:test-cache'}).get(testUrl))
+					.then(inDb => {
+						expect(inDb).to.not.exist
+					})
+			})
 
-			// })
+			it('possible to set custom expiry', () => {
+				const now = Date.now();
+				const testUrl = 'http://localhost:9876/files/0';
+				return cache('test-cache')
+					.then(cache => cache.set(testUrl, {maxAge: 200}))
+					.then(() => new db('requests', { dbName: 'next:test-cache'}).get(testUrl))
+					.then(inDb => {
+						expect(inDb.expires).to.be.closeTo(now + (200 * 1000), 30)
+					})
+			})
 
-			// it('possible to set no expiry', () => {
+			it('possible to overwrite custom expiry', () => {
+				const now = Date.now();
+				const testUrl = 'http://localhost:9876/files/0';
+				return cache('test-cache')
+					.then(cache => {
+						return cache.set(testUrl, {maxAge: 200})
+							.then(() => cache)
+					})
+					.then(cache => cache.set(testUrl))
+					.then(() => new db('requests', { dbName: 'next:test-cache'}).get(testUrl))
+					.then(inDb => {
+						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 30)
+					})
+			})
 
-			// })
+			it('invalidate cache items when past expiry', () => {
+				const testUrl = 'http://localhost:9876/files/0';
+				return cache('test-cache')
+					.then(cache => {
+						return cache.set(testUrl)
+							// force an earlier expiry
+							.then(() => new db('requests', { dbName: 'next:test-cache'}).set(testUrl, {expires: Date.now() - 2000}))
+							.then(() => cache.get(testUrl))
+							.then(res => expect(res).to.not.exist)
+					});
+			});
 
-			// it('possible to overwrite expiry', () => {
-
-			// })
-
-	// 	it('invalidate cache items when past expiry', () => {
-
-	// 	});
-
-		it('invalidate expired items lazily when opening cache', () => {})
+			it('invalidate expired items lazily when opening cache', () => {
+				const testUrl = 'http://localhost:9876/files/0';
+				return cache('test-cache')
+					.then(cache => {
+						return cache.set(testUrl)
+							// force an earlier expiry
+							.then(() => new db('requests', { dbName: 'next:test-cache'}).set(testUrl, {expires: Date.now() - 2000}))
+							.then(() => Promise.all([
+								caches.open('next:test-cache')
+									.then(cache => cache.match(testUrl)),
+								new db('requests', { dbName: 'next:test-cache'})
+									.get(testUrl)
+							]))
+							.then(([inCache, inDb]) => {
+								expect(inCache).to.exist;
+								expect(inDb).to.exist
+							})
+					})
+					.then(() => cache('test-cache'))
+					// cache invalidation is done lazily so we add a delay
+					.then(() => new Promise(res => setTimeout(res, 200)))
+					.then(() => Promise.all([
+						caches.open('next:test-cache')
+							.then(cache => cache.match(testUrl)),
+						new db('requests', { dbName: 'next:test-cache'})
+							.get(testUrl)
+					]))
+					.then(([inCache, inDb]) => {
+						expect(inCache).to.not.exist;
+						expect(inDb).to.not.exist
+					})
+			})
+		});
 	})
 
 	describe('perf', () => {
