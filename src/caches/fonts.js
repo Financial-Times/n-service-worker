@@ -12,11 +12,11 @@ const options = {
 		maxEntries: 5
 	}
 };
-precache(
-	options.cache.name,
-	fonts.map(font => `https://next-geebee.ft.com/build/v2/files/o-fonts-assets@${fontsVersion}/${font}.woff?`),
-	{ maxAge: -1, maxEntries: options.cache.maxEntries }
-);
+// precache(
+// 	options.cache.name,
+// 	fonts.map(font => `https://next-geebee.ft.com/build/v2/files/o-fonts-assets@${fontsVersion}/${font}.woff?`),
+// 	{ maxAge: -1, maxEntries: options.cache.maxEntries }
+// );
 
 // fonts route
 router.get('/build/v2/files/o-fonts-assets@:version/:font.woff', getHandler({strategy: 'cacheFirst'}), options);
