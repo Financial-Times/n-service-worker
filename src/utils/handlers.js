@@ -20,6 +20,10 @@ const handlers = {
 			.catch(() => fetch(request));
 	},
 
+	networkOnly: (request, values, options = {}) => {
+		return fetch(request).catch(err => { throw err });
+	},
+
 	fastest: (request, values, options = { }) => {
 		const cacheOptions = options.cache || { };
 		const openCache = cache(cacheOptions.name);
