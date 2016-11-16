@@ -20,7 +20,7 @@ const handlers = {
 			.catch(() => fetch(request));
 	},
 
-	networkOnly: (request, values, options = {}) => {
+	networkOnly: (request = {}) => {
 		return fetch(request).catch(err => { throw err });
 	},
 

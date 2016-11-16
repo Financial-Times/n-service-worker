@@ -23,7 +23,7 @@ const showOfflineLandingPage = (req) => {
 router.get('/__(.*)', getHandler({strategy: 'networkOnly'}), options);
 
 // catch all
-router.get('/(.*)', (request, values, options) => {
+router.get('/(.*)', (request) => {
 
 	// Attempt to return a response from the network
 	return fetch(request).catch(error => {
