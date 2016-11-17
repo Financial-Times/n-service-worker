@@ -6,7 +6,6 @@ import { getFlag } from '../utils/flags'
 // match origin: https://www.ft.com or https://local.ft.com
 const options = {
 	origin: /^https\:\/\/(local|www)(\.ft\.com)/
-	// cache: {} !TODO
 };
 
 /*
@@ -32,11 +31,9 @@ router.get('/(.*)', (request) => {
 		if (showOfflineLandingPage(request)) {
 			// TODO: Trigger some tracking ?
 
-			// respond with content
-			// TODO: respond with cached version of the "landing" page
-			return new Response('{"hello":"world"}', {
-				headers: {'Content-type': 'application/json' }
-			});
+			// respond with cached version of the "landing" page
+			return caches.match('/tour');
+			// return caches.match('/__offline/landing');
 		}
 
 		throw error;

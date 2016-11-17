@@ -9,6 +9,7 @@ import './utils/flags';
 // import './caches/n-ui';
 // import './caches/polyfill';
 // import './caches/comments';
+import './caches/offline-landing';
 
 // user-specific things
 // import './offline/content';
