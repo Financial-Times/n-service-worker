@@ -1,6 +1,7 @@
 <script>
+try {
 if ('serviceWorker' in navigator) {
-	navigator.serviceWorker.getRegistration()
-		.then(function (reg) { reg && reg.unregister()});
+	navigator.serviceWorker.getRegistration().then(function (reg) { reg && reg.unregister()});
 }
+} catch (e) {}
 </script>
