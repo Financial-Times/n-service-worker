@@ -37,7 +37,7 @@ For most cases [sw-toolbox](http://googlechrome.github.io/sw-toolbox/docs/releas
 On each page load the service worker is passed the current set of feature flags. Depending on what you're using the flag to toggle on\off, it may not take effect until the next page load due to the service worker lifecycle
 
 ```javascript
-import {get as getFlag} from './utils/flags'
+import { getFlag } from './utils/flags'
 
 if (getFlag('swUseSpecificCache')) {
 	// do something

@@ -32,8 +32,7 @@ router.get('/(.*)', (request) => {
 			// TODO: Trigger some tracking ?
 
 			// respond with cached version of the "landing" page
-			return caches.match('/tour');
-			// return caches.match('/__offline/landing');
+			return caches.match('/__offline/landing');
 		}
 
 		throw error;

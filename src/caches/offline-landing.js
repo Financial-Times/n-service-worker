@@ -13,17 +13,12 @@ const options = {
 precache(
 	options.cache.name,
 	[
-		new Request('https://local.ft.com:5050/tour', {
+		new Request('https://local.ft.com:5050/__offline/landing', {
 			credentials: 'same-origin',
 			mode: 'cors'
 		})
-		// new Request('https://www.ft.com/__offline/landing', {
-		// 	credentials: 'same-origin',
-		// 	mode: 'cors'
-		// })
 	],
 	{ maxAge: 60 * 60 * 2 }
 );
 
-router.get('/tour', getHandler({strategy: 'cacheFirst', flag: 'offlineLandingTestPage', upgradeToCors: true}), options);
-// router.get('/__offline/landing', getHandler({strategy: 'cacheFirst', flag: 'offlineLandingTestPage', upgradeToCors: true}), options);
+router.get('/__offline/landing', getHandler({strategy: 'cacheFirst', flag: 'offlineLandingTestPage', upgradeToCors: true}), options);
