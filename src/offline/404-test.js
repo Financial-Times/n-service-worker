@@ -20,15 +20,15 @@ precache(
 	{ maxAge: 60 * 60 * 2, followLinks: true } // follow and cache Link header
 );
 
-/*
-Only respond with landing page if:
-  - Request method is 'GET'
-  - Request accepts 'text/html'
-  - protocol is 'https:''
-  - hostname matches: 'www.ft.com' or 'local.ft.com'
-  - path does not start with '/__'
-  - Flag 'offlineLandingTestPage' is truthy
-*/
+/**
+ * Only respond with landing page if:
+ *  - Request method is 'GET'
+ *  - Request accepts 'text/html'
+ *  - protocol is 'https:''
+ *  - hostname matches: 'www.ft.com' or 'local.ft.com'
+ *  - path does not start with '/__'
+ * - Flag 'offlineLandingTestPage' is truthy
+ */
 const isHtmlRequest = (req) => {
 	const urlObj = _url.parse(req.url);
 	return (req.method === 'GET' && req.headers.get('accept').includes('text/html') && urlObj.protocol === 'https:' && /(local|www)(\.ft\.com)/.test(urlObj.hostname) && !/(^\/\_\_)/.test(urlObj.pathname) && getFlag('offlineLandingTestPage'));
