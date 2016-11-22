@@ -28,39 +28,29 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 'use strict';
 
-var qs = require('querystring')
-	, url = require('url')
-	, xtend = require('xtend');
+import qs from 'querystring';
+import url from 'url';
+import xtend from 'xtend';
 
-function hasRel(x) {
+function hasRel (x) {
 	return x && x.rel;
-}
-
-function intoRels (acc, x) {
-	function splitRel (rel) {
-		acc[rel] = xtend(x, { rel: rel });
-	}
-
-	x.rel.split(/\s+/).forEach(splitRel);
-
-	return acc;
 }
 
 function createObjects (acc, p) {
 	// rel="next" => 1: rel 2: next
-	var m = p.match(/\s*(.+)\s*=\s*"?([^"]+)"?/)
+	const m = p.match(/\s*(.+)\s*=\s*"?([^"]+)"?/)
 	if (m) acc[m[1]] = m[2];
 	return acc;
 }
 
-function parseLink(link) {
+function parseLink (link) {
 	try {
-		var parts = link.split(';')
-			, linkUrl = parts.shift().replace(/[<>]/g, '')
-			, parsedUrl = url.parse(linkUrl)
-			, qry = qs.parse(parsedUrl.query);
+		const parts = link.split(';')
+		const linkUrl = parts.shift().replace(/[<>]/g, '')
+		const parsedUrl = url.parse(linkUrl)
+		const qry = qs.parse(parsedUrl.query);
 
-		var info = parts
+		let info = parts
 			.reduce(createObjects, {});
 
 		info = xtend(qry, info);
