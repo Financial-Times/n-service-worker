@@ -9,19 +9,17 @@ import './utils/flags';
 // import './caches/n-ui';
 // import './caches/polyfill';
 // import './caches/comments';
-import './caches/offline-landing';
 
 // user-specific things
 // import './offline/content';
 // import './caches/session';
 // import './caches/myft';
 // import './caches/ads';
-
-import './offline/404-test';
-
-
 // import './push/myft';
 
+// NOTE: this is mounted last as it
+// contains a catch all route handler
+import './offline/404-test';
 
 import router from './utils/router';
 

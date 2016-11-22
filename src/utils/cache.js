@@ -1,4 +1,5 @@
 import Db from './db';
+import parseLinkHeader from './parse-link-headers';
 
 function addHeadersToResponse (res, headers) {
 	const response = res.clone()
@@ -36,32 +37,37 @@ export class Cache {
 	 * @param {objcet} [opts.response] - Response object to cache; skips fetching
 	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response. -1 for no caching
 	 * @param {number} [opts.maxEntries] - Max number of entries to keep in cache, defaults to 'infinite'
+	 * @param {string|boolean} [opts.followLinks] - cache items found in link header, see followLinkHeader()
 	 * @returns {object} - The Response
 	 */
-	set (request, { response, maxAge = 60, maxEntries } = { }) {
+	set (request, { response, maxAge = 60, maxEntries, followLinks = false } = { }) {
 		const limit = maxEntries ? this.limit(maxEntries) : Promise.resolve();
 		// TODO - do this lazily
 		return limit
 			.then(() => this.get(request))
 			.then(() => {
 				const fetchRequest = response ? Promise.resolve(response) : fetch(request);
-				return fetchRequest.then(fetchedResponse => {
-					if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
-						const url = typeof request === 'string' ? request : request.url;
-						// make sure we have space to cache the Response
-						const makeRoom = maxEntries ? this.limit(maxEntries - 1) : Promise.resolve();
-						return makeRoom
-							.then(() =>
-								Promise.all([
-									this.cache.put(request, fetchedResponse.clone()),
-									maxAge !== -1 ? this.db.set(url, { expires: Date.now() + (maxAge * 1000) }) : null
-								])
-							)
-							.then(() => fetchedResponse)
-					} else {
-						return fetchedResponse;
-					}
-				})
+				return fetchRequest
+					.then(fetchedResponse => {
+						return this.followLinkHeader(fetchedResponse, { maxAge, maxEntries, followLinks });
+					})
+					.then(fetchedResponse => {
+						if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
+							const url = typeof request === 'string' ? request : request.url;
+							// make sure we have space to cache the Response
+							const makeRoom = maxEntries ? this.limit(maxEntries - 1) : Promise.resolve();
+							return makeRoom
+								.then(() =>
+									Promise.all([
+										this.cache.put(request, fetchedResponse.clone()),
+										maxAge !== -1 ? this.db.set(url, { expires: Date.now() + (maxAge * 1000) }) : null
+									])
+								)
+								.then(() => fetchedResponse)
+						} else {
+							return fetchedResponse;
+						}
+					})
 			});
 	}
 
@@ -153,6 +159,46 @@ export class Cache {
 	limit (count) {
 		return this.keys()
 			.then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));
+	}
+
+	/**
+	 * Follow Link header - cache urls in link header with rel=precache
+	 * @param {objcet} [fetchedResponse] - Response object
+	 * @param {object} [opts] - the cache.set options, see set()
+	 * @param {string|boolean} [opts.followLinks] - cache items found in link header:
+	 * - true|'shallow' = just those in response
+	 * - 'deep' = continue to follow link headers
+	 * - false = default, do not follow
+	 * @returns {object} - The fetchedResponse
+	 */
+	followLinkHeader (fetchedResponse, { maxAge, maxEntries, followLinks = false } = {}) {
+		let links = fetchedResponse.headers.get('link');
+
+		if (links && followLinks !== false) {
+
+			try {
+				// parse the link header
+				links = parseLinkHeader(links);
+			} catch (e) {
+				// abort if parsing fails
+				return Promise.resolve(fetchedResponse);
+			}
+
+			// continue to follow?
+			const follow = followLinks === 'deep' ? true : false;
+
+			links
+				.filter(link => link.rel === 'precache') // TODO: pass as option
+				.forEach(link => {
+					const _req = new Request(link.url, {
+						credentials: 'same-origin', // TODO: set based on original?
+						mode: 'cors' // matches requests as we use upgradeToCors
+					});
+					this.set(_req, { maxAge, maxEntries, follow });
+				})
+		}
+
+		return Promise.resolve(fetchedResponse);
 	}
 
 }
