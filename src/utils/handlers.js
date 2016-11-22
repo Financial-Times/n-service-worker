@@ -20,6 +20,18 @@ const handlers = {
 			.catch(() => fetch(request));
 	},
 
+	cacheOnly: (request, values, options = {}) => {
+		const cacheOptions = options.cache || {};
+		return cache(cacheOptions.name)
+			.then(cache => cache.get(request, cacheOptions))
+			.then(res => {
+				if (!res) {
+					throw 'request not found in cache';
+				}
+				return res;
+			});
+	},
+
 	fastest: (request, values, options = { }) => {
 		const cacheOptions = options.cache || { };
 		const openCache = cache(cacheOptions.name);

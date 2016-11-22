@@ -217,7 +217,7 @@ export class Cache {
 						credentials: 'same-origin', // TODO: set based on original?
 						mode: 'cors' // matches requests as we use upgradeToCors
 					});
-					this.set(_req, { maxAge, maxEntries, follow });
+					this.set(_req, { maxAge, maxEntries, followLinks: follow });
 				})
 		}
 
