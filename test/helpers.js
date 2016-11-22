@@ -14,9 +14,9 @@ window.SWTestHelper = {
 
 	clearFetchHistory: url => message({type: 'clearFetchHistory',	url}),
 
-	createNewIframe: function() {
+	createNewIframe: function () {
 		return new Promise(resolve => {
-			var newIframe = document.createElement('iframe');
+			const newIframe = document.createElement('iframe');
 			newIframe.classList.add('js-test-iframe');
 			newIframe.src = '/test-iframe/' + Math.random();
 			newIframe.addEventListener('load', () => {
@@ -157,29 +157,29 @@ window.SWTestHelper = {
 			this.clearAllCaches()
 		])
 		.then(() => {
-			var iframeList = document.querySelectorAll('.js-test-iframe');
-			for (var i = 0; i < iframeList.length; i++) {
+			const iframeList = document.querySelectorAll('.js-test-iframe');
+			for (let i = 0; i < iframeList.length; i++) {
 				iframeList[i].parentElement.removeChild(iframeList[i]);
 			}
 		}).catch()
 	},
 
-	unregisterAllRegistrations: function() {
+	unregisterAllRegistrations: function () {
 		return navigator.serviceWorker.getRegistrations()
 			.then((registrations) => {
 				if (registrations.length === 0) {
 					return;
 				}
 
-				var unregisterPromises = [];
-				for (var i = 0; i < registrations.length; i++) {
+				const unregisterPromises = [];
+				for (let i = 0; i < registrations.length; i++) {
 					unregisterPromises.push(
 						registrations[i].unregister()
 							.then((success) => {
 								if (!success) {
-									console.warn('Unable to unregister a SW.');
+									console.warn('Unable to unregister a SW.'); //eslint-disable-line
 								} else {
-									console.warn('unregister a SW.');
+									console.warn('unregistered a SW.');  //eslint-disable-line
 								}
 							})
 					);
@@ -188,37 +188,39 @@ window.SWTestHelper = {
 			});
 	},
 
-	clearAllCaches: function() {
+	clearAllCaches: function () {
 		return window.caches.keys()
 			.then((cacheNames) => {
 				if (cacheNames.length === 0) {
 					return;
 				}
 
-				return Promise.all(cacheNames.map(name => {
-					return Promise.all([
-						window.caches.delete(name)
-							.then((success) => {
-								if (!success) {
-									throw new Error('Unable to delete cache');
-								}
-							}),
-						idb.open(name).then(db => {
-							try {
-								const tx = db.transaction('requests', 'readwrite')
-								tx.objectStore('requests').clear()
-								return tx.complete;
-							} catch (e) {}
-						})
-					])
-				}))
+				return Promise.all(cacheNames.map(SWTestHelper.clearCache))
 			});
 	},
 
-	installSW: function(swFile, waitForState = 'activated') {
+	clearCache: function (name) {
+		return Promise.all([
+			window.caches.delete(name)
+				.then((success) => {
+					if (!success) {
+						throw new Error('Unable to delete cache ' + name);
+					}
+				}),
+			idb.open(name).then(db => {
+				try {
+					const tx = db.transaction('requests', 'readwrite')
+					tx.objectStore('requests').clear()
+					return tx.complete;
+				} catch (e) {}
+			})
+		])
+	},
+
+	installSW: function (swFile, waitForState = 'activated') {
 		return new Promise((resolve, reject) => {
-			var options = {scope: './'};
-			var iframe = document.querySelector('.js-test-iframe');
+			let options = {scope: './'};
+			const iframe = document.querySelector('.js-test-iframe');
 			if (iframe) {
 				options = {scope: iframe.contentWindow.location.pathname};
 			}
@@ -250,7 +252,7 @@ window.SWTestHelper = {
 					if (registration.active) {
 						claim(registration);
 					} else if (registration.installing) {
-						registration.installing.onstatechange = function() {
+						registration.installing.onstatechange = function () {
 							if (this.state === waitForState) {
 								if (waitForState === 'activated') {
 									navigator.serviceWorker.ready
@@ -265,16 +267,14 @@ window.SWTestHelper = {
 					}
 				})
 				.catch((err) => {
-					console.log('Error with ' + swFile, err);
+					console.log('Error with ' + swFile, err);  //eslint-disable-line
 					reject(err);
 				})
-
-
 		});
 	},
 
-	getAllCachedAssets: function(cacheName) {
-		var cache = null;
+	getAllCachedAssets: function (cacheName) {
+		let cache = null;
 		return window.caches.keys()
 			.then((cacheKeys) => {
 				if (cacheKeys.indexOf(cacheName) < 0) {
@@ -308,9 +308,9 @@ window.SWTestHelper = {
 				// This converts url, value pairs in an array to an Object
 				// of urls with text values. Makes comparisons a little
 				// easier in tests
-				var output = {};
-				for (var i = 0; i < responseTexts.length; i++) {
-					var cachedResponse = responseTexts[i];
+				const output = {};
+				for (let i = 0; i < responseTexts.length; i++) {
+					const cachedResponse = responseTexts[i];
 					output[cachedResponse.url] = cachedResponse.text;
 				}
 				return output;

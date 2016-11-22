@@ -17,13 +17,16 @@ module.exports = function (karma) {
 		// list of files / patterns to load in the browser
 		files: [
 			{pattern: 'test/helpers.js', served: true},
+			'test/utils/*.spec.js',
 			'test/setup.js',
-			'test/**/*.spec.js',
+			'test/caches/*.spec.js',
 			{pattern: 'test/sw/*.js', served: true, included: false},
+			{pattern: 'test/fixtures/files/*', served: true, included: false},
 			{pattern: 'test/**/*.js.map', served: true, included: false},
 		],
 		proxies: {
-			'/integration-sw.js': '/base/test/sw/integration.js'
+			'/integration-sw.js': '/base/test/sw/integration.js',
+			'/files': '/base/test/fixtures/files'
 		},
 
 		preprocessors: {

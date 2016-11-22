@@ -16,11 +16,11 @@
 'use strict';
 
 // TODO: Use self.registration.scope instead of self.location
-var url = new URL('./', self.location);
-var basePath = url.pathname;
-var pathRegexp = require('path-to-regexp');
+const url = new URL('./', self.location);
+const basePath = url.pathname;
+const pathRegexp = require('path-to-regexp');
 
-var Route = function(method, path, handler, options) {
+const Route = function (method, path, handler, options) {
 	if (path instanceof RegExp) {
 		this.fullUrlRegExp = path;
 	} else {
@@ -42,17 +42,17 @@ var Route = function(method, path, handler, options) {
 	this.handler = handler;
 };
 
-Route.prototype.makeHandler = function(url) {
-	var values;
+Route.prototype.makeHandler = function (url) {
+	let values;
 	if (this.regexp) {
-		var match = this.regexp.exec(url);
+		const match = this.regexp.exec(url);
 		values = {};
-		this.keys.forEach(function(key, index) {
+		this.keys.forEach(function (key, index) {
 			values[key.name] = match[index + 1];
 		});
 	}
 
-	return function(request) {
+	return function (request) {
 		return this.handler(request, values, this.options);
 	}.bind(this);
 };

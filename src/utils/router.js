@@ -15,20 +15,20 @@
 */
 'use strict';
 
-var Route = require('./route');
+const Route = require('./route');
 
-function regexEscape(s) {
+function regexEscape (s) {
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
-var keyMatch = function(map, string) {
+const keyMatch = function (map, string) {
 	// This would be better written as a for..of loop, but that would break the
 	// minifyify process in the build.
-	var entriesIterator = map.entries();
-	var item = entriesIterator.next();
-	var matches = [];
+	const entriesIterator = map.entries();
+	let item = entriesIterator.next();
+	const matches = [];
 	while (!item.done) {
-		var pattern = new RegExp(item.value[0]);
+		const pattern = new RegExp(item.value[0]);
 		if (pattern.test(string)) {
 			matches.push(item.value[1]);
 		}
@@ -37,22 +37,22 @@ var keyMatch = function(map, string) {
 	return matches;
 };
 
-var Router = function() {
+const Router = function () {
 	this.routes = new Map();
 	// Create the dummy origin for RegExp-based routes
 	this.routes.set(RegExp, new Map());
 	this.default = null;
 };
 
-['get', 'post', 'put', 'delete', 'head', 'any'].forEach(function(method) {
-	Router.prototype[method] = function(path, handler, options) {
+['get', 'post', 'put', 'delete', 'head', 'any'].forEach(function (method) {
+	Router.prototype[method] = function (path, handler, options) {
 		return this.add(method, path, handler, options);
 	};
 });
 
-Router.prototype.add = function(method, path, handler, options) {
+Router.prototype.add = function (method, path, handler, options) {
 	options = options || {};
-	var origin;
+	let origin;
 
 	if (path instanceof RegExp) {
 		// We need a unique key to use in the Map to distinguish RegExp paths
@@ -70,26 +70,26 @@ Router.prototype.add = function(method, path, handler, options) {
 
 	method = method.toLowerCase();
 
-	var route = new Route(method, path, handler, options);
+	const route = new Route(method, path, handler, options);
 
 	if (!this.routes.has(origin)) {
 		this.routes.set(origin, new Map());
 	}
 
-	var methodMap = this.routes.get(origin);
+	const methodMap = this.routes.get(origin);
 	if (!methodMap.has(method)) {
 		methodMap.set(method, new Map());
 	}
 
-	var routeMap = methodMap.get(method);
-	var regExp = route.regexp || route.fullUrlRegExp;
+	const routeMap = methodMap.get(method);
+	const regExp = route.regexp || route.fullUrlRegExp;
 	routeMap.set(regExp.source, route);
 };
 
-Router.prototype.matchMethod = function(method, url) {
-	var urlObject = new URL(url);
-	var origin = urlObject.origin;
-	var path = urlObject.pathname;
+Router.prototype.matchMethod = function (method, url) {
+	const urlObject = new URL(url);
+	const origin = urlObject.origin;
+	const path = urlObject.pathname;
 
 	// We want to first check to see if there's a match against any
 	// "Express-style" routes (string for the path, RegExp for the origin).
@@ -100,16 +100,16 @@ Router.prototype.matchMethod = function(method, url) {
 		this._match(method, [this.routes.get(RegExp)], url);
 };
 
-Router.prototype._match = function(method, methodMaps, pathOrUrl) {
+Router.prototype._match = function (method, methodMaps, pathOrUrl) {
 	if (methodMaps.length === 0) {
 		return null;
 	}
 
-	for (var i = 0; i < methodMaps.length; i++) {
-		var methodMap = methodMaps[i];
-		var routeMap = methodMap && methodMap.get(method.toLowerCase());
+	for (let i = 0; i < methodMaps.length; i++) {
+		const methodMap = methodMaps[i];
+		const routeMap = methodMap && methodMap.get(method.toLowerCase());
 		if (routeMap) {
-			var routes = keyMatch(routeMap, pathOrUrl);
+			const routes = keyMatch(routeMap, pathOrUrl);
 			if (routes.length > 0) {
 				return routes[0].makeHandler(pathOrUrl);
 			}
@@ -119,7 +119,7 @@ Router.prototype._match = function(method, methodMaps, pathOrUrl) {
 	return null;
 };
 
-Router.prototype.match = function(request) {
+Router.prototype.match = function (request) {
 	return this.matchMethod(request.method, request.url) ||
 			this.matchMethod('any', request.url);
 };
