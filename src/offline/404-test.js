@@ -27,34 +27,41 @@ precache(
  *  - protocol is 'https:''
  *  - hostname matches: 'www.ft.com' or 'local.ft.com'
  *  - path does not start with '/__'
- * - Flag 'offlineLandingTestPage' is truthy
+ *  - Flag 'offlineLandingTestPage' is truthy
+ * TODO: utilise req.mode==='navigate'- support Chrome 49+ (sw is Chrome 40/42+)
  */
 const isHtmlRequest = (req) => {
 	const urlObj = _url.parse(req.url);
 	return (req.method === 'GET' && req.headers.get('accept').includes('text/html') && urlObj.protocol === 'https:' && /(local|www)(\.ft\.com)/.test(urlObj.hostname) && !/(^\/\_\_)/.test(urlObj.pathname) && getFlag('offlineLandingTestPage'));
 }
 
-// Find match in our cache behind a flag
+// Find match in our cache
 // NOTE: we use upgrade to cors as Link header caching uses cors mode
-const flaggedCacheOnly = getHandler({strategy: 'cacheOnly', flag: 'offlineLandingTestPage', upgradeToCors: true});
+const corsCacheOnly = getHandler({strategy: 'cacheOnly', upgradeToCors: true})
 
 /**
  * Catch All
- * network as-is -> flagged cache as-cors -> (logic) -> precached landing page
+ * network as-is -> (flag) -> cache as-cors -> (logic) -> precached landing page
+ * throws network response error
  * TODO: Split into two routes:
  *  - mount assets on '/__offline/' which will act as a proxy
  *  - mount landing page on origin restricted catch all
  */
 router.get('/(.*)', (request, values, options) => {
-	return fetch(request)
-		.catch(() => flaggedCacheOnly(request, values, options))
-		.catch(err => {
+	return fetch(request).catch(resErr => {
+
+		if (!getFlag('offlineLandingTestPage')) throw resErr;
+
+		return corsCacheOnly(request, values, options).catch(() => {
+
 			if (isHtmlRequest(request)) {
-				// serve offlineLandingRequest response from precache
-				return flaggedCacheOnly(offlineLandingRequest, values, options);
+				return corsCacheOnly(offlineLandingRequest, values, options);
 			}
-			throw err;
+
+			throw resErr;
 		});
+
+	});
 }, {
 	origin: /[\s\S]*/, // match all origins
 	cache: cacheOptions
