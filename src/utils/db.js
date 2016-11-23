@@ -6,17 +6,7 @@ export default class {
 		this.storeName = storeName;
 		this.idb = idb.open(dbName, dbVersion, upgradeDB => {
 			upgradeDB.createObjectStore(storeName);
-		})
-			.then(db => {
-				console.log(db)
-				return db.createObjectStore(storeName)
-					.catch(err => {
-						if (!(err instanceof ConstraintError)) {
-							console.log(err);
-							throw err;
-						}
-					})
-			});
+		});
 	}
 
 	get (key) {
