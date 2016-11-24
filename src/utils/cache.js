@@ -189,8 +189,7 @@ export class Cache {
 	 * @param {objcet} [fetchedResponse] - Response object
 	 * @param {object} [opts] - the cache.set options, see set()
 	 * @param {string|boolean} [opts.followLinks] - cache items found in link header:
-	 * - true|'shallow'|(!false) = just those in response
-	 * - 'recursive' = continue to follow link headers
+	 * - true = recursively follow link headers
 	 * - false = default, do not follow
 	 * @returns {object} - The fetchedResponse
 	 */
@@ -207,9 +206,6 @@ export class Cache {
 				return Promise.resolve(fetchedResponse);
 			}
 
-			// continue to follow?
-			const follow = followLinks === 'recursive' ? followLinks : false;
-
 			links
 				.filter(link => link.rel === 'precache') // TODO: pass as option
 				.forEach(link => {
@@ -217,7 +213,7 @@ export class Cache {
 						credentials: 'same-origin', // TODO: set based on original?
 						mode: 'cors' // matches requests as we use upgradeToCors
 					});
-					this.set(_req, { maxAge, maxEntries, followLinks: follow });
+					this.set(_req, { maxAge, maxEntries, followLinks });
 				})
 		}
 
