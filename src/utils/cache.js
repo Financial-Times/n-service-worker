@@ -189,8 +189,8 @@ export class Cache {
 	 * @param {objcet} [fetchedResponse] - Response object
 	 * @param {object} [opts] - the cache.set options, see set()
 	 * @param {string|boolean} [opts.followLinks] - cache items found in link header:
-	 * - true|'shallow' = just those in response
-	 * - 'deep' = continue to follow link headers
+	 * - true|'shallow'|(!false) = just those in response
+	 * - 'recursive' = continue to follow link headers
 	 * - false = default, do not follow
 	 * @returns {object} - The fetchedResponse
 	 */
@@ -199,16 +199,16 @@ export class Cache {
 
 		if (links && followLinks !== false) {
 
-			try {
-				// parse the link header
-				links = parseLinkHeader(links);
-			} catch (e) {
-				// abort if parsing fails
+			// parse the link header
+			links = parseLinkHeader(links);
+
+			if (links && links.length && links.length === 0) {
+				// abort if no link headers to follow
 				return Promise.resolve(fetchedResponse);
 			}
 
 			// continue to follow?
-			const follow = followLinks === 'deep' ? true : false;
+			const follow = followLinks === 'recursive' ? followLinks : false;
 
 			links
 				.filter(link => link.rel === 'precache') // TODO: pass as option
