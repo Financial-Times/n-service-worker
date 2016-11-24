@@ -3,10 +3,10 @@ import router from '../utils/router';
 import precache from '../utils/precache';
 import * as _url from 'url';
 import { getHandler } from '../utils/handlers';
-import { getFlag } from '../utils/flags'
+import { getFlag } from '../utils/flags';
 
 const cacheOptions = {
-	name: 'offline-ft'
+	name: 'offline-ft-v1'
 };
 
 const offlineLandingRequest = new Request ('/__offline/top-stories', {
@@ -32,7 +32,12 @@ precache(
  */
 const isHtmlRequest = (req) => {
 	const urlObj = _url.parse(req.url);
-	return (req.method === 'GET' && req.headers.get('accept').includes('text/html') && urlObj.protocol === 'https:' && /(local|www)(\.ft\.com)/.test(urlObj.hostname) && !/(^\/\_\_)/.test(urlObj.pathname) && getFlag('offlineLandingTestPage'));
+	return ( req.method === 'GET'
+				&& req.headers.get('accept').includes('text/html')
+				&& urlObj.protocol === 'https:'
+				&& /(local|www)(\.ft\.com)/.test(urlObj.hostname)
+				&& !/(^\/\_\_)/.test(urlObj.pathname)
+				&& getFlag('offlineLandingTestPage') );
 }
 
 // Find match in our cache
