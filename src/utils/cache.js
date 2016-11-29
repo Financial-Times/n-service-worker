@@ -1,4 +1,5 @@
 import Db from './db';
+import parseLinkHeader from './parse-link-headers';
 
 function addHeadersToResponse (res, headers) {
 	const response = res.clone()
@@ -36,34 +37,39 @@ export class Cache {
 	 * @param {objcet} [opts.response] - Response object to cache; skips fetching
 	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response. -1 for no caching
 	 * @param {number} [opts.maxEntries] - Max number of entries to keep in cache, defaults to 'infinite'
+	 * @param {string|boolean} [opts.followLinks] - cache items found in link header, see followLinkHeader()
 	 * @returns {object} - The Response
 	 */
-	set (request, { response, maxAge = 60, maxEntries } = { }) {
+	set (request, { response, maxAge = 60, maxEntries, followLinks = false } = { }) {
 
 		const fetchRequest = response ? Promise.resolve(response) : fetch(request);
-		return fetchRequest.then(fetchedResponse => {
-			if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
-				const url = typeof request === 'string' ? request : request.url;
+		return fetchRequest
+			.then(fetchedResponse => {
+					return this.followLinkHeader(fetchedResponse, { maxAge, maxEntries, followLinks });
+				})
+			.then(fetchedResponse => {
+				if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
+					const url = typeof request === 'string' ? request : request.url;
 
-				const respondWith = Promise.all([
-					this.cache.put(request, fetchedResponse.clone()),
-					maxAge !== -1 ? this.db.set(url, { expires: Date.now() + (maxAge * 1000) }) : null
-				])
-					.then(() => fetchedResponse)
+					const respondWith = Promise.all([
+						this.cache.put(request, fetchedResponse.clone()),
+						maxAge !== -1 ? this.db.set(url, { expires: Date.now() + (maxAge * 1000) }) : null
+					])
+						.then(() => fetchedResponse)
 
-				// we use setTimeout as this isn't important enough to be put immediately on the microtask queue
-				setTimeout(() => respondWith
-					.then(() => {
-						if (maxEntries) {
-							this.limit(maxEntries)
-						}
-					}))
+					// we use setTimeout as this isn't important enough to be put immediately on the microtask queue
+					setTimeout(() => respondWith
+						.then(() => {
+							if (maxEntries) {
+								this.limit(maxEntries)
+							}
+						}))
 
-				return respondWith;
-			} else {
-				return fetchedResponse;
-			}
-		})
+					return respondWith;
+				} else {
+					return fetchedResponse;
+				}
+			})
 	}
 
 	/**
@@ -176,6 +182,42 @@ export class Cache {
 					)
 			)
 			// .then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));
+	}
+
+	/**
+	 * Follow Link header - cache urls in link header with rel=precache
+	 * @param {objcet} [fetchedResponse] - Response object
+	 * @param {object} [opts] - the cache.set options, see set()
+	 * @param {string|boolean} [opts.followLinks] - cache items found in link header:
+	 * - true = recursively follow link headers
+	 * - false = default, do not follow
+	 * @returns {object} - The fetchedResponse
+	 */
+	followLinkHeader (fetchedResponse, { maxAge, maxEntries, followLinks = false } = {}) {
+		let links = fetchedResponse.headers.get('link');
+
+		if (links && followLinks !== false) {
+
+			// parse the link header
+			links = parseLinkHeader(links);
+
+			if (links && links.length && links.length === 0) {
+				// abort if no link headers to follow
+				return Promise.resolve(fetchedResponse);
+			}
+
+			links
+				.filter(link => link.rel === 'precache') // TODO: pass as option
+				.forEach(link => {
+					const _req = new Request(link.url, {
+						credentials: 'same-origin', // TODO: set based on original?
+						mode: 'cors' // matches requests as we use upgradeToCors
+					});
+					this.set(_req, { maxAge, maxEntries, followLinks });
+				})
+		}
+
+		return Promise.resolve(fetchedResponse);
 	}
 
 }
