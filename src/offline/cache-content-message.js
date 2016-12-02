@@ -1,4 +1,5 @@
 import cache from '../utils/cache';
+import getUuid from '../utils/get-uuid';
 
 self.addEventListener('message', ev => {
 	const msg = ev.data;
