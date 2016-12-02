@@ -32,5 +32,3 @@ router.get('/content/:uuid', request =>
 				fetch(request)
 		),
 options);
-
-
