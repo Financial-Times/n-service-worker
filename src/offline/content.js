@@ -13,9 +13,12 @@ router.get('/content/:uuid', request =>
 	getUuid()
 		.then(uuid =>
 			uuid ?
-				cache(`content:${uuid}`)
-					.then(cache => cache.get(request))
-					.then(response => response || fetch(request)) :
+				fetch(request)
+					.catch(e =>
+						cache(`content:${uuid}`)
+						.then(cache => cache.get(request))
+						.then(response => response || Promise.reject(e))
+					) :
 				fetch(request)
 		),
 options);
