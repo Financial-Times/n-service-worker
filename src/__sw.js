@@ -12,6 +12,7 @@ import './caches/image';
 
 // user-specific things
 import './offline/content';
+// import './offline/front-page';
 // import './caches/session';
 // import './caches/myft';
 // import './caches/ads'; *
@@ -30,5 +31,4 @@ self.addEventListener('fetch', ev => {
 	if (handler) {
 		ev.respondWith(handler(ev.request));
 	}
-
 });
