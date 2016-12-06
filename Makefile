@@ -4,8 +4,10 @@ test: verify #test-unit - disabled until fixed
 
 build-dev: watch
 
+PORT ?= 3010
+
 server:
-	http-server dist -p 3010 -c-1
+	http-server dist -p $(PORT) -c-1
 
 run: build-dev server
 
