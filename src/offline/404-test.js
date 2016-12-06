@@ -13,10 +13,14 @@ const offlineLandingRequest = new Request ('/__offline/landing', {
 	credentials: 'same-origin'
 });
 
-// precache offlineLandingRequest response + its link headers
+const offline404Request = new Request ('/__offline/404', {
+	credentials: 'same-origin'
+});
+
+// precache offlineLandingRequest and offline404Request responses + link headers
 precache(
 	cacheOptions.name,
-	[ offlineLandingRequest ],
+	[ offlineLandingRequest, offline404Request ],
 	{ maxAge: 60 * 60 * 2, followLinks: true } // follow and cache Link header
 );
 
@@ -60,7 +64,16 @@ router.get('/(.*)', (request, values, options) => {
 		return corsCacheOnly(request, values, options).catch(() => {
 
 			if (isHtmlRequest(request)) {
-				return corsCacheOnly(offlineLandingRequest, values, options);
+
+				if (/\/offline\//.test(request.url)) {
+					// safe to assume user has already seen the landing page
+					// as they are following an '__/offline' link. As we haven't
+					// found the content in the cache, return 'offline' 404
+					return corsCacheOnly(offline404Request, values, options);
+				} else {
+					// original* offline request. show landing page
+					return corsCacheOnly(offlineLandingRequest, values, options);
+				}
 			}
 
 			throw resErr;
