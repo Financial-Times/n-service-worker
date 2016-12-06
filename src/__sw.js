@@ -32,3 +32,7 @@ self.addEventListener('fetch', ev => {
 	}
 
 });
+
+self.addEventListener('activate', ev => {
+	ev.waitUntil(self.clients.claim());
+});
