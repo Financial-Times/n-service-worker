@@ -6,7 +6,7 @@ import precache from '../utils/precache';
 const fonts = ['MetricWeb-Regular', 'MetricWeb-Semibold', 'FinancierDisplayWeb-Regular'];
 const fontsVersion = '1.3.0';
 const options = {
-	origin: 'https://next-geebee.ft.com',
+	origin: 'https://www.ft.com',
 	cache: {
 		name: 'fonts',
 		maxEntries: 5
@@ -14,9 +14,9 @@ const options = {
 };
 precache(
 	options.cache.name,
-	fonts.map(font => `https://next-geebee.ft.com/build/v2/files/o-fonts-assets@${fontsVersion}/${font}.woff?`),
+	fonts.map(font => `https://www.ft.com/__origami/service/build/v2/files/o-fonts-assets@${fontsVersion}/${font}.woff?`),
 	{ maxAge: -1, maxEntries: options.cache.maxEntries }
 );
 
 // fonts route
-router.get('/build/v2/files/o-fonts-assets@:version/:font.woff', getHandler({strategy: 'cacheFirst'}), options);
+router.get('/__origami/service/build/v2/files/o-fonts-assets@:version/:font.woff', getHandler({strategy: 'cacheFirst'}), options);

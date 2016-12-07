@@ -6,7 +6,7 @@ import { getHandler } from '../utils/handlers';
 // TODO have one cache for our more actively developed apps,
 // another with longer cache life for errors, opt-out etc
 const options = {
-	origin: 'https://next-geebee.ft.com',
+	origin: 'https://www.ft.com',
 	cache: {
 		name: 'built-assets',
 		maxEntries: 20,
@@ -25,5 +25,5 @@ self.addEventListener('message', msg => {
 const cacheFirst = getHandler({strategy: 'cacheFirst', upgradeToCors: true})
 
 // prod
-router.get('/hashed-assets/:appName/:assetHash/:cssName.css', cacheFirst, options);
-router.get('/hashed-assets/:appName/:assetHash/:cssName.js', cacheFirst, options);
+router.get('/__assets/hashed/:appName/:assetHash/:cssName.css', cacheFirst, options);
+router.get('/__assets/hashed/:appName/:assetHash/:cssName.js', cacheFirst, options);
