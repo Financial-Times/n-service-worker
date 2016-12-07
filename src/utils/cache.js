@@ -1,6 +1,7 @@
 import Db from './db';
 import parseLinkHeader from './parse-link-headers';
 import lowResImage from './low-res-image';
+import offlineContent from './offline-content';
 
 function addHeadersToResponse (res, headers) {
 	const response = res.clone()
@@ -188,6 +189,7 @@ export class Cache {
 	/**
 	 * Follow Link header - cache urls in link header with rel=precache
 	 * will attempt to cache low res version of image requests
+	 * and "offline" versions of content pages
 	 * @param {objcet} [fetchedResponse] - Response object
 	 * @param {object} [opts] - the cache.set options, see set()
 	 * @param {string|boolean} [opts.followLinks] - cache items found in link header:
@@ -211,11 +213,16 @@ export class Cache {
 			links
 				.filter(link => link.rel === 'precache') // TODO: pass as option
 				.forEach(link => {
-					let lowResResponse;
+					let response;
 
 					if (link.as === 'image') {
 						// cache low res version of image
-						lowResResponse = lowResImage(link.url);
+						response = lowResImage(link.url);
+					}
+
+					if (link.as === 'document') {
+						// cache offline version of content
+						response = offlineContent(link.url);
 					}
 
 					// cache request
@@ -224,7 +231,7 @@ export class Cache {
 						mode: 'cors' // matches requests as we use upgradeToCors
 					});
 
-					this.set(_req, { response: lowResResponse, maxAge, maxEntries, followLinks });
+					this.set(_req, { response, maxAge, maxEntries, followLinks });
 				});
 		}
 
