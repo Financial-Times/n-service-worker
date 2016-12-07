@@ -2,8 +2,8 @@
 describe('built-assets', () => {
 
 	[
-		['css', 'https://next-geebee.ft.com/hashed-assets/front-page/a13b0424/main.css'],
-		['js', 'https://next-geebee.ft.com/hashed-assets/front-page/e763894c/main-without-n-ui.js'],
+		['css', 'https://www.ft.com/__assets/hashed/front-page/a13b0424/main.css'],
+		['js', 'https://www.ft.com/__assets/hashed/front-page/e763894c/main-without-n-ui.js'],
 	].forEach(([label, url]) =>
 		SWTestHelper.checkCacheIsUsed({
 			assetLabel: label,

@@ -3,7 +3,7 @@ import router from '../utils/router';;
 import { getHandler } from '../utils/handlers';
 
 const options = {
-	origin: 'https://next-geebee.ft.com',
+	origin: 'https://www.ft.com',
 	cache: {
 		name: 'n-ui',
 		maxEntries: 8
@@ -12,4 +12,4 @@ const options = {
 
 // n-ui route
 // use toolbox.fastest as we want to send requests to check last-modified headers for n-ui bundle
-router.get('/n-ui/*', getHandler({strategy: 'fastest', upgradeToCors: true}), options);
+router.get('/__assets/n-ui/*', getHandler({strategy: 'fastest', upgradeToCors: true}), options);
