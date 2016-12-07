@@ -19,7 +19,7 @@ const defaultOpts = {
 // url path starts with '/__origami/service/image/'
 const isImageServicePath = (path) => /^\/\_\_origami\/service\/image\//.test(path);
 
-const requestViaImageService = (url) => `https://www.ft.com/__origami/service/image/v2/images/raw/${encodeURIComponent(url)}`;
+const requestViaImageService = (url) => `/__origami/service/image/v2/images/raw/${encodeURIComponent(url)}`;
 
 export default function (url) {
 	let req;
