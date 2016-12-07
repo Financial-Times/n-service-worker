@@ -3,7 +3,7 @@ import router from '../utils/router';;
 import { getHandler } from '../utils/handlers';
 import precache from '../utils/precache';
 
-const fonts = ['MetricWeb-Regular', 'MetricWeb-Semibold', 'FinancierDisplayWeb-Regular'];
+const fonts = ['MetricWeb-Regular', 'MetricWeb-Semibold', 'MetricWeb-Bold', 'FinancierDisplayWeb-Regular'];
 const fontsVersion = '1.3.0';
 const options = {
 	origin: 'https://next-geebee.ft.com',
