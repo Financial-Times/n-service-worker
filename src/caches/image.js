@@ -2,6 +2,7 @@ import router from '../utils/router';;
 
 import { getHandler } from '../utils/handlers';
 import precache from '../utils/precache';
+import { image as precacheImages} from '../../config/precache';
 
 const options = {
 	origin: 'https://www.ft.com',
@@ -10,18 +11,9 @@ const options = {
 	}
 };
 
-const headerImages = [
-	'fticon-v1:hamburger?source=o-icons&tint=%23505050,%23505050&format=svg',
-	'ftlogo:brand-ft-masthead?source=o-header&tint=%23505050,%23505050&format=svg',
-	'ftlogo:brand-myft?source=o-header&tint=%23505050,%23505050&format=svg',
-	'fticon-v1:search?source=o-icons&tint=%23505050,%23505050&format=svg'
-]
-
 precache(
 	options.cache.name,
-	headerImages.map(image => new Request(`https://www.ft.com/__origami/service/image/v2/images/raw/${image}`, {
-		mode: 'cors'
-	})),
+	precacheImages.map(image => new Request(image, { mode: 'cors'	})),
 	{ maxAge: -1 }
 );
 

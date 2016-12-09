@@ -2,9 +2,8 @@ import router from '../utils/router';;
 
 import { getHandler } from '../utils/handlers';
 import precache from '../utils/precache';
+import { fonts } from '../../config/precache';
 
-const fonts = ['MetricWeb-Regular', 'MetricWeb-Semibold', 'FinancierDisplayWeb-Regular'];
-const fontsVersion = '1.3.0';
 const options = {
 	origin: 'https://www.ft.com',
 	cache: {
@@ -12,11 +11,8 @@ const options = {
 		maxEntries: 5
 	}
 };
-precache(
-	options.cache.name,
-	fonts.map(font => `https://www.ft.com/__origami/service/build/v2/files/o-fonts-assets@${fontsVersion}/${font}.woff?`),
-	{ maxAge: -1, maxEntries: options.cache.maxEntries }
-);
+
+precache(options.cache.name, fonts);
 
 // fonts route
 router.get('/__origami/service/build/v2/files/o-fonts-assets@:version/:font.woff', getHandler({strategy: 'cacheFirst'}), options);
