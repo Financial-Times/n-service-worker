@@ -9,7 +9,7 @@ const cacheOptions = {
 	name: 'offline-ft-v1'
 };
 
-const offlineLandingRequest = new Request ('/__offline/landing', {
+const offlineLandingRequest = new Request ('/__offline/top-stories', {
 	credentials: 'same-origin'
 });
 
@@ -17,7 +17,7 @@ const offlineLandingRequest = new Request ('/__offline/landing', {
 precache(
 	cacheOptions.name,
 	[ offlineLandingRequest ],
-	{ maxAge: 60 * 60 * 2, followLinks: true } // follow and cache Link header
+	{ maxAge: 60 * 60 * 2, followLinks: 'deep' } // follow and cache Link header
 );
 
 /**
