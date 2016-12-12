@@ -12,11 +12,17 @@ const cacheOptions = {
 };
 
 const offlineLanding404Request = new Request ('/__offline/landing', {
-	credentials: 'same-origin'
+	credentials: 'same-origin',
+	headers: {
+		'x-requested-with': 'ft-sw'
+	}
 });
 
 const offlineTopStoriesRequest = new Request ('/__offline/top-stories', {
-	credentials: 'same-origin'
+	credentials: 'same-origin',
+	headers: {
+		'x-requested-with': 'ft-sw'
+	}
 });
 
 let landingPage = getFlag('offlineLandingTestPage') ? offlineLanding404Request : offlineTopStoriesRequest;

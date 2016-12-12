@@ -19,7 +19,10 @@ export default function (url) {
 	}
 
 	req = new Request(_url.format(urlObj), {
-		credentials: 'same-origin'
+		credentials: 'same-origin',
+		headers: {
+			'x-requested-with': 'ft-sw'
+		}
 	});
 
 	return fetch(req);
