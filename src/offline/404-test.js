@@ -9,9 +9,17 @@ const cacheOptions = {
 	name: 'offline-ft-v1'
 };
 
-const offlineLandingRequest = new Request ('/__offline/landing', {
-	credentials: 'same-origin'
-});
+let offlineLandingRequest
+
+if (getFlag('offlineLandingTestPage')) {
+	offlineLandingRequest = new Request ('/__offline/landing', {
+		credentials: 'same-origin'
+	});
+} else {
+	offlineLandingRequest = new Request ('/__offline/top-stories', {
+		credentials: 'same-origin'
+	});
+}
 
 // precache offlineLandingRequest response + its link headers
 precache(
@@ -54,8 +62,6 @@ const corsCacheOnly = getHandler({strategy: 'cacheOnly', upgradeToCors: true})
  */
 router.get('/(.*)', (request, values, options) => {
 	return fetch(request).catch(resErr => {
-
-		if (!getFlag('offlineLandingTestPage')) throw resErr;
 
 		return corsCacheOnly(request, values, options).catch(() => {
 
