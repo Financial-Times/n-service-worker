@@ -9,8 +9,11 @@ const cacheOptions = {
 	name: 'offline-ft-v1'
 };
 
-const offlineLandingRequest = new Request ('/__offline/landing', {
-	credentials: 'same-origin'
+const offlineLandingRequest = new Request ('/__offline/top-stories', {
+	credentials: 'same-origin',
+	headers: {
+		'x-requested-with': 'ft-sw'
+	}
 });
 
 // precache offlineLandingRequest response + its link headers
