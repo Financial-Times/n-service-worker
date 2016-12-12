@@ -15,7 +15,7 @@ class Route {
 		this.options = options;
 	}
 
-	makeHandler (name) {
+	makeHandler () {
 		return function (data, event, response) {
 			return this.handler(data, event, response, this.options);
 		}.bind(this);
@@ -26,7 +26,7 @@ class Route {
 /* router */
 class Router {
 
-	constructor (opts) {
+	constructor () {
 		this.routes = new Map();
 	}
 
@@ -39,7 +39,7 @@ class Router {
 	match (command) {
 		const routes = keyMatch(this.routes, command);
 		if (routes.length > 0) {
-			return routes[0].makeHandler(command);
+			return routes[0].makeHandler();
 		}
 		return null;
 	}
