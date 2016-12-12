@@ -33,7 +33,10 @@ self.addEventListener('fetch', ev => {
 		replyToEventClient(ev, {ev: ev.request.url, type: 'clientId', clientId: ev.clientId});
 		broadcast({ev: ev.request.url, type: 'broadcast'});
 	}
+});
 
+self.addEventListener('activate', ev => {
+	ev.waitUntil(self.clients.claim());
 });
 
 self.addEventListener('message', messageHandler);

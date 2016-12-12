@@ -11,14 +11,13 @@ const replyToPage = (event) => replyTo.bind(null, event.ports[0]);
 // const replyToClient = (ev, data) => clients.get(ev.clientId).then(client => replyTo(client, data));
 
 export function messageHandler (ev) {
-	console.log('handler called with', ev)
 	const data = ev.data && ev.data.data ? ev.data.data : {};
 	const res = replyToPage(ev);
 
 	const handler = router.match(ev.data.command);
 
 	if (handler) {
-		return handler(data, res);
+		return handler(data, ev, res);
 	}
 }
 

@@ -1,15 +1,26 @@
 import cache from './cache';
 
+const precachePromises = [];
+
 // NOTE: not using sw toolbox's precache, as can't set the cache name
 export default (name, urls, { maxAge, maxEntries, followLinks } = { }) => {
 	self.addEventListener('install', ev => {
-		ev.waitUntil(
-			Promise.all(
-				urls.map(url =>
-					cache(name)
-						.then(cache => cache.set(url, { maxAge, maxEntries, followLinks }))
-				)
+		const promise = Promise.all(
+			urls.map(url =>
+				cache(name)
+					.then(cache => cache.set(url, { maxAge, maxEntries, followLinks }))
 			)
 		);
+		precachePromises.push(promise);
+		ev.waitUntil(promise);
 	});
 }
+
+self.addEventListener('install', ev => {
+	ev.waitUntil(
+		Promise.all(precachePromises)
+		.then(() => {
+			return self.skipWaiting();
+		})
+	);
+});
