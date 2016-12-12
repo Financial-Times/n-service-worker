@@ -44,8 +44,7 @@ const isHtmlRequest = (req) => {
 				&& req.headers.get('accept').includes('text/html')
 				&& urlObj.protocol === 'https:'
 				&& /(local|www)(\.ft\.com)/.test(urlObj.hostname)
-				&& !/(^\/\_\_)/.test(urlObj.pathname)
-				&& getFlag('offlineLandingTestPage') );
+				&& !/(^\/\_\_)/.test(urlObj.pathname));
 }
 
 // Find match in our cache
