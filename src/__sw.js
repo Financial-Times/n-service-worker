@@ -30,7 +30,6 @@ self.addEventListener('fetch', ev => {
 	if (handler) {
 		ev.respondWith(handler(ev.request));
 	}
-
 });
 
 self.addEventListener('activate', ev => {
