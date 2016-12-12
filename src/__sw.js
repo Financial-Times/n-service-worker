@@ -24,6 +24,7 @@ import './caches/image';
 import './offline/404-test';
 
 import router from './utils/router';
+import { messageHandler } from './messages';
 
 self.addEventListener('fetch', ev => {
 	const handler = router.match(ev.request);
@@ -35,3 +36,5 @@ self.addEventListener('fetch', ev => {
 self.addEventListener('activate', ev => {
 	ev.waitUntil(self.clients.claim());
 });
+
+self.addEventListener('message', messageHandler);
