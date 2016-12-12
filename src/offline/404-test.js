@@ -13,14 +13,14 @@ const cacheOptions = {
 
 const offlineLanding404Request = new Request ('/__offline/landing', {
 	credentials: 'same-origin',
-  headers: {
+  	headers: {
 		'x-requested-with': 'ft-sw'
 	}
 });
 
 const offlineTopStoriesRequest = new Request ('/__offline/top-stories', {
 	credentials: 'same-origin',
-  headers: {
+  	headers: {
 		'x-requested-with': 'ft-sw'
 	}
 });
