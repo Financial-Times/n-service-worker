@@ -11,8 +11,13 @@ server:
 
 run: build-dev server
 
-deploy: build-production
-	nht deploy-static `find . -path "./dist/*"` --strip 1 --bucket ft-next-service-worker-prod --cache-control "max-age=0" --surrogate-control "max-age=600; stale-while-revalidate=60; stale-on-error=3600" --monitor
+deploy: build-production build-appcache
+	nht deploy-static `find . -path "./dist/*"` --strip 1 --bucket ft-next-service-worker-prod \
+		--cache-control "max-age=0" --surrogate-control "max-age=600; stale-while-revalidate=60; stale-on-error=3600" --monitor
+
+build-appcache:
+	node appcache/generate.js
+	cp appcache/loader.html dist/__appcache-manifest-loader.html
 
 test-unit:
 	karma start

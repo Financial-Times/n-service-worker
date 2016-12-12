@@ -8,7 +8,7 @@ describe('images', () => {
 	]
 	.map(image => {
 
-		const url = `https://next-geebee.ft.com/image/v1/images/raw/${image}`;
+		const url = `https://www.ft.com/__origami/service/image/v2/images/raw/${image}`;
 		const expiry = 'no-expiry';
 		const cacheName ='image';
 
@@ -29,10 +29,10 @@ describe('images', () => {
 	});
 
 	[
-		['icons', 'https://next-geebee.ft.com/image/v1/images/raw/fticon:arrow-right?source=o-icons&tint=%239E2F50,%239E2F50&format=svg'],
-		['logos', 'https://next-geebee.ft.com/image/v1/images/raw/ftlogo:brand-myft?source=next&tint=%239E2F50,%239E2F50&format=svg'],
-		['social icons', 'https://next-geebee.ft.com/image/v1/images/raw/ftsocial:linkedin?source=o-share&format=svg'],
-		['next assets', 'https://next-geebee.ft.com/assets/backgrounds/header-markets-data.png']
+		['icons', 'https://www.ft.com/__origami/service/image/v2/images/raw/fticon:arrow-right?source=o-icons&tint=%239E2F50,%239E2F50&format=svg'],
+		['logos', 'https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo:brand-myft?source=next&tint=%239E2F50,%239E2F50&format=svg'],
+		['social icons', 'https://www.ft.com/__origami/service/image/v2/images/raw/ftsocial:linkedin?source=o-share&format=svg'],
+		['next assets', 'https://www.ft.com/__assets/creatives/backgrounds/header-markets-data.png']
 	].forEach(([label, url]) =>
 		SWTestHelper.checkCacheIsUsed({
 			assetLabel: label,
