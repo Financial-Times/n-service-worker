@@ -1,32 +1,51 @@
 import router from '../utils/router';
 
 import precache from '../utils/precache';
+import cache from '../utils/cache';
 import * as _url from 'url';
 import { getHandler } from '../utils/handlers';
 import { getFlag } from '../utils/flags';
 
 const cacheOptions = {
-	name: 'offline-ft-v1'
+	name: 'offline-ft-v1',
+	settings: { maxAge: 60 * 60 * 2, followLinks: true } // follow and cache Link header
 };
 
-let offlineLandingRequest
+const offlineLanding404Request = new Request ('/__offline/landing', {
+	credentials: 'same-origin'
+});
 
-if (getFlag('offlineLandingTestPage')) {
-	offlineLandingRequest = new Request ('/__offline/landing', {
-		credentials: 'same-origin'
-	});
-} else {
-	offlineLandingRequest = new Request ('/__offline/top-stories', {
-		credentials: 'same-origin'
-	});
-}
+const offlineTopStoriesRequest = new Request ('/__offline/top-stories', {
+	credentials: 'same-origin'
+});
 
-// precache offlineLandingRequest response + its link headers
+let landingPage = getFlag('offlineLandingTestPage') ? offlineLanding404Request : offlineTopStoriesRequest;
+
+// precache offlineLandingRequest response + its link headers on 'install'
 precache(
 	cacheOptions.name,
-	[ offlineLandingRequest ],
-	{ maxAge: 60 * 60 * 2, followLinks: true } // follow and cache Link header
+	[ landingPage ],
+	cacheOptions.settings
 );
+
+// listen for flagUpdate events
+self.addEventListener('message', (ev) => {
+	const d = ev.data;
+	if (d.type && d.type === 'flagsUpdate') {
+
+		const req = d.flags && d.flags.offlineLandingTestPage ? offlineLanding404Request : offlineTopStoriesRequest;
+
+		/**
+		 * If new request is different from current landingPage then cache
+		 * the new landingPage request and update landingPage reference
+		 */
+		if (req !== landingPage) {
+			cache(cacheOptions.name)
+				.then(cache => cache.set(req, cacheOptions.settings))
+				.then(() => landingPage = req);
+		}
+	}
+});
 
 /**
  * Only respond with landing page if:
@@ -65,7 +84,7 @@ router.get('/(.*)', (request, values, options) => {
 		return corsCacheOnly(request, values, options).catch(() => {
 
 			if (isHtmlRequest(request)) {
-				return corsCacheOnly(offlineLandingRequest, values, options);
+				return corsCacheOnly(landingPage, values, options);
 			}
 
 			throw resErr;
