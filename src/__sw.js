@@ -24,14 +24,12 @@ import './caches/image';
 import './offline/404-test';
 
 import router from './utils/router';
-import { replyToEventClient, messageHandler, broadcast } from './messages';
+import { messageHandler } from './messages';
 
 self.addEventListener('fetch', ev => {
 	const handler = router.match(ev.request);
 	if (handler) {
 		ev.respondWith(handler(ev.request));
-		replyToEventClient(ev, {ev: ev.request.url, type: 'clientId', clientId: ev.clientId});
-		broadcast({ev: ev.request.url, type: 'broadcast'});
 	}
 
 });

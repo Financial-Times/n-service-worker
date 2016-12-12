@@ -9,7 +9,7 @@ const cacheOptions = {
 	name: 'offline-ft-v1'
 };
 
-const offlineLandingRequest = new Request ('/__offline/landing', {
+const offlineLandingRequest = new Request ('/__offline/top-stories', {
 	credentials: 'same-origin'
 });
 
@@ -60,6 +60,7 @@ router.get('/(.*)', (request, values, options) => {
 		return corsCacheOnly(request, values, options).catch(() => {
 
 			if (isHtmlRequest(request)) {
+				console.log('offline landing page');
 				return corsCacheOnly(offlineLandingRequest, values, options);
 			}
 

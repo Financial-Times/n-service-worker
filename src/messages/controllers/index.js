@@ -1,5 +1,5 @@
 
 import { router } from '../routing';
-import lookController from './look';
+import clientIdLookupController from './client-id-lookup';
 
-router.command('look', lookController);
+router.command('getClientId', clientIdLookupController);
