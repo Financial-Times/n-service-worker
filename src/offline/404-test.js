@@ -9,7 +9,7 @@ const cacheOptions = {
 	name: 'offline-ft-v1'
 };
 
-const offlineLandingRequest = new Request ('/__offline/top-stories', {
+const offlineLandingRequest = new Request ('/__offline/landing', {
 	credentials: 'same-origin'
 });
 
@@ -36,7 +36,8 @@ const isHtmlRequest = (req) => {
 				&& req.headers.get('accept').includes('text/html')
 				&& urlObj.protocol === 'https:'
 				&& /(local|www)(\.ft\.com)/.test(urlObj.hostname)
-				&& !/(^\/\_\_)/.test(urlObj.pathname));
+				&& !/(^\/\_\_)/.test(urlObj.pathname)
+				&& getFlag('offlineLandingTestPage') );
 }
 
 // Find match in our cache
@@ -54,10 +55,11 @@ const corsCacheOnly = getHandler({strategy: 'cacheOnly', upgradeToCors: true})
 router.get('/(.*)', (request, values, options) => {
 	return fetch(request).catch(resErr => {
 
+		if (!getFlag('offlineLandingTestPage')) throw resErr;
+
 		return corsCacheOnly(request, values, options).catch(() => {
 
 			if (isHtmlRequest(request)) {
-				console.log('offline landing page');
 				return corsCacheOnly(offlineLandingRequest, values, options);
 			}
 
