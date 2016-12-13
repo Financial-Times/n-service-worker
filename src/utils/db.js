@@ -25,7 +25,7 @@ export default class {
 		});
 	}
 
-	getAllKeys() {
+	getAllKeys () {
 		return this.idb.then(db => {
 			return db.transaction(this.storeName)
 				.objectStore(this.storeName)
