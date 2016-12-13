@@ -10,9 +10,11 @@ import idbForSource from '../../../config/idb-client-map';
 
 export default function (data, source, event, res) {
 	const { url } = data;
-	const { dbName, storeName } = idbForSource(source);
+	const _db = idbForSource(source);
 
-	if (!dbName || !storeName) return { error: `No idb found for: ${source}` };
+	if (!_db) return res({ error: `No idb found for: ${source}` });
+
+	const { storeName, dbName } = _db;
 
 	const requestKeyValStore = new Db(storeName, { dbName });
 
