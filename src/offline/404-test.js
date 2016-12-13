@@ -8,7 +8,7 @@ import { getFlag } from '../utils/flags';
 
 const cacheOptions = {
 	name: 'offline-ft-v1',
-	settings: { maxAge: 60 * 60 * 2, followLinks: true } // follow and cache Link header
+	settings: { maxAge: 60 * 60 * 2, followLinks: true, type: 'document' } // follow and cache Link header
 };
 
 const offlineLanding404Request = new Request ('/__offline/landing', {

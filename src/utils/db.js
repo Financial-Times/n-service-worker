@@ -17,6 +17,22 @@ export default class {
 		});
 	}
 
+	getAll () {
+		return this.idb.then(db => {
+			return db.transaction(this.storeName)
+				.objectStore(this.storeName)
+				.getAll()
+		});
+	}
+
+	getAllKeys() {
+		return this.idb.then(db => {
+			return db.transaction(this.storeName)
+				.objectStore(this.storeName)
+				.getAllKeys()
+		});
+	}
+
 
 	set (key, val) {
 		return this.idb.then(db => {
