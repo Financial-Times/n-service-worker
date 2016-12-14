@@ -17,7 +17,9 @@ deploy: build-production build-appcache
 
 build-appcache:
 	node appcache/generate.js
+	node appcache/generate.js landing
 	cp appcache/loader.html dist/__appcache-manifest-loader.html
+	cp appcache/loader-landing.html dist/__appcache-manifest-loader-landing.html
 
 test-unit:
 	karma start
