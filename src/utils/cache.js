@@ -44,6 +44,7 @@ export class Cache {
 	 */
 	set (request, { response, type = null, maxAge = 60, maxEntries, followLinks = false } = { }) {
 
+		// TODO: use this.networkCacheFetch(request) in place of fetch(request)
 		const fetchRequest = response ? Promise.resolve(response) : fetch(request);
 		return fetchRequest
 			.then(fetchedResponse => {
@@ -55,7 +56,8 @@ export class Cache {
 
 					let cacheMeta = {
 						cached_ts: Date.now(),
-						type
+						type,
+						etag: fetchedResponse.headers.get('etag')
 					}
 
 					if (maxAge !== -1) cacheMeta.expires = Date.now() + (maxAge * 1000)
@@ -207,7 +209,8 @@ export class Cache {
 	followLinkHeader (fetchedResponse, { maxAge, maxEntries, followLinks = false } = {}) {
 		let links = fetchedResponse.headers.get('link');
 
-		if (links && followLinks !== false) {
+		// dont follow link headers of content that hasn't changed (304)
+		if (links && followLinks !== false && fetchedResponse.status !== 304) {
 
 			// parse the link header
 			links = parseLinkHeader(links);
@@ -243,6 +246,40 @@ export class Cache {
 		}
 
 		return Promise.resolve(fetchedResponse);
+	}
+
+
+	/**
+	 * WIP
+	 * If resource is already in the cache, we will upgrade the request to pass
+	 * a 'If-None-Match' header with the cached resource 'etag' so that we can
+	 * recieve a 304 response on content we already have.
+	 *
+	 * Note: Currently chrome does not support setting the request.cache,
+	 * so this will not currently work.
+	 * https://bugs.chromium.org/p/chromium/issues/detail?id=453190
+	 */
+	networkCacheFetch (request) {
+		// check if request is already cached
+		return this.db.get(request.url)
+			.then(fileMeta => {
+				// not found error
+				if (!fileMeta || !fileMeta.etag) throw new Error(`${request.url} not in cache!`);
+				return fileMeta.etag;
+			})
+			.then(etag => {
+				// upgrade request headers to allow 304 responses
+				const req = new Request(request, {
+					headers: {
+						'If-None-Match': etag
+					},
+					cache: 'no-store'
+				});
+				return fetch(req);
+			})
+			.catch(err => {
+				return fetch(request);
+			});
 	}
 
 }
