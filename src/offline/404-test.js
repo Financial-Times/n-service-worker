@@ -74,7 +74,15 @@ const isHtmlRequest = (req) => {
 
 // Find match in our cache
 // NOTE: we use upgrade to cors as Link header caching uses cors mode
-const corsCacheOnly = getHandler({strategy: 'cacheOnly', upgradeToCors: true})
+const corsCacheOnly = getHandler({strategy: 'cacheOnly', upgradeToCors: true});
+
+function networkThenCache (request, values, options) {
+	return fetch(request).catch(() => corsCacheOnly(request, values, options));
+}
+
+function cacheThenNetwork (request, values, options) {
+	return corsCacheOnly(request, values, options).catch(() => fetch(request));
+}
 
 /**
  * Catch All
@@ -85,17 +93,19 @@ const corsCacheOnly = getHandler({strategy: 'cacheOnly', upgradeToCors: true})
  *  - mount landing page on origin restricted catch all
  */
 router.get('/(.*)', (request, values, options) => {
-	return fetch(request).catch(resErr => {
+	let req;
 
-		return corsCacheOnly(request, values, options).catch(() => {
+	if(navigator.onLine) {
+		req = networkThenCache(request, values, options);
+	} else {
+		req = cacheThenNetwork(request, values, options);
+	}
 
-			if (isHtmlRequest(request)) {
-				return corsCacheOnly(landingPage, values, options);
-			}
-
-			throw resErr;
-		});
-
+	return req.catch((err) => {
+		if (isHtmlRequest(request)) {
+			return corsCacheOnly(landingPage, values, options);
+		}
+		throw err;
 	});
 }, {
 	origin: /[\s\S]*/, // match all origins
