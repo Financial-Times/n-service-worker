@@ -55,7 +55,7 @@ export class Cache {
 
 					let cacheMeta = {
 						cached_ts: Date.now(),
-						type: type
+						type
 					}
 
 					if (maxAge !== -1) cacheMeta.expires = Date.now() + (maxAge * 1000)
@@ -221,7 +221,6 @@ export class Cache {
 				.filter(link => link.rel === 'precache') // TODO: pass as option
 				.forEach(link => {
 					let response;
-					let type = link.as;
 
 					if (link.as === 'image') {
 						// cache low res version of image
@@ -239,7 +238,7 @@ export class Cache {
 						mode: 'cors' // matches requests as we use upgradeToCors
 					});
 
-					this.set(_req, { response, type, maxAge, maxEntries, followLinks });
+					this.set(_req, { response, type: link.as, maxAge, maxEntries, followLinks });
 				});
 		}
 
