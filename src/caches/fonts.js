@@ -2,7 +2,7 @@ import router from '../utils/router';;
 
 import { getHandler } from '../utils/handlers';
 import precache from '../utils/precache';
-import { fonts } from '../../config/precache';
+import { sw as precacheConfig} from '../../config/precache';
 
 const options = {
 	origin: 'https://www.ft.com',
@@ -12,7 +12,7 @@ const options = {
 	}
 };
 
-precache(options.cache.name, fonts);
+precache(options.cache.name, prechaceConfig.fonts);
 
 // fonts route
 router.get('/__origami/service/build/v2/files/o-fonts-assets@:version/:font.woff', getHandler({strategy: 'cacheFirst'}), options);
