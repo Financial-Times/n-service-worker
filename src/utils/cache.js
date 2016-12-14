@@ -42,7 +42,7 @@ export class Cache {
 	 * @param {string|boolean} [opts.followLinks] - cache items found in link header, see followLinkHeader()
 	 * @returns {object} - The Response
 	 */
-	set (request, { response, maxAge = 60, maxEntries, followLinks = false } = { }) {
+	set (request, { response, type = null, maxAge = 60, maxEntries, followLinks = false } = { }) {
 
 		const fetchRequest = response ? Promise.resolve(response) : fetch(request);
 		return fetchRequest
@@ -53,9 +53,16 @@ export class Cache {
 				if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
 					const url = typeof request === 'string' ? request : request.url;
 
+					let cacheMeta = {
+						cached_ts: Date.now(),
+						type
+					}
+
+					if (maxAge !== -1) cacheMeta.expires = Date.now() + (maxAge * 1000)
+
 					const respondWith = Promise.all([
 						this.cache.put(request, fetchedResponse.clone()),
-						maxAge !== -1 ? this.db.set(url, { expires: Date.now() + (maxAge * 1000) }) : null
+						maxAge !== -1 ? this.db.set(url, cacheMeta) : null
 					])
 						.then(() => fetchedResponse)
 
@@ -231,7 +238,7 @@ export class Cache {
 						mode: 'cors' // matches requests as we use upgradeToCors
 					});
 
-					this.set(_req, { response, maxAge, maxEntries, followLinks });
+					this.set(_req, { response, type: link.as, maxAge, maxEntries, followLinks });
 				});
 		}
 
