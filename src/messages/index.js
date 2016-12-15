@@ -16,3 +16,10 @@ export function messageHandler (ev) {
 		return handler(data, source, ev, res);
 	}
 }
+
+export function broadcast (command, data={}) {
+	let msg = { command, data };
+	clients.matchAll().then(clients => {
+		clients.forEach(client => client.postMessage(msg));
+	})
+}

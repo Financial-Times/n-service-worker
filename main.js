@@ -29,10 +29,32 @@ const register = flags => {
 			return unregister();
 		}
 		return navigator.serviceWorker.register('/__sw.js?cache-bust=1')
-			.then(registration =>
-				passFlags(JSON.parse(JSON.stringify(flags))) // to avoid error caused by the getters
-					.then(() => registration)
-			);
+			.then(registration => {
+
+				// signify install event to window
+				registration.onupdatefound = function() {
+					// The updatefound event implies that registration.installing is set; see
+					// https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-container-updatefound-event
+					const installingWorker = registration.installing;
+
+					installingWorker.onstatechange = function() {
+						switch (installingWorker.state) {
+							case 'installed':
+								if (!navigator.serviceWorker.controller) {
+									window.postMessage({command: 'precacheDone'}, '*');
+								}
+							break;
+
+							case 'redundant':
+								throw Error('The installing service worker became redundant.');
+						}
+
+					}
+				}
+
+				return passFlags(JSON.parse(JSON.stringify(flags)));
+			}) // to avoid error caused by the getters
+			.then(() => registration);
 	} else {
 		return Promise.reject('Service Worker unavailable, or serviceWorker flag off');
 	}

@@ -1,4 +1,5 @@
 import router from '../utils/router';
+import { broadcast } from '../messages';
 
 import precache from '../utils/precache';
 import cache from '../utils/cache';
@@ -115,6 +116,7 @@ router.get('/(.*)', (request, values, options) => {
 
 	return req.catch((err) => {
 		if (isHtmlRequest(request)) {
+			broadcast('offlineLanding', { target: request.url });
 			return corsCacheOnly(landingPage, values, options);
 		}
 		throw err;
