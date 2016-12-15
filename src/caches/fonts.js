@@ -12,7 +12,7 @@ const options = {
 	}
 };
 
-precache(options.cache.name, precacheConfig.fonts);
+precache(options.cache.name, precacheConfig.fonts, { maxAge: -1 });
 
 // fonts route
 router.get('/__origami/service/build/v2/files/o-fonts-assets@:version/:font.woff', getHandler({strategy: 'cacheFirst'}), options);
