@@ -57,7 +57,7 @@ self.addEventListener('message', (ev) => {
 
 self.addEventListener('message', (ev) => {
 	const d = ev.data;
-	if (d.type && d.type === 'documentOnLoad') {
+	if (d.type && d.type === 'updateCache') {
 
 		// on refresh message update the cache
 		cache(cacheOptions.name)
