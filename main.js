@@ -32,12 +32,12 @@ const register = flags => {
 			.then(registration => {
 
 				// signify install event to window
-				registration.onupdatefound = function() {
+				registration.onupdatefound = function () {
 					// The updatefound event implies that registration.installing is set; see
 					// https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-container-updatefound-event
 					const installingWorker = registration.installing;
 
-					installingWorker.onstatechange = function() {
+					installingWorker.onstatechange = function () {
 						switch (installingWorker.state) {
 							case 'installed':
 								if (!navigator.serviceWorker.controller) {
@@ -52,9 +52,10 @@ const register = flags => {
 					}
 				}
 
-				return passFlags(JSON.parse(JSON.stringify(flags)));
-			}) // to avoid error caused by the getters
-			.then(() => registration);
+				passFlags(JSON.parse(JSON.stringify(flags)))
+					.then(() => registration);
+			});
+
 	} else {
 		return Promise.reject('Service Worker unavailable, or serviceWorker flag off');
 	}

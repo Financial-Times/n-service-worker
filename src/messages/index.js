@@ -1,3 +1,4 @@
+/* global clients */
 import './controllers';
 import { router } from './routing';
 
