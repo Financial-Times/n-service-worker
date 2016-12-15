@@ -1,3 +1,5 @@
+const addFtDotCom = path => `https://www.ft.com${path}`
+
 const appcache = {
 	fonts: [
 		'/__origami/service/build/v2/files/o-fonts-assets@1.3.0/MetricWeb-Regular.woff?',
@@ -14,14 +16,14 @@ const appcache = {
 
 const sw = {
 	fonts: appcache.fonts.concat([
-		'https://www.ft.com/__origami/service/build/v2/files/o-fonts-assets@1.3.0/MetricWeb-Bold.woff?',
-	]),
+		'/__origami/service/build/v2/files/o-fonts-assets@1.3.0/MetricWeb-Bold.woff?',
+	]).map(addFtDotCom),
 	image: appcache.image.concat([
-		'https://www.ft.com/__origami/service/image/v2/images/raw/fticon-v1:cross?source=o-icons&tint=%23505050,%23505050&format=svg',
-		'https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo:brand-nikkei-tagline?source=o-footer&format=svg',
-		'https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo:brand-ft?source=next&tint=999999,999999',
-		'https://www.ft.com/__origami/service/image/v2/images/raw/fticon-v1:refresh?source=o-icons&tint=%23FFFFFF,%23FFFFFF&format=svg'
-	])
+		'/__origami/service/image/v2/images/raw/fticon-v1:cross?source=o-icons&tint=%23505050,%23505050&format=svg',
+		'/__origami/service/image/v2/images/raw/ftlogo:brand-nikkei-tagline?source=o-footer&format=svg',
+		'/__origami/service/image/v2/images/raw/ftlogo:brand-ft?source=next&tint=999999,999999',
+		'/__origami/service/image/v2/images/raw/fticon-v1:refresh?source=o-icons&tint=%23FFFFFF,%23FFFFFF&format=svg'
+	]).map(addFtDotCom)
 }
 
 module.exports = { appcache, sw }
