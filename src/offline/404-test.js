@@ -53,6 +53,18 @@ self.addEventListener('message', (ev) => {
 	}
 });
 
+
+self.addEventListener('message', (ev) => {
+	const d = ev.data;
+	if (d.type && d.type === 'documentOnLoad') {
+
+		// on refresh message update the cache
+		cache(cacheOptions.name)
+			.then(cache => cache.set(landingPage, cacheOptions.settings));
+	}
+
+});
+
 /**
  * Only respond with landing page if:
  *  - Request method is 'GET'

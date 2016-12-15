@@ -47,7 +47,7 @@ export class Cache {
 		const fetchRequest = response ? Promise.resolve(response) : fetch(request);
 		return fetchRequest
 			.then(fetchedResponse => {
-					return this.followLinkHeader(fetchedResponse, { maxAge, maxEntries, followLinks });
+					return this.followLinkHeader(request, fetchedResponse, { maxAge, maxEntries, followLinks });
 				})
 			.then(fetchedResponse => {
 				if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
@@ -55,7 +55,8 @@ export class Cache {
 
 					let cacheMeta = {
 						cached_ts: Date.now(),
-						type
+						type,
+						etag: fetchedResponse.headers.get('etag')
 					}
 
 					if (maxAge !== -1) cacheMeta.expires = Date.now() + (maxAge * 1000)
@@ -204,45 +205,59 @@ export class Cache {
 	 * - false = default, do not follow
 	 * @returns {object} - The fetchedResponse
 	 */
-	followLinkHeader (fetchedResponse, { maxAge, maxEntries, followLinks = false } = {}) {
+	followLinkHeader (request, fetchedResponse, { maxAge, maxEntries, followLinks = false } = {}) {
 		let links = fetchedResponse.headers.get('link');
 
-		if (links && followLinks !== false) {
+		if (!links || followLinks === false) {
+			// abort, do not follow
+			return Promise.resolve(fetchedResponse);
+		} else {
+			return this.db.get(request.url)
+				.then(cacheMeta => {
 
-			// parse the link header
-			links = parseLinkHeader(links);
-
-			if (links && links.length && links.length === 0) {
-				// abort if no link headers to follow
-				return Promise.resolve(fetchedResponse);
-			}
-
-			links
-				.filter(link => link.rel === 'precache') // TODO: pass as option
-				.forEach(link => {
-					let response;
-
-					if (link.as === 'image') {
-						// cache low res version of image
-						response = lowResImage(link.url);
+					// check if we already have a cached version of resource
+					if (cacheMeta && cacheMeta.etag && cacheMeta.etag === fetchedResponse.headers.get('etag')) {
+						// abort, same as cached resource, do not follow
+						throw new Error('no change from cached version');
 					}
 
-					if (link.as === 'document') {
-						// cache offline version of content
-						response = offlineContent(link.url);
+					return parseLinkHeader(links);
+				})
+				.then(parsedLinks => {
+					if (parsedLinks && parsedLinks.length && parsedLinks.length === 0) {
+						// abort, no link headers to follow
+						throw new Error('no links to follow')
 					}
 
-					// cache request
-					const _req = new Request(link.url, {
-						credentials: 'same-origin', // TODO: set based on original?
-						mode: 'cors' // matches requests as we use upgradeToCors
-					});
+					parsedLinks
+						.filter(link => link.rel === 'precache') // TODO: pass as option
+						.forEach(link => {
+							let response;
 
-					this.set(_req, { response, type: link.as, maxAge, maxEntries, followLinks });
-				});
+							if (link.as === 'image') {
+								// cache low res version of image
+								response = lowResImage(link.url);
+							}
+
+							if (link.as === 'document') {
+								// cache offline version of content
+								response = offlineContent(link.url);
+							}
+
+							// cache request
+							const _req = new Request(link.url, {
+								credentials: 'same-origin', // TODO: set based on original?
+								mode: 'cors' // matches requests as we use upgradeToCors
+							});
+
+							this.set(_req, { response, type: link.as, maxAge, maxEntries, followLinks });
+						});
+
+				})
+				.then(() => Promise.resolve(fetchedResponse))
+				.catch(() => Promise.resolve(fetchedResponse))
 		}
 
-		return Promise.resolve(fetchedResponse);
 	}
 
 }
