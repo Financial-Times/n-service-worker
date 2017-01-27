@@ -5,8 +5,9 @@ import fetchMock from 'fetch-mock';
 
 describe('cache', () => {
 	// before(() => SWTestHelper.resetEnv());
-	before(() => SWTestHelper.clearCache('next:test-cache').catch(() => null));
-	afterEach(() => SWTestHelper.clearCache('next:test-cache'));
+
+	before(() => SWTestHelper.clearAllCaches().catch(() => null));
+	afterEach(() => SWTestHelper.clearAllCaches().catch(() => null));
 
 	describe('putting items in the cache', () => {
 
