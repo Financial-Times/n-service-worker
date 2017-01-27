@@ -320,19 +320,17 @@ describe('cache', () => {
 			it('set an item in cache limited by size', () => {
 				return cache('test-cache')
 					.then(cache => {
-						return Promise.all([
-							cache.set('http://localhost:9876/files/0'),
-							cache.set('http://localhost:9876/files/1')
-						])
-						.then(() => cache.set('http://localhost:9876/files/2', {maxEntries: 2}))
-						.then(() => cache.keys())
-						.then(keys => keys.map(k => k.url))
-						.then(keys => {
-							expect(keys.length).to.equal(3);
-							expect(keys).to.contain('http://localhost:9876/files/0')
-							expect(keys).to.contain('http://localhost:9876/files/1')
-							expect(keys).to.contain('http://localhost:9876/files/2')
-						})
+						return cache.set('http://localhost:9876/files/0')
+							.then(() => cache.set('http://localhost:9876/files/1'))
+							.then(() => cache.set('http://localhost:9876/files/2', {maxEntries: 2}))
+							.then(() => cache.keys())
+							.then(keys => keys.map(k => k.url))
+							.then(keys => {
+								expect(keys.length).to.equal(3);
+								expect(keys).to.contain('http://localhost:9876/files/0')
+								expect(keys).to.contain('http://localhost:9876/files/1')
+								expect(keys).to.contain('http://localhost:9876/files/2')
+							})
 						// cache invalidation is done lazily so we add a delay
 						.then(() => new Promise(res => setTimeout(res, 500)))
 						.then(() => Promise.all([
