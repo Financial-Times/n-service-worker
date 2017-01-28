@@ -236,7 +236,8 @@ export class Cache {
 
 							if (link.as === 'image') {
 								// cache low res version of image
-								response = lowResImage(link.url);
+								const lowResImageUrl = lowResImage(link.url);
+								response = fetch(lowResImageUrl)
 							}
 
 							if (link.as === 'document') {
