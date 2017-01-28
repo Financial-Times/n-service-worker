@@ -242,7 +242,8 @@ export class Cache {
 
 							if (link.as === 'document') {
 								// cache offline version of content
-								response = offlineContent(link.url);
+								const offlineContentUrl = offlineContent(link.url);
+								response = fetch(offlineContentUrl);
 							}
 
 							// cache request
