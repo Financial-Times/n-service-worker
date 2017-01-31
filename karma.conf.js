@@ -17,9 +17,19 @@ module.exports = function (karma) {
 		// list of files / patterns to load in the browser
 		files: [
 			{pattern: 'test/helpers.js', served: true},
-			'test/utils/*.spec.js',
 			'test/setup.js',
-			'test/caches/*.spec.js',
+			// `test/caches/*spec.js` files MUST be run before the utils ones!!
+			'test/caches/image.spec.js',
+			'test/caches/fonts.spec.js',
+			// These tests are commented out because the actual code doesn't get run
+			// See `src/__sw.js`
+			// 'test/caches/ads.spec.js',
+			// 'test/caches/built-assets.spec.js',
+			// 'test/caches/comments.spec.js',
+			// 'test/caches/image.spec.js',
+			// 'test/caches/n-ui.spec.js',
+			// 'test/caches/polyfill.spec.js',
+			'test/utils/*.spec.js',
 			{pattern: 'test/sw/*.js', served: true, included: false},
 			{pattern: 'test/fixtures/files/*', served: true, included: false},
 			{pattern: 'test/**/*.js.map', served: true, included: false},

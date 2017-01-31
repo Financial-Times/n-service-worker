@@ -5,15 +5,18 @@ import offlineContent from './offline-content';
 
 function addHeadersToResponse (res, headers) {
 	const response = res.clone()
+	const originalHeaders = {};
+
+	response.headers.forEach((v,k) => {
+		originalHeaders[k] = v;
+	});
+
 	const init = {
 			status: response.status,
 			statusText: response.statusText,
-			headers
+			headers: Object.assign({}, originalHeaders, headers)
 	};
 
-	response.headers.forEach((v,k) => {
-			init.headers[k] = v;
-	});
 	return response.text()
 		.then(body => {
 			return new Response(body, init);
@@ -236,12 +239,14 @@ export class Cache {
 
 							if (link.as === 'image') {
 								// cache low res version of image
-								response = lowResImage(link.url);
+								const lowResImageUrl = lowResImage(link.url);
+								response = fetch(lowResImageUrl)
 							}
 
 							if (link.as === 'document') {
 								// cache offline version of content
-								response = offlineContent(link.url);
+								const offlineContentUrl = offlineContent(link.url);
+								response = fetch(offlineContentUrl);
 							}
 
 							// cache request

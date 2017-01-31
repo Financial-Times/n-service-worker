@@ -1,6 +1,6 @@
 include n.Makefile
 
-test: verify #test-unit - disabled until fixed
+test: verify unit-test
 
 build-dev: watch
 
@@ -21,7 +21,7 @@ build-appcache:
 	cp appcache/loader.html dist/__appcache-manifest-loader.html
 	cp appcache/loader-landing.html dist/__appcache-manifest-loader-landing.html
 
-test-unit:
+unit-test:
 	karma start
 
 test-chrome:

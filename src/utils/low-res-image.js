@@ -1,4 +1,3 @@
-
 import * as _url from 'url';
 import * as _qs from 'querystring';
 
@@ -6,8 +5,8 @@ import * as _qs from 'querystring';
  * Same image, lower resolution.
  *
  * Useful for precaching images for offline use.
- * Returns a fetch response for a low res version of original request.
- * Will serve via the image service, even if original request did not.
+ * Returns a url used to fetch a low res version of original request.
+ * Will transform to an image service url, even if original request was not.
  */
 
 const defaultOpts = {
@@ -22,19 +21,18 @@ const isImageServicePath = (path) => /^\/\_\_origami\/service\/image\//.test(pat
 const requestViaImageService = (url) => `/__origami/service/image/v2/images/raw/${encodeURIComponent(url)}`;
 
 export default function (url) {
-	let req;
 	let urlObj = _url.parse(url);
 
 	if (!isImageServicePath(urlObj.path)) {
 		urlObj = _url.parse(requestViaImageService(url));
 	}
 
-	const qsObj = _qs.parse(urlObj.query);
+	const querystringObj = _qs.parse(urlObj.query);
 
 	delete urlObj.search; // causes _url.format() to use .query obj
-	urlObj.query = Object.assign({}, qsObj, defaultOpts);
+	urlObj.query = Object.assign({}, querystringObj, defaultOpts);
 
-	req = _url.format(urlObj);
+	const imageServiceUrl = _url.format(urlObj);
 
-	return fetch(req);
+	return imageServiceUrl;
 }
