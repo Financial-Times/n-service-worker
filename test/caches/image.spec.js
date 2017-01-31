@@ -2,7 +2,8 @@
 describe('images', () => {
 
 	[
-		'fticon:hamburger?source=o-icons&tint=%23505050,%23505050&format=svg',
+		'fticon-v1:hamburger?source=o-icons&tint=%23505050,%23505050&format=svg',
+		'fticon-v1:search?source=o-icons&tint=%23505050,%23505050&format=svg',
 		'ftlogo:brand-ft-masthead?source=o-header&tint=%23505050,%23505050&format=svg',
 		'ftlogo:brand-myft?source=o-header&tint=%23505050,%23505050&format=svg'
 	]
