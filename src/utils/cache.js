@@ -5,15 +5,18 @@ import offlineContent from './offline-content';
 
 function addHeadersToResponse (res, headers) {
 	const response = res.clone()
+	const originalHeaders = {};
+
+	response.headers.forEach((v,k) => {
+		originalHeaders[k] = v;
+	});
+
 	const init = {
 			status: response.status,
 			statusText: response.statusText,
-			headers
+			headers: Object.assign({}, originalHeaders, headers)
 	};
 
-	response.headers.forEach((v,k) => {
-			init.headers[k] = v;
-	});
 	return response.text()
 		.then(body => {
 			return new Response(body, init);
