@@ -21,7 +21,9 @@ const sw = {
 		'https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo:brand-nikkei-tagline?source=o-footer&format=svg',
 		'https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo:brand-ft?source=next&tint=999999,999999',
 		'https://www.ft.com/__origami/service/image/v2/images/raw/fticon-v1:refresh?source=o-icons&tint=%23FFFFFF,%23FFFFFF&format=svg',
-		'https://www.ft.com/__origami/service/image/v2/images/raw/fticon:pullquote?source=o-icons&tint=%23505050,%23505050&format=svg'
+		'https://www.ft.com/__origami/service/image/v2/images/raw/fticon:pullquote?source=o-icons&tint=%23505050,%23505050&format=svg',
+		'https://www.ft.com/__origami/service/image/v2/images/raw/fticon-v1:arrow-down?source=o-icons&tint=%2326747A,%2326747A&format=svg',
+		'https://www.ft.com/__origami/service/image/v2/images/raw/fticon-v1:cross?source=o-icons&tint=%23FFFFFF,%23FFFFFF&format=svg',
 	])
 }
 
