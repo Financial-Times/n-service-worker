@@ -28,7 +28,12 @@ const register = flags => {
 			console.warn('Cookie is greater than 4000 characters - unregistering service worker due to potential failure to retrieve updates'); //eslint-disable-line
 			return unregister();
 		}
-		return navigator.serviceWorker.register('/__sw.js?cache-bust=1')
+
+		const swEnv = flags.get('swQAVariant') ||
+			(flags.get('swCanaryRelease') && nUi.sampleUsers(5, 'sw-canary')) ? 'canary' : 'prod'
+
+		// TODO add something to tracking & o-errors config to determine the version
+		return navigator.serviceWorker.register(`/__sw-${swEnv}.js`)
 			.then(registration => {
 
 				// signify install event to window
