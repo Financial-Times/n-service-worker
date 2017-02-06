@@ -1,3 +1,5 @@
+import {sampleUsers} from 'n-ui/utils';
+
 const message = msg => {
 	if ('serviceWorker' in navigator) {
 		return navigator.serviceWorker.ready
@@ -30,7 +32,7 @@ const register = flags => {
 		}
 
 		const swEnv = flags.get('swQAVariant') ||
-			(flags.get('swCanaryRelease') && nUi.sampleUsers(5, 'sw-canary')) ? 'canary' : 'prod'
+			(flags.get('swCanaryRelease') && sampleUsers(3, 'sw-canary')) ? 'canary' : 'prod'
 
 		// TODO add something to tracking & o-errors config to determine the version
 		return navigator.serviceWorker.register(`/__sw-${swEnv}.js`)

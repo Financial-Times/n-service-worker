@@ -8,7 +8,7 @@ deployment:
     commands:
       - make deploy
   int:
-    tag: /int-v*/
+    tag: /qa-v*/
     commands:
       - make deploy
   canary:
