@@ -15,7 +15,8 @@ import './caches/image';
 // import './caches/session';
 // import './caches/myft';
 // import './caches/ads'; *
-// import './push/myft';
+
+import './push/myft';
 
 // NOTE: this is mounted last as it
 // contains a catch all route handler
