@@ -34,7 +34,7 @@ const register = flags => {
 		const sampleUsers = require('n-ui/utils').sampleUsers
 
 		const swEnv = flags.get('swQAVariant') ||
-			(flags.get('swCanaryRelease') && sampleUsers(3, 'sw-canary')) ? 'canary' : 'prod'
+			((flags.get('swCanaryRelease') && sampleUsers(3, 'sw-canary')) ? 'canary' : 'prod')
 
 		// TODO add something to tracking & o-errors config to determine the version
 		return navigator.serviceWorker.register(`/__sw-${swEnv}.js`)
