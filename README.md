@@ -27,6 +27,30 @@ General workflow is
 
 This will also start webpack's watch
 
+## Releasing n-service-worker
+
+As service workers are potentially disastrous in their impact and difficult to roll back quickly, n-service-worker is one of the few parts of the next stack which has the concept of multiple qa environments. Releases happen in up to 4 stages (any of which can be skipped in a hurry/emergency).
+
+When releasing changes to n-service-worker consider how likely your changes are to go wrong and whether unit tests provide adequate coverage. Discuss with QA if necessary and keep them informed about which 'environment' your planned release is at.
+
+### How it works
+
+Builds tagged with special tags and master builds push files named `__sw-{prod,canary,qa,master}.js` to s3. Feature flags are then used to toggle which one is installed for which users. The relevant flags are
+- `swQAVariant` - multivariant flag used by QA to choose between any of the 4 service worker variants
+- `swCanaryRelease` - forces a small percentage of users onto an experimental version of the service worker
+
+### What triggers each kind of release
+- All master builds release `/__sw-master.js`
+- All tags of the form `qa-v{release number}` will release `/__sw-qa.js`
+- All tags of the form `canary-v{release number}` will release `/__sw-canary.js`
+- All tags of the form `prod-v{release number}` will release `/__sw-prod.js`
+- All semver tags will result in a new release of the n-service-worker bower component (the bit that registers the service worker)
+
+To move a version of the service worker through one or more stages of the release cycle, care must be taken to tag the same commit with the related `qa`, `canary` and `prod` tags
+
+### Rolling back
+Unfortunately it's still a manual process, but creating a new tag on the same commit as the last good version should do it.
+// TODO - set up versioning in s3
 
 ## API
 

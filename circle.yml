@@ -3,7 +3,19 @@ machine:
     version: 6.3.0
 
 deployment:
-  production:
+  master:
     branch: master
+    commands:
+      - make deploy
+  int:
+    tag: /qa-v*/
+    commands:
+      - make deploy
+  canary:
+    tag: /canary-v*/
+    commands:
+      - make deploy
+  production:
+    tag: /prod-v*/
     commands:
       - make deploy

@@ -16,6 +16,7 @@ module.exports = function (karma) {
 
 		// list of files / patterns to load in the browser
 		files: [
+			'test/main.spec.js',
 			{pattern: 'test/helpers.js', served: true},
 			'test/setup.js',
 			// `test/caches/*spec.js` files MUST be run before the utils ones!!
@@ -80,7 +81,10 @@ module.exports = function (karma) {
 			resolve: {
 				root: [
 					path.join(__dirname, 'node_modules')
-				]
+				],
+				alias: {
+					'n-ui/utils': path.join(__dirname, 'bower_components/n-ui/utils')
+				}
 			}
 		},
 		reporters: ['progress'],
