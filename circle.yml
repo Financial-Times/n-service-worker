@@ -3,7 +3,7 @@ machine:
     version: 6.3.0
 
 deployment:
-  qa:
+  master:
     branch: master
     commands:
       - make deploy
