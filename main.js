@@ -1,5 +1,3 @@
-import {sampleUsers} from 'n-ui/utils';
-
 const message = msg => {
 	if ('serviceWorker' in navigator) {
 		return navigator.serviceWorker.ready
@@ -30,6 +28,10 @@ const register = flags => {
 			console.warn('Cookie is greater than 4000 characters - unregistering service worker due to potential failure to retrieve updates'); //eslint-disable-line
 			return unregister();
 		}
+
+		// required here because of circular dependency
+		// (which will melt away once n-utils is a thing)
+		const sampleUsers = require('n-ui/utils').sampleUsers
 
 		const swEnv = flags.get('swQAVariant') ||
 			(flags.get('swCanaryRelease') && sampleUsers(3, 'sw-canary')) ? 'canary' : 'prod'
