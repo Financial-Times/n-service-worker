@@ -1,3 +1,4 @@
+/*global expect, sinon */
 import * as client from '../main';
 
 // require rather than import because it has to be required

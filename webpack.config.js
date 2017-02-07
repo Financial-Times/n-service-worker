@@ -7,9 +7,15 @@ module.exports = nWebpack({
 		filename: '[name]',
 		devtoolModuleFilenameTemplate: 'n-service-worker//[resource-path]?[loaders]'
 	},
-	entry: {
-		'./dist/__sw.js': './src/__sw.js'
-	},
+	entry: (() => {
+		// A bit hacky, but in dev we want to generate a sw on the prod url,
+		// which is the default when no flags are on
+		if (process.env.CIRCLE_BUILD_NUM) {
+			return {'./dist/__sw.js': './src/__sw.js'}
+		} else {
+			return {'./dist/__sw-prod.js': './src/__sw.js'}
+		}
+	})(),
 	language: 'js',
 	include: [
 		path.resolve('./src'),
