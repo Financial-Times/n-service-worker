@@ -4,7 +4,7 @@ import * as client from '../main';
 // require rather than import because it has to be required
 // in src to avoid circular dep (for now). If is imported here
 // but required in src then sinon fails to stub the methods
-const utils = require('n-ui/utils');
+const utils = require('../src/utils/sampleUsers');
 
 describe('client', () => {
 	describe('register', () => {
