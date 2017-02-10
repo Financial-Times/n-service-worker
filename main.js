@@ -29,9 +29,7 @@ const register = flags => {
 			return unregister();
 		}
 
-		// required here because of circular dependency
-		// (which will melt away once n-utils is a thing)
-		const sampleUsers = require('n-ui/utils').sampleUsers
+		const sampleUsers = require('./src/utils/sampleUsers').sampleUsers
 
 		const swEnv = flags.get('swQAVariant') ||
 			((flags.get('swCanaryRelease') && sampleUsers(3, 'sw-canary')) ? 'canary' : 'prod')

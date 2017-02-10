@@ -81,10 +81,7 @@ module.exports = function (karma) {
 			resolve: {
 				root: [
 					path.join(__dirname, 'node_modules')
-				],
-				alias: {
-					'n-ui/utils': path.join(__dirname, 'bower_components/n-ui/utils')
-				}
+				]
 			}
 		},
 		reporters: ['progress'],
