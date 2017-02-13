@@ -5,7 +5,7 @@ test: verify unit-test
 build-dev: watch
 
 PORT ?= 3010
-SW_ENV = $(shell ENV=$$( echo $$CIRCLE_TAG | sed -E s/-v[0-9]+// ) ; [ -z "$$ENV" ] && ENV="master"; echo $$ENV)
+SW_ENV = $(shell ENV=$$( echo $$CIRCLE_TAG | sed -E s/-v[0-9.]+// ) ; [ -z "$$ENV" ] && ENV="master"; echo $$ENV)
 
 server:
 	http-server dist -p $(PORT) -c-1
