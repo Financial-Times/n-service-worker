@@ -8,14 +8,14 @@ deployment:
     commands:
       - make deploy
   int:
-    tag: /qa-v*/
+    tag: /qa-v.*/
     commands:
       - make deploy
   canary:
-    tag: /canary-v*/
+    tag: /canary-v.*/
     commands:
       - make deploy
   production:
-    tag: /prod-v*/
+    tag: /prod-v.*/
     commands:
       - make deploy
