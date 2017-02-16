@@ -88,9 +88,6 @@ self.addEventListener('push', ev => {
 });
 
 self.addEventListener('notificationclick', ev => {
-	if (!getFlag('swMyftPush')) {
-		return;
-	}
 	// Android doesn't close the notification when you click on it
 	// See: http://crbug.com/463146
 	ev.notification.close();
