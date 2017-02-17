@@ -15,5 +15,5 @@ export default function (data) {
 			'Content-Length': new Buffer(JSON.stringify(data)).length
 		},
 		body: JSON.stringify(data)
-	});
+	}).catch(() => {});
 };
