@@ -52,34 +52,39 @@ self.addEventListener('push', ev => {
 		})
 		.then(res => res.json())
 		.then(data => {
-
-			if (data && data.length) {
-				let index = 0;
-				while (data[index] && data[index].id && lastSentIds.indexOf(data[index].id) >= 0) {
-					index++;
+			const waitPeriod = 60000;
+			setTimeout(() => {
+				if (data && data.length) {
+					let index = 0;
+					while (data[index] && data[index].id && lastSentIds.indexOf(data[index].id) >= 0) {
+						index++;
+					}
+					if (data[index] && data[index].id) {
+						lastSentIds.push(data[index].id);
+						title = data[index].headline;
+						body = data[index].subheading;
+						tag = data[index].id;
+						notificationData = { id: data[index].id };
+					}
 				}
-				if (data[index] && data[index].id) {
-					lastSentIds.push(data[index].id);
-					title = data[index].headline;
-					body = data[index].subheading;
-					tag = data[index].id;
-					notificationData = { id: data[index].id };
-				}
-			}
 
-			track({
-				category: 'push',
-				action: 'shown',
-				content: { uuid: notificationData.id }
-			});
+				track({
+					category: 'push',
+					action: 'shown',
+					context: {
+						delay: waitPeriod
+					},
+					content: { uuid: notificationData.id }
+				});
 
-			return self.registration.showNotification(title, {
-				requireInteraction: false,
-				body: body,
-				tag: tag,
-				icon: icon,
-				data: notificationData
-			});
+				return self.registration.showNotification(title, {
+					requireInteraction: false,
+					body: body,
+					tag: tag,
+					icon: icon,
+					data: notificationData
+				});
+			}, waitPeriod)
 
 		})
 		.catch(showDefaultNotification)
