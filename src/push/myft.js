@@ -1,15 +1,15 @@
 /* global clients:false*/
-import eagerFetch from '../utils/eager-fetch';
+//import eagerFetch from '../utils/eager-fetch';
 import track from '../utils/track';
 import {getFlag} from '../utils/flags';
 
 let title = 'New article in your myFT page';
 const icon = 'https://next-geebee.ft.com/assets/icons/myft-logo-pink-bg.png';
 
-let lastSentIds = [];
+//let lastSentIds = [];
 
 setInterval(() => {
-	lastSentIds = [];
+	//lastSentIds = [];
 }, 1000 * 60 * 10);
 
 self.addEventListener('push', ev => {
@@ -19,9 +19,19 @@ self.addEventListener('push', ev => {
 
 	let tag = 'next-myft-article';
 	let notificationData = {};
-	let body;
+	//let body;
 
-	function showDefaultNotification () {
+
+	const showDefaultNotification = new Promise(resolve => {
+		self.registration.showNotification(title, {
+			requireInteraction: false,
+			icon: icon,
+			tag: tag,
+			data: {
+				id: ''
+			}
+		});
+
 		track({
 			category: 'push',
 			action: 'shown',
@@ -32,17 +42,14 @@ self.addEventListener('push', ev => {
 			content: { uuid: notificationData.id }
 		});
 
-		return self.registration.showNotification(title, {
-			requireInteraction: false,
-			icon: icon,
-			tag: tag,
-			data: {
-				id: ''
-			}
-		});
-	};
+		resolve();
+	});
 
-	ev.waitUntil(
+	ev.waitUntil(showDefaultNotification);
+
+
+
+		/*
 		eagerFetch('/myft/following.json?since=-1h', {
 			headers: {
 				'Content-Type': 'application/json',
@@ -88,8 +95,7 @@ self.addEventListener('push', ev => {
 
 		})
 		.catch(showDefaultNotification)
-	);
-
+		*/
 });
 
 self.addEventListener('notificationclick', ev => {
