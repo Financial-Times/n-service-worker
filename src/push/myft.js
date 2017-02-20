@@ -18,84 +18,14 @@ self.addEventListener('push', ev => {
 	}
 
 	let tag = 'next-myft-article';
-	let notificationData = {};
+	//let notificationData = {};
 	//let body;
 
+	ev.waitUntil(self.registration.showNotification(title, {
+		icon: icon,
+		tag: tag
+	}));
 
-	const showDefaultNotification = new Promise(resolve => {
-		self.registration.showNotification(title, {
-			requireInteraction: false,
-			icon: icon,
-			tag: tag,
-			data: {
-				id: ''
-			}
-		});
-
-		track({
-			category: 'push',
-			action: 'shown',
-			context: {
-				silent: false,
-				type: 'default'
-			},
-			content: { uuid: notificationData.id }
-		});
-
-		resolve();
-	});
-
-	ev.waitUntil(showDefaultNotification);
-
-
-
-		/*
-		eagerFetch('/myft/following.json?since=-1h', {
-			headers: {
-				'Content-Type': 'application/json',
-				'Accept': 'application/json'
-			},
-			credentials: 'include'
-		})
-		.then(res => res.json())
-		.then(data => {
-			const waitPeriod = 30000;
-			setTimeout(() => {
-				if (data && data.length) {
-					let index = 0;
-					while (data[index] && data[index].id && lastSentIds.indexOf(data[index].id) >= 0) {
-						index++;
-					}
-					if (data[index] && data[index].id) {
-						lastSentIds.push(data[index].id);
-						title = data[index].headline;
-						body = data[index].subheading;
-						tag = data[index].id;
-						notificationData = { id: data[index].id };
-					}
-				}
-
-				track({
-					category: 'push',
-					action: 'shown',
-					context: {
-						delay: waitPeriod
-					},
-					content: { uuid: notificationData.id }
-				});
-
-				return self.registration.showNotification(title, {
-					requireInteraction: false,
-					body: body,
-					tag: tag,
-					icon: icon,
-					data: notificationData
-				});
-			}, waitPeriod)
-
-		})
-		.catch(showDefaultNotification)
-		*/
 });
 
 self.addEventListener('notificationclick', ev => {
