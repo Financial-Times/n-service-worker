@@ -54,7 +54,6 @@ self.addEventListener('push', ev => {
 		.then(data => {
 			const waitPeriod = 30000;
 			setTimeout(() => {
-				console.log('waitPeriod: ', waitPeriod)
 				if (data && data.length) {
 					let index = 0;
 					while (data[index] && data[index].id && lastSentIds.indexOf(data[index].id) >= 0) {
