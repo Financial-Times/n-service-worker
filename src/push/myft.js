@@ -1,7 +1,7 @@
 /* global clients:false*/
 //import eagerFetch from '../utils/eager-fetch';
 import track from '../utils/track';
-import {getFlag} from '../utils/flags';
+//import {getFlag} from '../utils/flags';
 
 let title = 'New article in your myFT page';
 const icon = 'https://next-geebee.ft.com/assets/icons/myft-logo-pink-bg.png';
@@ -13,10 +13,6 @@ setInterval(() => {
 }, 1000 * 60 * 10);
 
 self.addEventListener('push', ev => {
-	if (!getFlag('enablePushNotifications')) {
-		return;
-	}
-
 	let tag = 'next-myft-article';
 	//let notificationData = {};
 	//let body;
