@@ -1,26 +1,67 @@
 /* global clients:false*/
-//import eagerFetch from '../utils/eager-fetch';
+import eagerFetch from '../utils/eager-fetch';
 import track from '../utils/track';
 //import {getFlag} from '../utils/flags';
 
 let title = 'New article in your myFT page';
 const icon = 'https://next-geebee.ft.com/assets/icons/myft-logo-pink-bg.png';
 
-//let lastSentIds = [];
+let lastSentIds = [];
 
 setInterval(() => {
-	//lastSentIds = [];
+	lastSentIds = [];
 }, 1000 * 60 * 10);
 
 self.addEventListener('push', ev => {
 	let tag = 'next-myft-article';
-	//let notificationData = {};
-	//let body;
+	let notificationData = {};
+	let body;
 
-	ev.waitUntil(self.registration.showNotification(title, {
-		icon: icon,
-		tag: tag
-	}));
+	function showDefaultNotification () {
+		return self.registration.showNotification(title, {
+			requireInteraction: false,
+			icon: icon,
+			tag: tag,
+			data: {
+				id: ''
+			}
+		});
+	};
+
+	ev.waitUntil(
+		eagerFetch('/myft/following.json?since=-1h', {
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json'
+			},
+			credentials: 'include'
+		})
+		.then(res => res.json())
+		.then(data => {
+
+			if (data && data.length) {
+				let index = 0;
+				while (data[index] && data[index].id && lastSentIds.indexOf(data[index].id) >= 0) {
+					index++;
+				}
+				if (data[index] && data[index].id) {
+					lastSentIds.push(data[index].id);
+					title = data[index].headline;
+					body = data[index].subheading;
+					tag = data[index].id;
+					notificationData = { id: data[index].id };
+				}
+			}
+			return self.registration.showNotification(title, {
+				requireInteraction: false,
+				body: body,
+				tag: tag,
+				icon: icon,
+				data: notificationData
+			});
+
+		})
+		.catch(showDefaultNotification));
 
 });
 
