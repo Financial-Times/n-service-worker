@@ -18,6 +18,19 @@ self.addEventListener('push', ev => {
 	let body;
 
 	function showDefaultNotification () {
+		try {
+			track({
+				category: 'push',
+				action: 'shown',
+				context: {
+					silent: false,
+					type: 'default'
+				},
+				content: { uuid: notificationData.id }
+			});
+		} catch(e) {
+
+		}
 		return self.registration.showNotification(title, {
 			requireInteraction: false,
 			icon: icon,
@@ -52,6 +65,14 @@ self.addEventListener('push', ev => {
 					notificationData = { id: data[index].id };
 				}
 			}
+			try {
+				track({
+					category: 'push',
+					action: 'shown',
+					content: { uuid: notificationData.id }
+				});
+			} catch (e) {}
+
 			return self.registration.showNotification(title, {
 				requireInteraction: false,
 				body: body,
