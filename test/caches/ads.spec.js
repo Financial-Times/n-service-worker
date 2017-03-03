@@ -12,7 +12,7 @@ describe('ads', () => {
 		'NTQ=-U2VjdGlvbnM=',
 		'NTlhNzEyMzMtZjBjZi00Y2U1LTg0ODUtZWVjNmEyYmU1NzQ2-QnJhbmRz' // fastft
 	].map(concept =>
-		SWTestHelper.checkGetsPrecached({
+		SWTestBundles.checkGetsPrecached({
 			url: `https://ads-api.ft.com/v1/concept/${concept}`,
 			assetLabel: `asset metadata for section ${concept}`,
 			expiry: 7 * 60 * 60 * 24 * 1000,
@@ -30,7 +30,7 @@ describe('ads', () => {
 		['krux tag', 'https://cdn.krxd.net/controltag/KHUSeE3x.js', 7, 'no-cors'],
 		['krux lib', 'https://cdn.krxd.net/ctjs/controltag.js.d4d7fc61dff29ba846cb4a9ffc42cbf9', 30, 'no-cors'],
 	].forEach(([label, url, expiry, mode, relativeToInstall]) =>
-		SWTestHelper.checkCacheIsUsed({
+		SWTestBundles.checkCacheIsUsed({
 			assetLabel: label,
 			url,
 			expiry: expiry * 60 * 60 * 24 * 1000,
