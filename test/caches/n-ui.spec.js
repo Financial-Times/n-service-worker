@@ -1,4 +1,4 @@
-/* global SWTestHelper */
+/* global SWTestBundles */
 describe('n-ui', () => {
 	SWTestBundles.checkCacheIsUsed({
 		assetLabel: 'shared js',

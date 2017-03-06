@@ -1,3 +1,13 @@
+/* global SWTestHelper,SWTestBundles,expect */
+import cache from '../src/utils/cache';
+import { passFlags } from '../main';
+
+const useragent = require('useragent');
+
+// In firefox https://bugzilla.mozilla.org/show_bug.cgi?id=1302090 means debug headers are not returned
+// So we fallback to the dumber method in all but chrome :(
+const supportsMutatedHeaders = useragent.is(navigator.userAgent).chrome;
+
 window.SWTestBundles = {
 	checkCacheIsUsed: (opts) => {
 		if (opts.flag) {

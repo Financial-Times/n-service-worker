@@ -43,6 +43,7 @@ module.exports = function (karma) {
 
 		preprocessors: {
 			'test/helpers.js': ['webpack', 'sourcemap'],
+			'test/test-bundles.js': ['webpack', 'sourcemap'],
 			'test/setup.js': ['webpack', 'sourcemap'],
 			'test/**/*.spec.js': ['webpack', 'sourcemap'],
 			'test/sw/*.js': ['webpack', 'sourcemap']

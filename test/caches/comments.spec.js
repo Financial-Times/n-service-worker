@@ -1,4 +1,4 @@
-/* global SWTestHelper */
+/* global SWTestBundles */
 describe('comments', () => {
 
 	[
