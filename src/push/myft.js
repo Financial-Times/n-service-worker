@@ -69,6 +69,9 @@ self.addEventListener('push', ev => {
 				track({
 					category: 'push',
 					action: 'shown',
+					context: {
+						storyUuid: notificationData.id
+					},
 					content: { uuid: notificationData.id }
 				});
 			} catch (e) {}
