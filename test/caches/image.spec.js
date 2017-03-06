@@ -1,4 +1,4 @@
-/* global SWTestHelper */
+/* global SWTestBundles */
 describe('images', () => {
 
 	[
@@ -13,14 +13,14 @@ describe('images', () => {
 		const expiry = 'no-expiry';
 		const cacheName ='image';
 
-		SWTestHelper.checkGetsPrecached({
+		SWTestBundles.checkGetsPrecached({
 			url,
 			assetLabel: `header icon ${image} forever`,
 			expiry,
 			cacheName
 		})
 
-		SWTestHelper.checkCacheIsUsed({
+		SWTestBundles.checkCacheIsUsed({
 			assetLabel: `header icon ${image}`,
 			url,
 			expiry,
@@ -35,7 +35,7 @@ describe('images', () => {
 		['social icons', 'https://www.ft.com/__origami/service/image/v2/images/raw/ftsocial:linkedin?source=o-share&format=svg'],
 		['next assets', 'https://www.ft.com/__assets/creatives/backgrounds/header-markets-data.png']
 	].forEach(([label, url]) =>
-		SWTestHelper.checkCacheIsUsed({
+		SWTestBundles.checkCacheIsUsed({
 			assetLabel: label,
 			url,
 			expiry: 'no-expiry',

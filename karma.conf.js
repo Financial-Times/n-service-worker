@@ -18,6 +18,7 @@ module.exports = function (karma) {
 		files: [
 			'test/main.spec.js',
 			{pattern: 'test/helpers.js', served: true},
+			{pattern: 'test/test-bundles.js', served: true},
 			'test/setup.js',
 			// `test/caches/*spec.js` files MUST be run before the utils ones!!
 			'test/caches/image.spec.js',
@@ -42,6 +43,7 @@ module.exports = function (karma) {
 
 		preprocessors: {
 			'test/helpers.js': ['webpack', 'sourcemap'],
+			'test/test-bundles.js': ['webpack', 'sourcemap'],
 			'test/setup.js': ['webpack', 'sourcemap'],
 			'test/**/*.spec.js': ['webpack', 'sourcemap'],
 			'test/sw/*.js': ['webpack', 'sourcemap']

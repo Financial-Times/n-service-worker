@@ -1,4 +1,4 @@
-/* global SWTestHelper */
+/* global SWTestBundles */
 
 const useragent = require('useragent');
 
@@ -15,14 +15,14 @@ describe('fonts', () => {
 		const expiry = 'no-expiry';
 		const cacheName ='fonts';
 
-		SWTestHelper.checkGetsPrecached({
+		SWTestBundles.checkGetsPrecached({
 			url,
 			assetLabel: `font ${font} forever`,
 			expiry,
 			cacheName
 		})
 
-		SWTestHelper.checkCacheIsUsed({
+		SWTestBundles.checkCacheIsUsed({
 			assetLabel: font,
 			url,
 			expiry,
