@@ -5,7 +5,7 @@ deployment:
   master:
     branch: master
     commands:
-      - make deploy
+      - make deploy-by-day
   int:
     tag: /qa-v.*/
     commands:
