@@ -4,7 +4,9 @@ import track from '../utils/track';
 //import {getFlag} from '../utils/flags';
 
 let title = 'New article in your myFT page';
-const icon = 'https://next-geebee.ft.com/assets/icons/myft-logo-pink-bg.png';
+const myftIcon = 'https://www.ft.com/__assets/creatives/icons/myft-logo-pink-bg.png';
+let icon;
+
 
 let lastSentIds = [];
 
@@ -33,7 +35,7 @@ self.addEventListener('push', ev => {
 		}
 		return self.registration.showNotification(title, {
 			requireInteraction: false,
-			icon: icon,
+			icon: myftIcon,
 			tag: tag,
 			data: {
 				id: ''
@@ -63,6 +65,7 @@ self.addEventListener('push', ev => {
 					body = data[index].subheading;
 					tag = data[index].id;
 					notificationData = { id: data[index].id };
+					icon = data[index].mainImage ? `https://www.ft.com/__origami/service/image/v2/images/raw/${encodeURIComponent(data[index].mainImage)}?source=next-sw&width=80&height=80` : myftIcon;
 				}
 			}
 			try {
