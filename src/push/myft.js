@@ -12,7 +12,7 @@ let lastSentIds = [];
 
 setInterval(() => {
 	lastSentIds = [];
-}, 1000 * 60 * 10);
+}, 1000 * 60 * 30);
 
 self.addEventListener('push', ev => {
 	let tag = 'next-myft-article';
