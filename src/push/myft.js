@@ -52,41 +52,41 @@ self.addEventListener('push', ev => {
 			credentials: 'include'
 		})
 		.then(res => res.json())
-		.then(data => {
+		.then(stories => {
 
-			if (data && data.length) {
-				let index = 0;
-				while (data[index] && data[index].id && lastSentIds.indexOf(data[index].id) >= 0) {
-					index++;
-				}
-				if (data[index] && data[index].id) {
-					lastSentIds.push(data[index].id);
-					title = data[index].headline;
-					body = data[index].subheading;
-					tag = data[index].id;
-					notificationData = { id: data[index].id };
-					icon = data[index].mainImage ? `https://www.ft.com/__origami/service/image/v2/images/raw/${encodeURIComponent(data[index].mainImage)}?source=next-sw&width=80&height=80` : myftIcon;
-				}
-			}
-			try {
-				track({
-					category: 'push',
-					action: 'shown',
-					context: {
-						storyUuid: notificationData.id
-					},
-					content: { uuid: notificationData.id }
+			if (stories && stories.length) {
+				stories = stories.filter((story) => {
+					return story.id && !lastSentIds.includes(story.id);
 				});
-			} catch (e) {}
 
-			return self.registration.showNotification(title, {
-				requireInteraction: false,
-				body: body,
-				tag: tag,
-				icon: icon,
-				data: notificationData
-			});
+				stories.forEach((story) => {
+					lastSentIds.push(story.id);
+					title = story.headline;
+					body = story.subheading;
+					tag = story.id;
+					notificationData = { id: story.id };
+					icon = story.mainImage ? `https://www.ft.com/__origami/service/image/v2/images/raw/${encodeURIComponent(story.mainImage)}?source=next-sw&width=80&height=80` : myftIcon;
 
+					try {
+						track({
+							category: 'push',
+							action: 'shown',
+							context: {
+								storyUuid: notificationData.id
+							},
+							content: { uuid: notificationData.id }
+						});
+					} catch (e) {}
+
+					return self.registration.showNotification(title, {
+						requireInteraction: false,
+						body: body,
+						tag: tag,
+						icon: icon,
+						data: notificationData
+					});
+				});
+			}
 		})
 		.catch(showDefaultNotification));
 
