@@ -4,7 +4,7 @@ import track from '../utils/track';
 //import {getFlag} from '../utils/flags';
 
 let title = 'New article in your myFT page';
-const myftIcon = 'https://www.ft.com/__assets/creatives/icons/myft-logo-pink-bg.png';
+const myftIcon = 'https://www.ft.com/__assets/creatives/icons/myFT-logo-grey.png';
 let icon;
 
 
