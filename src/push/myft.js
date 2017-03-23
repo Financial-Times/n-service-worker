@@ -1,95 +1,35 @@
 /* global clients:false*/
-import eagerFetch from '../utils/eager-fetch';
 import track from '../utils/track';
-//import {getFlag} from '../utils/flags';
 
-let title = 'New article in your myFT page';
 const myftIcon = 'https://www.ft.com/__assets/creatives/icons/myFT-logo-grey.png';
-let icon;
-
-
-let lastSentIds = [];
-
-setInterval(() => {
-	lastSentIds = [];
-}, 1000 * 60 * 60);
 
 self.addEventListener('push', ev => {
-	let tag = 'next-myft-article';
-	let notificationData = {};
-	let body;
-
-	function showDefaultNotification () {
+	let payload = JSON.parse(event.data);
+	let title = payload.headline;
+	let tag = payload.uuid;
+	let notificationData = {
+		id: payload.uuid
+	};
+	ev.waitUntil(() => {
 		try {
 			track({
 				category: 'push',
 				action: 'shown',
 				context: {
-					silent: false,
-					type: 'default'
+					storyUuid: notificationData.id
 				},
 				content: { uuid: notificationData.id }
 			});
-		} catch(e) {
+		} catch (e) {}
 
-		}
 		return self.registration.showNotification(title, {
 			requireInteraction: false,
-			icon: myftIcon,
+			body: '',
 			tag: tag,
-			data: {
-				id: ''
-			}
+			icon: myftIcon,
+			data: notificationData
 		});
-	};
-
-	ev.waitUntil(
-		eagerFetch('/myft/following.json?since=-1h', {
-			headers: {
-				'Content-Type': 'application/json',
-				'Accept': 'application/json'
-			},
-			credentials: 'include'
-		})
-		.then(res => res.json())
-		.then(stories => {
-
-			if (stories && stories.length) {
-				stories = stories.filter((story) => {
-					return story.id && !lastSentIds.includes(story.id);
-				});
-
-				stories.forEach((story) => {
-					lastSentIds.push(story.id);
-					title = story.headline;
-					body = story.subheading;
-					tag = story.id;
-					notificationData = { id: story.id };
-					icon = story.mainImage ? `https://www.ft.com/__origami/service/image/v2/images/raw/${encodeURIComponent(story.mainImage)}?source=next-sw&width=80&height=80` : myftIcon;
-
-					try {
-						track({
-							category: 'push',
-							action: 'shown',
-							context: {
-								storyUuid: notificationData.id
-							},
-							content: { uuid: notificationData.id }
-						});
-					} catch (e) {}
-
-					return self.registration.showNotification(title, {
-						requireInteraction: false,
-						body: body,
-						tag: tag,
-						icon: icon,
-						data: notificationData
-					});
-				});
-			}
-		})
-		.catch(showDefaultNotification));
-
+	});
 });
 
 self.addEventListener('notificationclick', ev => {
