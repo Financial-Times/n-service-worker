@@ -4,13 +4,23 @@ import track from '../utils/track';
 const myftIcon = 'https://www.ft.com/__assets/creatives/icons/myFT-logo-grey.png';
 
 self.addEventListener('push', event => {
-	let payload = JSON.parse(event.data);
-	let title = payload.headline;
-	let tag = payload.uuid;
+	let payload = event.data ? event.data.text() : '';
+	let title = 'New article in your myFT page';
+	let tag = 'next-myft-article';
 	let notificationData = {
-		id: payload.uuid
+		id: tag
 	};
-	event.waitUntil(() => {
+
+	try {
+		payload = JSON.parse(payload);
+		title = payload.headline ? payload.headline : title;
+		tag = payload.uuid ? payload.uuid : tag;
+		notificationData = {
+			id: payload.uuid ? payload.uuid : tag
+		};
+	} catch (e) {}
+
+	event.waitUntil(new Promise(resolve => {
 		try {
 			track({
 				category: 'push',
@@ -22,14 +32,14 @@ self.addEventListener('push', event => {
 			});
 		} catch (e) {}
 
-		return self.registration.showNotification(title, {
+		resolve(self.registration.showNotification(title, {
 			requireInteraction: false,
 			body: '',
 			tag: tag,
 			icon: myftIcon,
 			data: notificationData
-		});
-	});
+		}));
+	}));
 });
 
 self.addEventListener('notificationclick', ev => {
