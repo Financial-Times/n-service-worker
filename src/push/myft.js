@@ -1,23 +1,24 @@
 /* global clients:false*/
 import track from '../utils/track';
 
-const myftIcon = 'https://www.ft.com/__assets/creatives/icons/myFT-logo-grey.png';
-
 self.addEventListener('push', event => {
+
 	let payload = event.data ? event.data.text() : '';
 	let title = 'New article in your myFT page';
 	let tag = 'next-myft-article';
-	let notificationData = {
-		id: tag
-	};
+	let icon = 'https://www.ft.com/__assets/creatives/icons/myft-logo-grey-pink-bg.png';
+	let notificationData = {};
+	let body;
 
 	try {
 		payload = JSON.parse(payload);
-		title = payload.headline ? payload.headline : title;
-		tag = payload.uuid ? payload.uuid : tag;
-		notificationData = {
-			id: payload.uuid ? payload.uuid : tag
-		};
+		if (payload.uuid) {
+			tag = payload.uuid;
+			notificationData.id = payload.uuid;
+			title = payload.headline ? payload.headline : title;
+			body: payload.subheading ? payload.subheading : body;
+			icon = payload.mainImage ? payload.mainImage : icon;
+		}
 	} catch (e) {}
 
 	event.waitUntil(new Promise(resolve => {
@@ -26,7 +27,8 @@ self.addEventListener('push', event => {
 				category: 'push',
 				action: 'shown',
 				context: {
-					storyUuid: notificationData.id
+					type: notificationData.id ? 'story' : 'fallback',
+					storyUuid: notificationData.id ? notificationData.id : null
 				},
 				content: { uuid: notificationData.id }
 			});
@@ -34,9 +36,9 @@ self.addEventListener('push', event => {
 
 		resolve(self.registration.showNotification(title, {
 			requireInteraction: false,
-			body: '',
-			tag: tag,
-			icon: myftIcon,
+			body,
+			tag,
+			icon,
 			data: notificationData
 		}));
 	}));
