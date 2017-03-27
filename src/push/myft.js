@@ -3,14 +3,14 @@ import track from '../utils/track';
 
 const myftIcon = 'https://www.ft.com/__assets/creatives/icons/myFT-logo-grey.png';
 
-self.addEventListener('push', ev => {
+self.addEventListener('push', event => {
 	let payload = JSON.parse(event.data);
 	let title = payload.headline;
 	let tag = payload.uuid;
 	let notificationData = {
 		id: payload.uuid
 	};
-	ev.waitUntil(() => {
+	event.waitUntil(() => {
 		try {
 			track({
 				category: 'push',
