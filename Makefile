@@ -1,7 +1,7 @@
 .PHONY: demo
 include n.Makefile
 
-test: verify unit-test
+test: verify
 
 build-dev: watch
 
