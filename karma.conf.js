@@ -26,10 +26,9 @@ module.exports = function (karma) {
 			// These tests are commented out because the actual code doesn't get run
 			// See `src/__sw.js`
 			// 'test/caches/ads.spec.js',
-			// 'test/caches/built-assets.spec.js',
+			'test/caches/built-assets.spec.js',
 			// 'test/caches/comments.spec.js',
-			// 'test/caches/image.spec.js',
-			// 'test/caches/n-ui.spec.js',
+			'test/caches/n-ui.spec.js',
 			// 'test/caches/polyfill.spec.js',
 			'test/utils/*.spec.js',
 			{pattern: 'test/sw/*.js', served: true, included: false},

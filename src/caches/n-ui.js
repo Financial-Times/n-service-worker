@@ -6,10 +6,12 @@ const options = {
 	origin: 'https://www.ft.com',
 	cache: {
 		name: 'n-ui',
-		maxEntries: 8
+		maxEntries: 8,
+		// our code base moves so fast, pointless caching enything longer than a few days
+		maxAge: 60 * 60 * 24 * 5
 	}
 };
 
 // n-ui route
 // use toolbox.fastest as we want to send requests to check last-modified headers for n-ui bundle
-router.get('/__assets/n-ui/*', getHandler({strategy: 'fastest', upgradeToCors: true}), options);
+router.get('/__assets/n-ui/*', getHandler({strategy: 'cacheFirst', upgradeToCors: true}), options);
