@@ -3,8 +3,8 @@
 import './utils/flags';
 
 // generic assets
-//import './caches/fonts';
-//import './caches/image';
+import './caches/fonts';
+import './caches/image';
 // import './caches/built-assets'; *
 // import './caches/n-ui'; *
 // import './caches/polyfill'; *
@@ -24,10 +24,9 @@ import './push/myft';
 // while we do MVP testing
 //import './offline/404-test';
 
-//import router from './utils/router';
-//import { messageHandler } from './messages';
+import router from './utils/router';
+import { messageHandler } from './messages';
 
-/*
 self.addEventListener('fetch', ev => {
 	const handler = router.match(ev.request);
 	if (handler) {
@@ -40,4 +39,4 @@ self.addEventListener('activate', ev => {
 });
 
 self.addEventListener('message', messageHandler);
-*/
+
