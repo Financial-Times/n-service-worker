@@ -24,8 +24,8 @@ describe('images', () => {
 			assetLabel: `header icon ${image}`,
 			url,
 			expiry,
-			upgradeToCors: true,
-			cacheName
+			cacheName,
+			flag: 'swAssetCaching'
 		})
 	});
 
@@ -39,8 +39,8 @@ describe('images', () => {
 			assetLabel: label,
 			url,
 			expiry: 'no-expiry',
-			upgradeToCors: true,
-			cacheName: 'image'
+			cacheName: 'image',
+			flag: 'swAssetCaching'
 		})
 	);
 

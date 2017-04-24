@@ -27,7 +27,8 @@ describe('fonts', () => {
 			url,
 			expiry,
 			mode: 'cors',
-			cacheName
+			cacheName,
+			flag: 'swAssetCaching'
 		})
 
 	})

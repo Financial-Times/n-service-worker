@@ -14,4 +14,4 @@ const options = {
 
 // n-ui route
 // use toolbox.fastest as we want to send requests to check last-modified headers for n-ui bundle
-router.get('/__assets/n-ui/*', getHandler({strategy: 'cacheFirst', upgradeToCors: true}), options);
+router.get('/__assets/n-ui/*', getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'}), options);

@@ -22,7 +22,7 @@ self.addEventListener('message', msg => {
 	}
 });
 
-const cacheFirst = getHandler({strategy: 'cacheFirst', upgradeToCors: true})
+const cacheFirst = getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'})
 
 // prod
 router.get('/__assets/hashed/:appName/:assetHash/:cssName.css', cacheFirst, options);
