@@ -3,9 +3,9 @@ import router from '../utils/router';;
 import { getHandler } from '../utils/handlers';
 import precache from '../utils/precache';
 import { sw as precacheConfig} from '../../config/precache';
-
+console.log('test host', self.testHost)
 const options = {
-	origin: 'https://www.ft.com',
+	origin: self.testHost || 'https://www.ft.com',
 	cache: {
 		name: 'image'
 	}

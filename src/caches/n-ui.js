@@ -3,7 +3,7 @@ import router from '../utils/router';;
 import { getHandler } from '../utils/handlers';
 
 const options = {
-	origin: 'https://www.ft.com',
+	origin: self.host || 'https://www.ft.com',
 	cache: {
 		name: 'n-ui',
 		maxEntries: 8,

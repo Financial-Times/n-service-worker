@@ -2,7 +2,7 @@ import Db from './db';
 import parseLinkHeader from './parse-link-headers';
 import lowResImage from './low-res-image';
 import offlineContent from './offline-content';
-
+console.log(self.testHost);
 function addHeadersToResponse (res, headers) {
 	const response = res.clone()
 	const originalHeaders = {};
@@ -21,6 +21,14 @@ function addHeadersToResponse (res, headers) {
 		.then(body => {
 			return new Response(body, init);
 		})
+}
+
+function canonicalUrl (request) {
+	console.log('host', self.testHost);
+	if (typeof request !== 'string') {
+		request = request.url;
+	}
+	return request.charAt(0) === '/' ? (self.testHost || 'https://www.ft.com') + request : request;
 }
 
 export class Cache {
@@ -45,16 +53,15 @@ export class Cache {
 	 * @param {string|boolean} [opts.followLinks] - cache items found in link header, see followLinkHeader()
 	 * @returns {object} - The Response
 	 */
-	set (request, { response, type = null, maxAge = 60, maxEntries, followLinks = false } = { }) {
-
-		const fetchRequest = response ? Promise.resolve(response) : fetch(request);
+	set async (request, { response, type = null, maxAge = 60, maxEntries, followLinks = false } = { }) {
+		const fetchResponse = response ? await Promise.resolve(response) : await fetch(request);
 		return fetchRequest
 			.then(fetchedResponse => {
-					return this.followLinkHeader(request, fetchedResponse, { maxAge, maxEntries, followLinks });
-				})
+				return this.followLinkHeader(request, fetchedResponse, { maxAge, maxEntries, followLinks });
+			})
 			.then(fetchedResponse => {
 				if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
-					const url = typeof request === 'string' ? request : request.url;
+					const url = canonicalUrl(request);
 
 					let cacheMeta = {
 						cached_ts: Date.now(),
@@ -65,7 +72,7 @@ export class Cache {
 					if (maxAge !== -1) cacheMeta.expires = Date.now() + (maxAge * 1000)
 
 					const respondWith = Promise.all([
-						this.cache.put(request, fetchedResponse.clone()),
+						this.cache.put(url, fetchedResponse.clone()),
 						maxAge !== -1 ? this.db.set(url, cacheMeta) : null
 					])
 						.then(() => fetchedResponse)
@@ -92,9 +99,10 @@ export class Cache {
 	 * @returns {object|undefined} - The Response, or undefined if nothing in the cache
 	 */
 	get (request, debug) {
-
+		this.keys().then(console.log)
 		return this.expire(request)
 			.then(({response, expires} = {}) => {
+				console.log(response, expires)
 				if (!response) {
 					return;
 				}
@@ -106,6 +114,10 @@ export class Cache {
 				} else {
 					return response;
 				}
+			})
+			.catch(err => {
+				console.log(err)
+				throw err
 			});
 	}
 
@@ -129,9 +141,9 @@ export class Cache {
 	 * @param {string|object} - Either a URL or a Request object
 	 */
 	delete (request) {
-		const url = typeof request === 'string' ? request : request.url;
+		const url = canonicalUrl(request);
 		return Promise.all([
-			this.cache.delete(request),
+			this.cache.delete(url),
 			this.db.delete(url),
 		])
 		.then(() => { });
@@ -154,21 +166,30 @@ export class Cache {
 	}
 
 	expireAll () {
-		return this.cache.keys()
-			.then(keys => Promise.all(keys.map(this.expire.bind(this))));
+		return Promise.resolve()
+		// return this.cache.keys()
+		// 	.then(keys => Promise.all(keys.map(this.expire.bind(this))));
 	}
 
 	expire (key) {
-		const url = typeof key === 'string' ? key : key.url;
+		const url = canonicalUrl(key);
+		console.log('expire it', url, key)
 		return Promise.all([
-			this.cache.match(key),
+			this.cache.match(url),
 			this.db.get(url)
 		])
 			.then(([response, { expires } = { }]) => {
+				console.log(!!response)
 				if (expires && expires <= Date.now()) {
+					console.log('delete')
 					return this.delete(key);
 				}
+				console.log('return', response, expires)
 				return {response, expires}
+			})
+			.catch(err => {
+				console.log(err)
+				throw err
 			});
 	}
 

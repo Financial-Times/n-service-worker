@@ -37,7 +37,15 @@ module.exports = function (karma) {
 		],
 		proxies: {
 			'/integration-sw.js': '/base/test/sw/integration.js',
-			'/files': '/base/test/fixtures/files'
+			'/files': '/base/test/fixtures/files',
+			'/__origami': {
+				target: 'https://www.ft.com/__origami',
+				changeOrigin: true
+			},
+			'/__assets': {
+				target: 'https://www.ft.com/__assets',
+				changeOrigin: true
+			}
 		},
 
 		preprocessors: {

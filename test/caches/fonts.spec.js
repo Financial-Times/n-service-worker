@@ -11,7 +11,7 @@ describe('fonts', () => {
 	}
 
 	fonts.map(font => {
-		const url = `https://www.ft.com/__origami/service/build/v2/files/o-fonts-assets@1.3.0/${font}.woff?`;
+		const url = `/__origami/service/build/v2/files/o-fonts-assets@1.3.0/${font}.woff?`;
 		const expiry = 'no-expiry';
 		const cacheName ='fonts';
 
