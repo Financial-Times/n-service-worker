@@ -1,8 +1,3 @@
-// this forces the origin for cache urls to be same domain
-// (with some help from karma test runner proxies)
-// which means we get the same cors behaviour in tests as we
-// would on the live site
-self.testHost = self.registration.scope.replace(/\/$/, '');
 self.addEventListener('message', ev => {
 	const msg = ev.data;
 	if (msg.type === 'claim') {
@@ -15,7 +10,7 @@ const nativeFetch = fetch;
 let fetchCalls = [];
 
 function domainify (url) {
-	return (url.charAt(0) === '/') ? self.testHost + url : url;
+	return (url.charAt(0) === '/') ? self.registration.scope.replace(/\/$/, '')+ url : url;
 }
 
 function queryFetchHistory (url, port) {
