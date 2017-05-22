@@ -3,7 +3,7 @@ import router from '../utils/router';;
 import { getHandler } from '../utils/handlers';
 
 const options = {
-	origin: self.host || 'https://www.ft.com',
+	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
 		name: 'n-ui',
 		maxEntries: 8,

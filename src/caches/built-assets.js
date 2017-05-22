@@ -6,7 +6,7 @@ import { getHandler } from '../utils/handlers';
 // TODO have one cache for our more actively developed apps,
 // another with longer cache life for errors, opt-out etc
 const options = {
-	origin: self.testHost || 'https://www.ft.com',
+	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
 		name: 'built-assets',
 		maxEntries: 20,
