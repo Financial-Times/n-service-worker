@@ -2,7 +2,7 @@ self.addEventListener('message', ev => {
 	const msg = ev.data;
 	if (msg.type === 'claim') {
 		self.clients.claim();
-		ev.ports[0].postMessage('claimed')
+		ev.ports[0].postMessage('claimed');
 	}
 });
 
@@ -10,18 +10,18 @@ const nativeFetch = fetch;
 let fetchCalls = [];
 
 function queryFetchHistory (url, port) {
-	port.postMessage(fetchCalls.indexOf(url) > -1)
+	port.postMessage(fetchCalls.indexOf(url) > -1);
 }
 
 function clearFetchHistory (url, port) {
-	fetchCalls = fetchCalls.filter(storedUrl => storedUrl !== url)
-	port.postMessage('done')
+	fetchCalls = fetchCalls.filter(storedUrl => storedUrl !== url);
+	port.postMessage('done');
 }
 
 self.fetch = function (req, opts) {
 	fetchCalls.push(req.url || req);
 	return nativeFetch.call(self, req, opts);
-}
+};
 
 self.addEventListener('message', ev => {
 	const msg = ev.data;
@@ -32,4 +32,4 @@ self.addEventListener('message', ev => {
 	}
 });
 
-import '../../src/__sw'
+import '../../src/__sw';

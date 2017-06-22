@@ -7,5 +7,5 @@ describe('n-ui', () => {
 		upgradeToCors: true,
 		cacheName: 'n-ui',
 		strategy: 'fastest'
-	})
+	});
 });

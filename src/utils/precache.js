@@ -14,7 +14,7 @@ export default (name, urls, { maxAge, maxEntries, followLinks, type } = { }) => 
 		precachePromises.push(promise);
 		ev.waitUntil(promise);
 	});
-}
+};
 
 self.addEventListener('install', ev => {
 	ev.waitUntil(

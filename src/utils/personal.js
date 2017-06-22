@@ -26,4 +26,4 @@ router.get('/logout', clearAndFetch, options);
 router.get('/international', clearAndFetch, options);
 router.get('/uk', clearAndFetch, options);
 
-export { clearCaches, registerCache }
+export { clearCaches, registerCache };

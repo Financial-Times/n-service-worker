@@ -9,7 +9,7 @@ function getCacheOptions (days, isPersonal) {
 		name: 'ads' + (isPersonal ? ':personal' : ''),
 		maxAge: 60 * 60 * ( days >= 1 ? days * 24 : 1 ),
 		maxEntries: 60
-	}
+	};
 }
 
 registerCache('next:ads:personal');
@@ -108,7 +108,7 @@ precache(
 // 	cache: getCacheOptions(1, true)
 // });
 
-const standardHandler = getHandler({flag: 'swAdsCaching', strategy: 'cacheFirst'})
+const standardHandler = getHandler({flag: 'swAdsCaching', strategy: 'cacheFirst'});
 
 router.get(new RegExp('\/v1\/concept\/(' + popularStreams.join('|') + ')'), standardHandler, {
 	origin: 'https://ads-api.ft.com',

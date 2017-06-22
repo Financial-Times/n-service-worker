@@ -38,16 +38,16 @@ function hasRel (x) {
 
 function createObjects (acc, p) {
 	// rel="next" => 1: rel 2: next
-	const m = p.match(/\s*(.+)\s*=\s*"?([^"]+)"?/)
+	const m = p.match(/\s*(.+)\s*=\s*"?([^"]+)"?/);
 	if (m) acc[m[1]] = m[2];
 	return acc;
 }
 
 function parseLink (link) {
 	try {
-		const parts = link.split(';')
-		const linkUrl = parts.shift().replace(/[<>]/g, '')
-		const parsedUrl = url.parse(linkUrl)
+		const parts = link.split(';');
+		const linkUrl = parts.shift().replace(/[<>]/g, '');
+		const parsedUrl = url.parse(linkUrl);
 		const qry = qs.parse(parsedUrl.query);
 
 		let info = parts

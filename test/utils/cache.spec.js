@@ -23,9 +23,9 @@ describe('cache', () => {
 				]))
 				.then(([inCache, inDb]) => {
 					expect(inCache instanceof Response).to.be.true;
-					expect(inCache.url).to.equal(testUrl)
-					expect(inDb.expires).to.exist
-				})
+					expect(inCache.url).to.equal(testUrl);
+					expect(inDb.expires).to.exist;
+				});
 
 		});
 
@@ -41,9 +41,9 @@ describe('cache', () => {
 				]))
 				.then(([inCache, inDb]) => {
 					expect(inCache instanceof Response).to.be.true;
-					expect(inCache.url).to.equal(testUrl)
-					expect(inDb.expires).to.exist
-				})
+					expect(inCache.url).to.equal(testUrl);
+					expect(inDb.expires).to.exist;
+				});
 		});
 
 		it('put a request in the cache when a response provided', () => {
@@ -62,15 +62,15 @@ describe('cache', () => {
 				]))
 				.then(([inCache, inDb]) => {
 					expect(fetchMock.called()).to.be.false;
-					fetchMock.restore()
+					fetchMock.restore();
 
 					expect(inCache instanceof Response).to.be.true;
-					expect(inDb.expires).to.exist
+					expect(inDb.expires).to.exist;
 					return inCache.text()
 						.then(text => {
-							expect(text).to.equal('I am synthetic')
-						})
-				})
+							expect(text).to.equal('I am synthetic');
+						});
+				});
 		});
 
 		it('not put bad responses in the cache', () => {
@@ -85,9 +85,9 @@ describe('cache', () => {
 				]))
 				.then(([inCache, inDb]) => {
 					expect(inCache).to.not.exist;
-					expect(inDb).to.not.exist
-				})
-		})
+					expect(inDb).to.not.exist;
+				});
+		});
 
 		it('not put synthetic bad responses in the cache', () => {
 			const testUrl = 'http://localhost:9876/files/503';
@@ -103,9 +103,9 @@ describe('cache', () => {
 				]))
 				.then(([inCache, inDb]) => {
 					expect(inCache).to.not.exist;
-					expect(inDb).to.not.exist
-				})
-		})
+					expect(inDb).to.not.exist;
+				});
+		});
 
 		it('overwrite an item in the cache', () => {
 			const testUrl = 'http://localhost:9876/files/4';
@@ -125,15 +125,15 @@ describe('cache', () => {
 				]))
 				.then(([inCache, inDb]) => {
 					expect(inCache instanceof Response).to.be.true;
-					expect(inDb.expires).to.exist
+					expect(inDb.expires).to.exist;
 					return inCache.text()
 						.then(text => {
-							expect(text).to.equal('I am overwritten with synthetic')
-						})
-				})
+							expect(text).to.equal('I am overwritten with synthetic');
+						});
+				});
 		});
 
-	})
+	});
 
 	describe('getting items from the cache', () => {
 		it('get a request from the cache', () => {
@@ -143,7 +143,7 @@ describe('cache', () => {
 					return cache.set(testUrl)
 						.then(() => {
 							fetchMock.mock(/.*/, url => fetchMock.realFetch.bind(window)(url));
-							return cache
+							return cache;
 						});
 				})
 				.then(cache => cache.get(new Request(testUrl)))
@@ -151,8 +151,8 @@ describe('cache', () => {
 					expect(fetchMock.called()).to.be.false;
 					fetchMock.restore();
 					expect(response instanceof Response).to.be.true;
-					expect(response.url).to.equal(testUrl)
-				})
+					expect(response.url).to.equal(testUrl);
+				});
 		});
 
 		it('get a url from the cache', () => {
@@ -163,7 +163,7 @@ describe('cache', () => {
 					return cache.set(new Request(testUrl))
 						.then(() => {
 							fetchMock.mock(/.*/, url => fetchMock.realFetch.bind(window)(url));
-							return cache
+							return cache;
 						});
 				})
 				.then(cache => cache.get(testUrl))
@@ -171,8 +171,8 @@ describe('cache', () => {
 					expect(fetchMock.called()).to.be.false;
 					fetchMock.restore();
 					expect(response instanceof Response).to.be.true;
-					expect(response.url).to.equal(testUrl)
-				})
+					expect(response.url).to.equal(testUrl);
+				});
 		});
 
 		it('getOrSet a request from the cache if present', () => {
@@ -183,7 +183,7 @@ describe('cache', () => {
 					return cache.set(new Request(testUrl))
 						.then(() => {
 							fetchMock.mock(/.*/, url => fetchMock.realFetch.bind(window)(url));
-							return cache
+							return cache;
 						});
 				})
 				.then(cache => cache.getOrSet(testUrl))
@@ -191,7 +191,7 @@ describe('cache', () => {
 					expect(fetchMock.called()).to.be.false;
 					fetchMock.restore();
 					expect(response instanceof Response).to.be.true;
-					expect(response.url).to.equal(testUrl)
+					expect(response.url).to.equal(testUrl);
 				});
 		});
 
@@ -205,7 +205,7 @@ describe('cache', () => {
 					expect(fetchMock.called()).to.be.true;
 					fetchMock.restore();
 					expect(response instanceof Response).to.be.true;
-					expect(response.url).to.equal(testUrl)
+					expect(response.url).to.equal(testUrl);
 				})
 				.then(() => Promise.all([
 					caches.open('next:test-cache')
@@ -215,8 +215,8 @@ describe('cache', () => {
 				]))
 				.then(([inCache, inDb]) => {
 					expect(inCache instanceof Response).to.be.true;
-					expect(inCache.url).to.equal(testUrl)
-					expect(inDb.expires).to.exist
+					expect(inCache.url).to.equal(testUrl);
+					expect(inDb.expires).to.exist;
 				});
 		});
 
@@ -243,7 +243,7 @@ describe('cache', () => {
 				.then(([inCache, inDb]) => {
 					expect(inCache).to.not.exist;
 					expect(inDb).to.not.exist;
-				})
+				});
 		});
 
 		it('delete a url from the cache', () => {
@@ -264,7 +264,7 @@ describe('cache', () => {
 				.then(([inCache, inDb]) => {
 					expect(inCache).to.not.exist;
 					expect(inDb).to.not.exist;
-				})
+				});
 		});
 
 		it('get a list of all keys in the cache', () => {
@@ -280,9 +280,9 @@ describe('cache', () => {
 				.then(keys => keys.map(k => k.url))
 				.then(keys => {
 					expect(keys.length).to.equal(2);
-					expect(keys).to.contain('http://localhost:9876/files/0')
-					expect(keys).to.contain('http://localhost:9876/files/1')
-				})
+					expect(keys).to.contain('http://localhost:9876/files/0');
+					expect(keys).to.contain('http://localhost:9876/files/1');
+				});
 		});
 
 		it('clear all keys in the cache', () => {
@@ -310,9 +310,9 @@ describe('cache', () => {
 					expect(inDb1).to.not.exist;
 					expect(inCache2).to.not.exist;
 					expect(inDb2).to.not.exist;
-				})
+				});
 		});
-	})
+	});
 
 
 	describe('cache invalidation', () => {
@@ -327,9 +327,9 @@ describe('cache', () => {
 							.then(keys => keys.map(k => k.url))
 							.then(keys => {
 								expect(keys.length).to.equal(3);
-								expect(keys).to.contain('http://localhost:9876/files/0')
-								expect(keys).to.contain('http://localhost:9876/files/1')
-								expect(keys).to.contain('http://localhost:9876/files/2')
+								expect(keys).to.contain('http://localhost:9876/files/0');
+								expect(keys).to.contain('http://localhost:9876/files/1');
+								expect(keys).to.contain('http://localhost:9876/files/2');
 							})
 						// cache invalidation is done lazily so we add a delay
 						.then(() => new Promise(res => setTimeout(res, 500)))
@@ -346,16 +346,16 @@ describe('cache', () => {
 						]))
 						.then(([keys, inCache1, inDb1, inCache2, inDb2]) => {
 
-							keys = keys.map(k => k.url)
+							keys = keys.map(k => k.url);
 							expect(keys.length).to.equal(2);
-							expect(keys).to.contain('http://localhost:9876/files/1')
-							expect(keys).to.contain('http://localhost:9876/files/2')
+							expect(keys).to.contain('http://localhost:9876/files/1');
+							expect(keys).to.contain('http://localhost:9876/files/2');
 							expect(inCache1).to.not.exist;
 							expect(inDb1).to.not.exist;
 							expect(inCache2).to.exist;
 							expect(inDb2).to.exist;
-						})
-					})
+						});
+					});
 			});
 		});
 		describe('max age', () => {
@@ -366,9 +366,9 @@ describe('cache', () => {
 					.then(cache => cache.set(testUrl))
 					.then(() => new DB('requests', { dbName: 'next:test-cache'}).get(testUrl))
 					.then(inDb => {
-						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 500)
-					})
-			})
+						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 500);
+					});
+			});
 
 			it('possible to set no expiry', () => {
 				const testUrl = 'http://localhost:9876/files/0';
@@ -376,9 +376,9 @@ describe('cache', () => {
 					.then(cache => cache.set(testUrl, {maxAge: -1}))
 					.then(() => new DB('requests', { dbName: 'next:test-cache'}).get(testUrl))
 					.then(inDb => {
-						expect(inDb).to.not.exist
-					})
-			})
+						expect(inDb).to.not.exist;
+					});
+			});
 
 			it('possible to set custom expiry', () => {
 				const now = Date.now();
@@ -387,9 +387,9 @@ describe('cache', () => {
 					.then(cache => cache.set(testUrl, {maxAge: 200}))
 					.then(() => new DB('requests', { dbName: 'next:test-cache'}).get(testUrl))
 					.then(inDb => {
-						expect(inDb.expires).to.be.closeTo(now + (200 * 1000), 500)
-					})
-			})
+						expect(inDb.expires).to.be.closeTo(now + (200 * 1000), 500);
+					});
+			});
 
 			it('possible to overwrite custom expiry', () => {
 				const now = Date.now();
@@ -397,14 +397,14 @@ describe('cache', () => {
 				return cache('test-cache')
 					.then(cache => {
 						return cache.set(testUrl, {maxAge: 200})
-							.then(() => cache)
+							.then(() => cache);
 					})
 					.then(cache => cache.set(testUrl))
 					.then(() => new DB('requests', { dbName: 'next:test-cache'}).get(testUrl))
 					.then(inDb => {
-						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 500)
-					})
-			})
+						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 500);
+					});
+			});
 
 			it('invalidate cache items when past expiry', () => {
 				const testUrl = 'http://localhost:9876/files/0';
@@ -414,7 +414,7 @@ describe('cache', () => {
 							// force an earlier expiry
 							.then(() => new DB('requests', { dbName: 'next:test-cache'}).set(testUrl, {expires: Date.now() - 2000}))
 							.then(() => cache.get(testUrl))
-							.then(res => expect(res).to.not.exist)
+							.then(res => expect(res).to.not.exist);
 					});
 			});
 
@@ -433,8 +433,8 @@ describe('cache', () => {
 							]))
 							.then(([inCache, inDb]) => {
 								expect(inCache).to.exist;
-								expect(inDb).to.exist
-							})
+								expect(inDb).to.exist;
+							});
 					})
 					.then(() => cache('test-cache'))
 					// cache invalidation is done lazily so we add a delay
@@ -447,14 +447,14 @@ describe('cache', () => {
 					]))
 					.then(([inCache, inDb]) => {
 						expect(inCache).to.not.exist;
-						expect(inDb).to.not.exist
-					})
-			})
+						expect(inDb).to.not.exist;
+					});
+			});
 		});
-	})
+	});
 
 	describe('perf', () => {
 		// TODOD: expectations about not blocking network requests with idb/cache requests
-	})
+	});
 
-})
+});

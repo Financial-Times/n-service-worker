@@ -10,7 +10,7 @@ const appcache = {
 		'https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo:brand-ft-masthead?source=o-header&tint=%23505050,%23505050&format=svg',
 		'https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo:brand-myft?source=o-header&tint=%23505050,%23505050&format=svg'
 	]
-}
+};
 
 const sw = {
 	fonts: appcache.fonts.concat([
@@ -25,6 +25,6 @@ const sw = {
 		'https://www.ft.com/__origami/service/image/v2/images/raw/fticon-v1:arrow-down?source=o-icons&tint=%2326747A,%2326747A&format=svg',
 		'https://www.ft.com/__origami/service/image/v2/images/raw/fticon-v1:cross?source=o-icons&tint=%23FFFFFF,%23FFFFFF&format=svg',
 	])
-}
+};
 
-module.exports = { appcache, sw }
+module.exports = { appcache, sw };

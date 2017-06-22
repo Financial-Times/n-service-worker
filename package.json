@@ -5,10 +5,11 @@
     "url": "https://github.com/Financial-Times/n-service-worker.git"
   },
   "engines": {
-    "node": "6.3.0"
+    "node": "6.11.0"
   },
   "scripts": {
-    "start": "make run -j2"
+    "start": "make run -j2",
+    "commit": "commit-wizard"
   },
   "dependencies": {
     "idb": "^1.1.4",
@@ -16,6 +17,7 @@
     "promise-rat-race": "^1.4.0"
   },
   "devDependencies": {
+    "@financial-times/n-gage": "^1.7.0",
     "@financial-times/n-heroku-tools": "^6.10.0",
     "@financial-times/n-internal-tool": "^1.2.2",
     "@financial-times/n-webpack": "^2.0.0",
@@ -44,5 +46,13 @@
     "sinon": "^1.17.5",
     "sinon-chai": "^2.8.0",
     "useragent": "^2.1.9"
+  },
+  "config": {
+    "pre-git": {
+      "pre-commit": [
+        "make verify",
+        "node_modules/.bin/secret-squirrel"
+      ]
+    }
   }
 }
