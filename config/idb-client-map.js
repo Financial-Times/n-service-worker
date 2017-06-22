@@ -8,7 +8,7 @@ export const mappings = {
 		dbName: 'next:offline-ft-v1',
 		storeName: 'requests'
 	}
-}
+};
 
 export default function idbForSource (source) {
 	return mappings[source] ? mappings[source] : null;

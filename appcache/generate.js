@@ -2,7 +2,7 @@ const fs = require('fs');
 const precache = require('../config/precache').appcache;
 const urls = Object.keys(precache)
 	.reduce((arr, key) => {
-		return arr.concat(precache[key])
+		return arr.concat(precache[key]);
 	}, []);
 
 const landing = process.argv[2] === 'landing';
@@ -23,7 +23,7 @@ ${landing ? '/ /__offline/landing' : ''}
 
 NETWORK:
 *
-`
+`;
 
 if(landing) {
 	fs.writeFileSync('dist/__appcache-landing.manifest', manifest);

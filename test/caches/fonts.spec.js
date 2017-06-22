@@ -3,11 +3,11 @@
 const useragent = require('useragent');
 
 describe('fonts', () => {
-	const fonts = ['MetricWeb-Regular', 'MetricWeb-Semibold']
+	const fonts = ['MetricWeb-Regular', 'MetricWeb-Semibold'];
 
 	// FIXME: Fonts in firefox are being weird generally, this one is particularly bad and fails every time
 	if (useragent.is(navigator.userAgent).chrome) {
-		fonts.push('FinancierDisplayWeb-Regular')
+		fonts.push('FinancierDisplayWeb-Regular');
 	}
 
 	fonts.map(font => {
@@ -20,7 +20,7 @@ describe('fonts', () => {
 			assetLabel: `font ${font} forever`,
 			expiry,
 			cacheName
-		})
+		});
 
 		SWTestBundles.checkCacheIsUsed({
 			assetLabel: font,
@@ -28,7 +28,7 @@ describe('fonts', () => {
 			expiry,
 			mode: 'cors',
 			cacheName
-		})
+		});
 
-	})
+	});
 });

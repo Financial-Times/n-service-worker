@@ -22,9 +22,9 @@ function purgeCache (request) {
 				cache.delete(key);
 				return true;
 			}
-		}))
+		}));
 
-	return fetch(request)
+	return fetch(request);
 }
 
 registerCache('next:myft');

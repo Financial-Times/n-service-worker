@@ -58,7 +58,7 @@ self.addEventListener('message', ev => {
 								return cache.get(request)
 									.then(response => {
 										if (response) {
-											return response
+											return response;
 										}
 										return fetch(request)
 											.then(response => {

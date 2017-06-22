@@ -4,7 +4,7 @@ import lowResImage from './low-res-image';
 import offlineContent from './offline-content';
 
 function addHeadersToResponse (res, headers) {
-	const response = res.clone()
+	const response = res.clone();
 	const originalHeaders = {};
 
 	response.headers.forEach((v,k) => {
@@ -20,7 +20,7 @@ function addHeadersToResponse (res, headers) {
 	return response.text()
 		.then(body => {
 			return new Response(body, init);
-		})
+		});
 }
 
 export class Cache {
@@ -31,7 +31,7 @@ export class Cache {
 	 */
 	constructor (cache, cacheName) {
 		this.cache = cache;
-		this.db = new Db('requests', { dbName: cacheName })
+		this.db = new Db('requests', { dbName: cacheName });
 	}
 
 	/**
@@ -60,29 +60,29 @@ export class Cache {
 						cached_ts: Date.now(),
 						type,
 						etag: fetchedResponse.headers.get('etag')
-					}
+					};
 
-					if (maxAge !== -1) cacheMeta.expires = Date.now() + (maxAge * 1000)
+					if (maxAge !== -1) cacheMeta.expires = Date.now() + (maxAge * 1000);
 
 					const respondWith = Promise.all([
 						this.cache.put(request, fetchedResponse.clone()),
 						maxAge !== -1 ? this.db.set(url, cacheMeta) : null
 					])
-						.then(() => fetchedResponse)
+						.then(() => fetchedResponse);
 
 					// we use setTimeout as this isn't important enough to be put immediately on the microtask queue
 					setTimeout(() => respondWith
 						.then(() => {
 							if (maxEntries) {
-								this.limit(maxEntries)
+								this.limit(maxEntries);
 							}
-						}))
+						}));
 
 					return respondWith;
 				} else {
 					return fetchedResponse;
 				}
-			})
+			});
 	}
 
 	/**
@@ -102,7 +102,7 @@ export class Cache {
 					return addHeadersToResponse(response, {
 						'From-Cache': 'true',
 						expires: expires || 'no-expiry'
-					})
+					});
 				} else {
 					return response;
 				}
@@ -120,7 +120,7 @@ export class Cache {
 	 */
 	getOrSet (request, { maxAge = 60, maxEntries } = { }) {
 		return this.get(request)
-			.then(response => response || this.set(request, { maxAge, maxEntries }))
+			.then(response => response || this.set(request, { maxAge, maxEntries }));
 	}
 
 	/**
@@ -150,7 +150,7 @@ export class Cache {
 	 * Get all the keys in the cache (and remove expired ones in the process)
 	 */
 	keys () {
-		return this.cache.keys()
+		return this.cache.keys();
 	}
 
 	expireAll () {
@@ -168,7 +168,7 @@ export class Cache {
 				if (expires && expires <= Date.now()) {
 					return this.delete(key);
 				}
-				return {response, expires}
+				return {response, expires};
 			});
 	}
 
@@ -193,7 +193,7 @@ export class Cache {
 							.slice(count)
 							.map(({key}) => this.delete(key))
 					)
-			)
+			);
 			// .then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));
 	}
 
@@ -229,7 +229,7 @@ export class Cache {
 				.then(parsedLinks => {
 					if (parsedLinks && parsedLinks.length && parsedLinks.length === 0) {
 						// abort, no link headers to follow
-						throw new Error('no links to follow')
+						throw new Error('no links to follow');
 					}
 
 					parsedLinks
@@ -240,7 +240,7 @@ export class Cache {
 							if (link.as === 'image') {
 								// cache low res version of image
 								const lowResImageUrl = lowResImage(link.url);
-								response = fetch(lowResImageUrl)
+								response = fetch(lowResImageUrl);
 							}
 
 							if (link.as === 'document') {
@@ -260,7 +260,7 @@ export class Cache {
 
 				})
 				.then(() => Promise.resolve(fetchedResponse))
-				.catch(() => Promise.resolve(fetchedResponse))
+				.catch(() => Promise.resolve(fetchedResponse));
 		}
 
 	}
@@ -281,4 +281,4 @@ export default (cacheName, { cacheNamePrefix = 'next' } = { }) => {
 			cacheWrapper.expireAll();
 			return cacheWrapper;
 		});
-}
+};

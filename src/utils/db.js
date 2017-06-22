@@ -13,7 +13,7 @@ export default class {
 		return this.idb.then(db => {
 			return db.transaction(this.storeName)
 				.objectStore(this.storeName)
-				.get(key)
+				.get(key);
 		});
 	}
 
@@ -21,7 +21,7 @@ export default class {
 		return this.idb.then(db => {
 			return db.transaction(this.storeName)
 				.objectStore(this.storeName)
-				.getAll()
+				.getAll();
 		});
 	}
 
@@ -29,24 +29,24 @@ export default class {
 		return this.idb.then(db => {
 			return db.transaction(this.storeName)
 				.objectStore(this.storeName)
-				.getAllKeys()
+				.getAllKeys();
 		});
 	}
 
 
 	set (key, val) {
 		return this.idb.then(db => {
-			const tx = db.transaction(this.storeName, 'readwrite')
-			tx.objectStore(this.storeName).put(val, key)
-			return tx.complete
+			const tx = db.transaction(this.storeName, 'readwrite');
+			tx.objectStore(this.storeName).put(val, key);
+			return tx.complete;
 		});
 	}
 
 	delete (key) {
 		return this.idb.then(db => {
-			const tx = db.transaction(this.storeName, 'readwrite')
-			tx.objectStore(this.storeName).delete(key)
-			return tx.complete
+			const tx = db.transaction(this.storeName, 'readwrite');
+			tx.objectStore(this.storeName).delete(key);
+			return tx.complete;
 		});
 	}
 }

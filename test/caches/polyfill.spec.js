@@ -7,5 +7,5 @@ describe('polyfill', () => {
 		upgradeToCors: true,
 		cacheName: 'polyfill',
 		strategy: 'fastest'
-	})
+	});
 });
