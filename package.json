@@ -5,7 +5,7 @@
     "url": "https://github.com/Financial-Times/n-service-worker.git"
   },
   "engines": {
-    "node": "6.11.0"
+    "node": "^6.11.0"
   },
   "scripts": {
     "start": "make run -j2",
