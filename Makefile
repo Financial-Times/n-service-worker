@@ -30,10 +30,10 @@ test-firefox:
 
 a11y:
 	node .pa11yci.js
-	PA11Y=true node demo/app
+	PA11Y=true node demos/app
 
 demo:
-	node demo/app
+	node demos/app
 
 run: build-dev server
 

@@ -9,7 +9,9 @@
   },
   "scripts": {
     "start": "make run -j2",
-    "commit": "commit-wizard"
+    "precommit": "node_modules/.bin/secret-squirrel",
+    "commitmsg": "node_modules/.bin/secret-squirrel-commitmsg",
+    "prepush": "make verify -j3"
   },
   "dependencies": {
     "idb": "^1.1.4",
@@ -47,12 +49,5 @@
     "sinon-chai": "^2.8.0",
     "useragent": "^2.1.9"
   },
-  "config": {
-    "pre-git": {
-      "pre-commit": [
-        "make verify",
-        "node_modules/.bin/secret-squirrel"
-      ]
-    }
-  }
+  "config": {}
 }
