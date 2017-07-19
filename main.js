@@ -86,6 +86,7 @@ window.addEventListener('beforeinstallprompt', function (ev) {
 	// Make sure the install prompt only gets shown when native app install flags are enabled.
 	// Note: we have to grab this off window.nextFeatureFlags since this file is required in by `n-ui`
 	//       and has no knowledge of flags being passed in when registering the service worker.
+	// TODO: Investigate a tidier implementation.
 	const flags = window.nextFeatureFlags.filter((item) => /(subscriberCohort|disableIosSmartBanner|disableAndroidSmartBanner)/.test(item.name) );
 	const subscriberCohort = _getFlagState(flags, 'subscriberCohort');
 	const disableIosSmartBanner = _getFlagState(flags, 'disableIosSmartBanner');
