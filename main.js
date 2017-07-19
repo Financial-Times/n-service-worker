@@ -77,11 +77,24 @@ const unregister = () => {
 	}
 };
 
-// Make sure install barrier never gets shown
-// (at least while we consider the web app's role)
-window.addEventListener('beforeinstallprompt', ev => {
-	ev.preventDefault();
-	return false;
+function _getFlagState (flags, flagName) {
+	let flag = flags.filter((item) => item.name === flagName)[0];
+
+	return flag && flag.state === true;
+}
+window.addEventListener('beforeinstallprompt', function (ev) {
+	// Make sure the install prompt only gets shown when native app install flags are enabled.
+	// Note: we have to grab this off window.nextFeatureFlags since this file is required in by `n-ui`
+	//       and has no knowledge of flags being passed in when registering the service worker.
+	const flags = window.nextFeatureFlags.filter((item) => /(subscriberCohort|disableIosSmartBanner|disableAndroidSmartBanner)/.test(item.name) );
+	const subscriberCohort = _getFlagState(flags, 'subscriberCohort');
+	const disableIosSmartBanner = _getFlagState(flags, 'disableIosSmartBanner');
+	const disableAndroidSmartBanner = _getFlagState(flags, 'disableAndroidSmartBanner');
+
+	if (!subscriberCohort || (disableIosSmartBanner && disableAndroidSmartBanner)) {
+		ev.preventDefault();
+		return false;
+	}
 });
 
 function passFlags (flags) {
