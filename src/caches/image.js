@@ -3,9 +3,8 @@ import router from '../utils/router';;
 import { getHandler } from '../utils/handlers';
 import precache from '../utils/precache';
 import { sw as precacheConfig} from '../../config/precache';
-
 const options = {
-	origin: 'https://www.ft.com',
+	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
 		name: 'image'
 	}
@@ -17,7 +16,7 @@ precache(
 	{ maxAge: -1 }
 );
 
-const cacheFirst = getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'})
+const cacheFirst = getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'});
 
 //TODO - something for content images
 router.get('/__origami/service/image/v2/images/raw/fticon*', cacheFirst, options);

@@ -5,7 +5,7 @@ import precache from '../utils/precache';
 import { sw as precacheConfig} from '../../config/precache';
 
 const options = {
-	origin: 'https://www.ft.com',
+	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
 		name: 'fonts',
 		maxEntries: 5

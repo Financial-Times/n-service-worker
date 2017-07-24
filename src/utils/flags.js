@@ -23,38 +23,38 @@ function getDb () {
 function setFlags (newFlags) {
 	return getDb()
 		.then(db => {
-			const tx = db.transaction('flags', 'readwrite')
-			tx.objectStore('flags').put(newFlags, 'flags')
+			const tx = db.transaction('flags', 'readwrite');
+			tx.objectStore('flags').put(newFlags, 'flags');
 			return tx.complete;
 		})
 		.then(() => {
 			flags = newFlags;
-		})
+		});
 }
 
 function updateFlags () {
 	return getDb()
 		.then(db => {
-			const tx = db.transaction('flags')
-			tx.objectStore('flags').get('flags')
-			return tx.complete
+			const tx = db.transaction('flags');
+			tx.objectStore('flags').get('flags');
+			return tx.complete;
 		})
-		.then(newFlags => {flags = newFlags || flags})
+		.then(newFlags => {flags = newFlags || flags;});
 }
 
 updateFlags();
-setInterval(updateFlags, 1000 * 60 * 5)
+setInterval(updateFlags, 1000 * 60 * 5);
 
 self.addEventListener('message', ev => {
 	const msg = ev.data;
 	if (msg.type === 'flagsUpdate') {
 		return setFlags(msg.flags)
-			.then(() => ev.ports[0].postMessage('success'))
+			.then(() => ev.ports[0].postMessage('success'));
 	}
 });
 
 function getFlag (name) {
-	return flags[name]
+	return flags[name];
 }
 
-export {getFlag, setFlags}
+export {getFlag, setFlags};

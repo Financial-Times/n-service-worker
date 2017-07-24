@@ -2,7 +2,6 @@
   "name": "n-service-worker",
   "homepage": "https://github.com/Financial-Times/n-service-worker",
   "authors": [
-    "Patrick Hamann <patrick.hamann@ft.com>",
     "Darren Hurley <darren.hurley@ft.com>",
     "Rhys Evans <rhys.evans@ft.com>"
   ],
@@ -17,6 +16,5 @@
     "n.Makefile",
     "package.json",
     "webpack.config.js"
-  ],
-  "dependencies": {}
+  ]
 }

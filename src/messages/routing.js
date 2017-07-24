@@ -17,7 +17,7 @@ class Route {
 
 	makeHandler () {
 		return (data, source, event, response) =>
-			this.handler(data, source, event, response, this.options)
+			this.handler(data, source, event, response, this.options);
 	}
 
 }

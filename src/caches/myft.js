@@ -5,7 +5,7 @@ import { registerCache } from '../utils/personal';
 import cache from '../utils/cache';
 
 const options = {
-	origin: self.registration.scope.replace(/\/$/, ''),
+	origin: self.host || 'https://www.ft.com',
 	cache: {
 		name: 'myft',
 		maxAge: 60 * 60 * 12
@@ -22,9 +22,9 @@ function purgeCache (request) {
 				cache.delete(key);
 				return true;
 			}
-		}))
+		}));
 
-	return fetch(request)
+	return fetch(request);
 }
 
 registerCache('next:myft');

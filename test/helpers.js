@@ -17,7 +17,7 @@ window.SWTestHelper = {
 			for (let i = 0; i < iframeList.length; i++) {
 				iframeList[i].parentElement.removeChild(iframeList[i]);
 			}
-		}).catch()
+		}).catch();
 	},
 
 	unregisterAllRegistrations: function () {
@@ -51,7 +51,7 @@ window.SWTestHelper = {
 					return;
 				}
 
-				return Promise.all(cacheNames.map(SWTestHelper.clearCache))
+				return Promise.all(cacheNames.map(SWTestHelper.clearCache));
 			});
 	},
 
@@ -65,12 +65,12 @@ window.SWTestHelper = {
 				}),
 			idb.open(name).then(db => {
 				try {
-					const tx = db.transaction('requests', 'readwrite')
-					tx.objectStore('requests').clear()
+					const tx = db.transaction('requests', 'readwrite');
+					tx.objectStore('requests').clear();
 					return tx.complete;
 				} catch (e) {}
 			})
-		])
+		]);
 	},
 
 	installSW: function (swFile, waitForState = 'activated') {
@@ -112,20 +112,20 @@ window.SWTestHelper = {
 							if (this.state === waitForState) {
 								if (waitForState === 'activated') {
 									navigator.serviceWorker.ready
-										.then(claim)
+										.then(claim);
 								} else {
 									resolve();
 								}
 							}
-						}
+						};
 					} else {
-						reject('Unexpected failure - try clearing all caches and db\'s in the browser')
+						reject('Unexpected failure - try clearing all caches and db\'s in the browser');
 					}
 				})
 				.catch((err) => {
 					console.log('Error with ' + swFile, err);  //eslint-disable-line
 					reject(err);
-				})
+				});
 		});
 	},
 

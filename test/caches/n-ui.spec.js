@@ -6,5 +6,5 @@ describe('n-ui', () => {
 		expiry: 'no-expiry',
 		cacheName: 'n-ui',
 		flag: 'swAssetCaching'
-	})
+	});
 });

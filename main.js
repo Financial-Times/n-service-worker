@@ -20,7 +20,7 @@ const message = msg => {
 	} else {
 		return Promise.reject('Service Worker unavailable');
 	}
-}
+};
 
 const register = flags => {
 	if ('serviceWorker' in navigator && flags.get('serviceWorker')) {
@@ -29,10 +29,10 @@ const register = flags => {
 			return unregister();
 		}
 
-		const sampleUsers = require('./src/utils/sampleUsers').sampleUsers
+		const sampleUsers = require('./src/utils/sampleUsers').sampleUsers;
 
 		const swEnv = flags.get('swQAVariant') ||
-			((flags.get('swCanaryRelease') && sampleUsers(3, 'sw-canary')) ? 'canary' : 'prod')
+			((flags.get('swCanaryRelease') && sampleUsers(3, 'sw-canary')) ? 'canary' : 'prod');
 
 		// TODO add something to tracking & o-errors config to determine the version
 		return navigator.serviceWorker.register(`/__sw-${swEnv}.js`)
@@ -56,8 +56,8 @@ const register = flags => {
 								throw Error('The installing service worker became redundant.');
 						}
 
-					}
-				}
+					};
+				};
 
 				passFlags(JSON.parse(JSON.stringify(flags)))
 					.then(() => registration);
@@ -77,18 +77,11 @@ const unregister = () => {
 	}
 };
 
-// Make sure install barrier never gets shown
-// (at least while we consider the web app's role)
-window.addEventListener('beforeinstallprompt', ev => {
-	ev.preventDefault();
-	return false;
-});
-
 function passFlags (flags) {
 	return message({
 		type: 'flagsUpdate',
 		flags: flags
-	})
+	});
 }
 
 export { register, unregister, message, passFlags };

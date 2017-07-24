@@ -33,13 +33,16 @@ As service workers are potentially disastrous in their impact and difficult to r
 
 When releasing changes to n-service-worker consider how likely your changes are to go wrong and whether unit tests provide adequate coverage. Discuss with QA if necessary and keep them informed about which 'environment' your planned release is at.
 
-### How it works
+### Releasing the bower component
+If you're only changing `main.js`, or the templates, this is just a normal bower component release (consumed by n-ui). To get it into prod create a semver tag on this repo and then a new patch reease of n-ui.
+
+### Releasing the service worker
 
 Builds tagged with special tags and master builds push files named `__sw-{prod,canary,qa,master}.js` to s3. Feature flags are then used to toggle which one is installed for which users. The relevant flags are
 - `swQAVariant` - multivariant flag used by QA to choose between any of the 4 service worker variants
 - `swCanaryRelease` - forces a small percentage of users onto an experimental version of the service worker
 
-### What triggers each kind of release
+#### What triggers each kind of release
 - All master builds release `/__sw-master.js`
 - All tags of the form `qa-v{release number}` will release `/__sw-qa.js`
 - All tags of the form `canary-v{release number}` will release `/__sw-canary.js`
@@ -48,7 +51,7 @@ Builds tagged with special tags and master builds push files named `__sw-{prod,c
 
 To move a version of the service worker through one or more stages of the release cycle, care must be taken to tag the same commit with the related `qa`, `canary` and `prod` tags
 
-### Rolling back
+#### Rolling back
 Unfortunately it's still a manual process, but creating a new tag on the same commit as the last good version should do it.
 // TODO - set up versioning in s3
 

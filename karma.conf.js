@@ -37,7 +37,15 @@ module.exports = function (karma) {
 		],
 		proxies: {
 			'/integration-sw.js': '/base/test/sw/integration.js',
-			'/files': '/base/test/fixtures/files'
+			'/files': '/base/test/fixtures/files',
+			'/__origami': {
+				target: 'https://www.ft.com/__origami',
+				changeOrigin: true
+			},
+			'/__assets': {
+				target: 'https://www.ft.com/__assets',
+				changeOrigin: true
+			}
 		},
 
 		preprocessors: {
@@ -123,14 +131,14 @@ module.exports = function (karma) {
 			}
 			browserList[`${browserName}_sauce`] = Object.assign({base: 'SauceLabs'}, nightwatchBrowsers[browserName].desiredCapabilities);
 			return browserList;
-		}, {})
+		}, {});
 		config.customLaunchers = sauceBrowsers;
 		config.sauceLabs = {
 			testName: 'n-service-worker unit tests',
 			username: process.env.SAUCE_USER,
 			accessKey: process.env.SAUCE_KEY,
 			recordScreenshots: true
-		}
+		};
 
 		config.browsers = Object.keys(sauceBrowsers);
 		config.reporters.push('saucelabs');

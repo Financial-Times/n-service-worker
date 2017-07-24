@@ -46,14 +46,14 @@ const handlers = {
 					throw 'request not found in cache';
 				}
 				return res;
-			})
+			});
 
 		// update the cache when the network response returns
 		Promise.all([
 			fromNetwork,
 			openCache
 		])
-			.then(([response, cache]) => cache.set(request, Object.assign({response: response.clone()}, cacheOptions)))
+			.then(([response, cache]) => cache.set(request, Object.assign({response: response.clone()}, cacheOptions)));
 
 		// return a race between the two strategies
 		return ratRace([
@@ -61,7 +61,7 @@ const handlers = {
 			fromCache
 		]);
 	}
-}
+};
 
 const getHandler = ({strategy, flag, upgradeToCors}) => {
 	return (request, values, options = {}) => {
@@ -69,10 +69,10 @@ const getHandler = ({strategy, flag, upgradeToCors}) => {
 			return fetch(request);
 		}
 		if (upgradeToCors) {
-			request = upgradeRequestToCors(request)
+			request = upgradeRequestToCors(request);
 		}
-		return handlers[strategy](request, values, options)
-	}
-}
+		return handlers[strategy](request, values, options);
+	};
+};
 
-export { getHandler }
+export { getHandler };

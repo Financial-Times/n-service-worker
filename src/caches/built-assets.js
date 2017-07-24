@@ -6,7 +6,7 @@ import { getHandler } from '../utils/handlers';
 // TODO have one cache for our more actively developed apps,
 // another with longer cache life for errors, opt-out etc
 const options = {
-	origin: 'https://www.ft.com',
+	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
 		name: 'built-assets',
 		maxEntries: 20,
@@ -22,7 +22,7 @@ self.addEventListener('message', msg => {
 	}
 });
 
-const cacheFirst = getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'})
+const cacheFirst = getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'});
 
 // prod
 router.get('/__assets/hashed/:appName/:assetHash/:cssName.css', cacheFirst, options);
