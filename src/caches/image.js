@@ -16,7 +16,7 @@ precache(
 	{ maxAge: -1 }
 );
 
-const cacheFirst = getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'})
+const cacheFirst = getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'});
 
 //TODO - something for content images
 router.get('/__origami/service/image/v2/images/raw/fticon*', cacheFirst, options);

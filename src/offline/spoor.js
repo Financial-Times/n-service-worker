@@ -1,6 +1,6 @@
 import router from '../utils/router';;
 
-import DB from '../utils/db'
+import DB from '../utils/db';
 
 const options = {
 	origin: 'https://spoor-api.ft.com'
@@ -21,7 +21,7 @@ const syncData = () => {
 							return db.delete(id);
 						}
 					})
-					.catch(() => { })
+					.catch(() => { });
 			});
 			return Promise.all(spoorRequests);
 		})
@@ -32,7 +32,7 @@ const storeData = request =>
 	request.json()
 		.then(data => {
 			const db = new DB('spoor');
-			return db.set(data.context.id, data)
+			return db.set(data.context.id, data);
 		});
 
 self.addEventListener('periodicsync', ev => {
@@ -61,5 +61,5 @@ router.post('/ingest', request => {
 				.then(() => {
 					throw err;
 				});
-		})
+		});
 }, options);

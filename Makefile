@@ -1,5 +1,10 @@
+node_modules/@financial-times/n-gage/index.mk:
+	npm install --no-save --no-package-lock @financial-times/n-gage
+	touch $@
+
+-include node_modules/@financial-times/n-gage/index.mk
+
 .PHONY: demo
-include n.Makefile
 
 test: verify unit-test
 
@@ -25,10 +30,10 @@ test-firefox:
 
 a11y:
 	node .pa11yci.js
-	PA11Y=true node demo/app
+	PA11Y=true node demos/app
 
 demo:
-	node demo/app
+	node demos/app
 
 run: build-dev server
 

@@ -13,7 +13,7 @@ const defaultOpts = {
 	quality: 'medium',
 	width: '150',
 	source: 'offline-ft-sw'
-}
+};
 
 // url path starts with '/__origami/service/image/'
 const isImageServicePath = (path) => /^\/\_\_origami\/service\/image\//.test(path);

@@ -83,7 +83,7 @@ const isHtmlRequest = (req) => {
 				&& urlObj.protocol === 'https:'
 				&& /(local|www)(\.ft\.com)/.test(urlObj.hostname)
 				&& !/(^\/\_\_)/.test(urlObj.pathname));
-}
+};
 
 // Find match in our cache
 // NOTE: we use upgrade to cors as Link header caching uses cors mode

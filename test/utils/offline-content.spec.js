@@ -10,7 +10,7 @@ describe('offlineContent', () => {
 			const request = offlineContent(url);
 
 			const result = request.url;
-			const expected = 'https://www.ft.com/offline/content/2c509c50-e4ba-11e6-9645-c9357a75844a'
+			const expected = 'https://www.ft.com/offline/content/2c509c50-e4ba-11e6-9645-c9357a75844a';
 
 			expect(result).to.equal(expected);
 		});
@@ -20,7 +20,7 @@ describe('offlineContent', () => {
 			const request = offlineContent(url);
 
 			const result = request.url;
-			const expected = 'https://www.ft.com/companies/automobiles'
+			const expected = 'https://www.ft.com/companies/automobiles';
 
 			expect(result).to.equal(expected);
 		});

@@ -8,7 +8,7 @@ const cacheOptions = {
 	maxEntries: 20
 };
 
-const handler = getHandler({strategy: 'cacheFirst', flag: 'swCommentsAssets'})
+const handler = getHandler({strategy: 'cacheFirst', flag: 'swCommentsAssets'});
 
 router.get('/*.js', handler, {
 	origin: 'https://cdn.livefyre.com',

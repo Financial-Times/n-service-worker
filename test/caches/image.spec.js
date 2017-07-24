@@ -18,7 +18,7 @@ describe('images', () => {
 			assetLabel: `header icon ${image} forever`,
 			expiry,
 			cacheName
-		})
+		});
 
 		SWTestBundles.checkCacheIsUsed({
 			assetLabel: `header icon ${image}`,
@@ -26,7 +26,7 @@ describe('images', () => {
 			expiry,
 			cacheName,
 			flag: 'swAssetCaching'
-		})
+		});
 	});
 
 	[

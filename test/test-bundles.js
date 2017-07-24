@@ -29,9 +29,9 @@ window.SWTestBundles = {
 					.then(res => {
 						expect(res.headers.get('from-cache')).to.not.exist;
 						return SWTestHelper.queryFetchHistory(url)
-							.then(wasFetched => expect(wasFetched).to.be.true)
+							.then(wasFetched => expect(wasFetched).to.be.true);
 					})
-			)
+			);
 		} else {
 			it(message, () =>
 				fetch(url, {
@@ -39,7 +39,7 @@ window.SWTestBundles = {
 				})
 					.then(() => SWTestHelper.queryFetchHistory(url))
 					.then(wasFetched => expect(wasFetched).to.be.true)
-			)
+			);
 		}
 
 	},
@@ -61,7 +61,7 @@ window.SWTestBundles = {
 					kickoff = passFlags(flags);
 				}
 				return kickoff;
-			})
+			});
 
 			it(message, () => {
 				return fetch(url, options)
@@ -76,11 +76,11 @@ window.SWTestBundles = {
 								.then(res => {
 									expect(res.headers.get('from-cache')).to.equal('true');
 									if (expiry === 'no-expiry') {
-										expect(res.headers.get('expires')).to.equal('no-expiry')
+										expect(res.headers.get('expires')).to.equal('no-expiry');
 									} else {
 										expect(res.headers.get('expires')).to.be.below((expireRelativeToInstall ? SWTestHelper.installedAt : Date.now()) + expiry + 10000);
 									}
-								})
+								});
 						} else {
 							return cache(cacheName)
 								.then(cache => cache.get(url))
@@ -88,28 +88,28 @@ window.SWTestBundles = {
 									// alas, we don't get much access to opaque responses
 									expect(res).to.exist;
 									if (mode === 'cors') {
-										expect(res.status).to.equal(200)
+										expect(res.status).to.equal(200);
 									}
-								})
+								});
 						}
-					})
+					});
 
-			})
+			});
 			describe('additional network calls', () => {
-				beforeEach(() => fetch(url, options))
+				beforeEach(() => fetch(url, options));
 				if (strategy === 'fastest') {
 					it(`should check network for ${assetLabel} in parallel`, () =>
 						SWTestHelper.queryFetchHistory(url)
 							.then(wasFetched => expect(wasFetched).to.be.true)
-					)
+					);
 				} else {
 					it(`should not check network for ${assetLabel}`, () =>
 						SWTestHelper.queryFetchHistory(url)
 							.then(wasFetched => expect(wasFetched).to.be.false)
-					)
+					);
 				}
-			})
-		})
+			});
+		});
 
 	},
 
@@ -124,11 +124,11 @@ window.SWTestBundles = {
 				.then(res => {
 					expect(res.headers.get('from-cache')).to.equal('true');
 					if (expiry === 'no-expiry') {
-						expect(res.headers.get('expires')).to.equal('no-expiry')
+						expect(res.headers.get('expires')).to.equal('no-expiry');
 					} else {
 						expect(res.headers.get('expires')).to.be.below(SWTestHelper.installedAt + expiry + 10000);
 					}
-				})
-		})
+				});
+		});
 	}
-}
+};
