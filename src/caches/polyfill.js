@@ -3,7 +3,7 @@ import router from '../utils/router';;
 import { getHandler } from '../utils/handlers';
 
 const options = {
-	origin: 'https://next-geebee.ft.com',
+	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
 		name: 'polyfill',
 		maxEntries: 4
@@ -11,4 +11,4 @@ const options = {
 };
 
 // use toolbox.fastest as we want to send requests to check last-modified headers for polyfill
-router.get('/polyfill/*', getHandler({strategy: 'fastest', upgradeToCors: true}), options);
+router.get('/__origami/services/polyfill/*', getHandler({strategy: 'fastest', flag: 'swAssetCaching'}), options);

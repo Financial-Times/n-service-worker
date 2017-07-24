@@ -2,15 +2,15 @@
 describe('built-assets', () => {
 
 	[
-		['css', 'https://www.ft.com/__assets/hashed/front-page/a13b0424/main.css'],
-		['js', 'https://www.ft.com/__assets/hashed/front-page/e763894c/main-without-n-ui.js'],
+		['css', '/__assets/hashed/front-page/a13b0424/main.css'],
+		['js', '/__assets/hashed/front-page/e763894c/main-without-n-ui.js'],
 	].forEach(([label, url]) =>
 		SWTestBundles.checkCacheIsUsed({
 			assetLabel: label,
 			url,
 			expiry: 60 * 60 * 24 * 5,
-			upgradeToCors: true,
-			cacheName: 'built-assets'
+			cacheName: 'built-assets',
+			flag: 'swAssetCaching'
 		})
 	);
 

@@ -87,10 +87,8 @@ window.SWTestBundles = {
 								.then(res => {
 									// alas, we don't get much access to opaque responses
 									expect(res).to.exist;
-									if (mode === 'cors' || upgradeToCors) {
+									if (mode === 'cors') {
 										expect(res.status).to.equal(200);
-									} else {
-										expect(res.status).to.equal(0);
 									}
 								});
 						}

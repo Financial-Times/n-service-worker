@@ -3,9 +3,8 @@ import router from '../utils/router';;
 import { getHandler } from '../utils/handlers';
 import precache from '../utils/precache';
 import { sw as precacheConfig} from '../../config/precache';
-
 const options = {
-	origin: 'https://www.ft.com',
+	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
 		name: 'image'
 	}
@@ -13,11 +12,11 @@ const options = {
 
 precache(
 	options.cache.name,
-	precacheConfig.image.map(image => new Request(image, { mode: 'cors'	})),
+	precacheConfig.image.map(image => new Request(image)),
 	{ maxAge: -1 }
 );
 
-const cacheFirst = getHandler({strategy: 'cacheFirst', upgradeToCors: true});
+const cacheFirst = getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'});
 
 //TODO - something for content images
 router.get('/__origami/service/image/v2/images/raw/fticon*', cacheFirst, options);

@@ -26,10 +26,9 @@ module.exports = function (karma) {
 			// These tests are commented out because the actual code doesn't get run
 			// See `src/__sw.js`
 			// 'test/caches/ads.spec.js',
-			// 'test/caches/built-assets.spec.js',
+			'test/caches/built-assets.spec.js',
 			// 'test/caches/comments.spec.js',
-			// 'test/caches/image.spec.js',
-			// 'test/caches/n-ui.spec.js',
+			'test/caches/n-ui.spec.js',
 			// 'test/caches/polyfill.spec.js',
 			'test/utils/*.spec.js',
 			{pattern: 'test/sw/*.js', served: true, included: false},
@@ -38,7 +37,15 @@ module.exports = function (karma) {
 		],
 		proxies: {
 			'/integration-sw.js': '/base/test/sw/integration.js',
-			'/files': '/base/test/fixtures/files'
+			'/files': '/base/test/fixtures/files',
+			'/__origami': {
+				target: 'https://www.ft.com/__origami',
+				changeOrigin: true
+			},
+			'/__assets': {
+				target: 'https://www.ft.com/__assets',
+				changeOrigin: true
+			}
 		},
 
 		preprocessors: {
