@@ -10,5 +10,5 @@ const options = {
 	}
 };
 
-// use toolbox.fastest as we want to send requests to check last-modified headers for polyfill
-router.get('/__origami/services/polyfill/*', getHandler({strategy: 'fastest', flag: 'swAssetCaching'}), options);
+// use fastest as we want to send requests to check last-modified headers for polyfill
+router.get('/__origami/service/polyfill/*', getHandler({strategy: 'fastest', flag: 'swAssetCaching'}), options);
