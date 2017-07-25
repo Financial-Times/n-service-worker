@@ -9,9 +9,9 @@ const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
 		name: 'built-assets',
-		maxEntries: 20,
+		maxEntries: 30,
 		// our code base moves so fast, pointless caching enything longer than a few days
-		maxAge: 60 * 60 * 24 * 5
+		maxAge: 60 * 60 * 24 * 14
 	}
 };
 
