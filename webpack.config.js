@@ -8,10 +8,17 @@ module.exports = nWebpack({
 		devtoolModuleFilenameTemplate: 'n-service-worker//[resource-path]?[loaders]'
 	},
 	entry: (() => {
-		// A bit hacky, but in dev we want to generate a sw on the prod url,
-		// which is the default when no flags are on
 		if (process.env.CIRCLE_BUILD_NUM) {
-			return {'./dist/__sw.js': './src/__sw.js'};
+			let env = 'master';
+			if (process.env.CIRCLE_TAG) {
+				const customEnv = (/prod|qa|canary/.exec(process.env.CIRCLE_TAG) || [])[0];
+				if (customEnv) {
+					env = customEnv;
+				}
+			}
+			const entry = {};
+			entry[`./dist/__sw-${env}.js`] = './src/__sw.js';
+			return entry;
 		} else {
 			return {'./dist/__sw-prod.js': './src/__sw.js'};
 		}
