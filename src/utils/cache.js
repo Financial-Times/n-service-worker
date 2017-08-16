@@ -1,5 +1,4 @@
 import Db from './db';
-import parseLinkHeader from './parse-link-headers';
 
 function addHeadersToResponse (res, headers) {
 	const response = res.clone();
@@ -40,16 +39,12 @@ export class Cache {
 	 * @param {objcet} [opts.response] - Response object to cache; skips fetching
 	 * @param {number} [opts.maxAge = 60] - Number of seconds to cache the response. -1 for no caching
 	 * @param {number} [opts.maxEntries] - Max number of entries to keep in cache, defaults to 'infinite'
-	 * @param {string|boolean} [opts.followLinks] - cache items found in link header, see followLinkHeader()
 	 * @returns {object} - The Response
 	 */
-	set (request, { response, type = null, maxAge = 60, maxEntries, followLinks = false } = { }) {
+	set (request, { response, type = null, maxAge = 60, maxEntries } = { }) {
 
 		const fetchRequest = response ? Promise.resolve(response) : fetch(request);
 		return fetchRequest
-			.then(fetchedResponse => {
-					return this.followLinkHeader(request, fetchedResponse, { maxAge, maxEntries, followLinks });
-				})
 			.then(fetchedResponse => {
 				if (fetchedResponse.ok || fetchedResponse.type === 'opaque') {
 					const url = typeof request === 'string' ? request : request.url;
@@ -194,63 +189,6 @@ export class Cache {
 			);
 			// .then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));
 	}
-
-	/**
-	 * Follow Link header - cache urls in link header with rel=precache
-	 * will attempt to cache low res version of image requests
-	 * and "offline" versions of content pages
-	 * @param {objcet} [fetchedResponse] - Response object
-	 * @param {object} [opts] - the cache.set options, see set()
-	 * @param {string|boolean} [opts.followLinks] - cache items found in link header:
-	 * - true = recursively follow link headers
-	 * - false = default, do not follow
-	 * @returns {object} - The fetchedResponse
-	 */
-	followLinkHeader (request, fetchedResponse, { maxAge, maxEntries, followLinks = false } = {}) {
-		let links = fetchedResponse.headers.get('link');
-
-		if (!links || followLinks === false) {
-			// abort, do not follow
-			return Promise.resolve(fetchedResponse);
-		} else {
-			return this.db.get(request.url)
-				.then(cacheMeta => {
-
-					// check if we already have a cached version of resource
-					if (cacheMeta && cacheMeta.etag && cacheMeta.etag === fetchedResponse.headers.get('etag')) {
-						// abort, same as cached resource, do not follow
-						throw new Error('no change from cached version');
-					}
-
-					return parseLinkHeader(links);
-				})
-				.then(parsedLinks => {
-					if (parsedLinks && parsedLinks.length && parsedLinks.length === 0) {
-						// abort, no link headers to follow
-						throw new Error('no links to follow');
-					}
-
-					parsedLinks
-						.filter(link => link.rel === 'precache') // TODO: pass as option
-						.forEach(link => {
-							let response;
-
-							// cache request
-							const _req = new Request(link.url, {
-								credentials: 'same-origin', // TODO: set based on original?
-								mode: 'cors' // matches requests as we use upgradeToCors
-							});
-
-							this.set(_req, { response, type: link.as, maxAge, maxEntries, followLinks });
-						});
-
-				})
-				.then(() => Promise.resolve(fetchedResponse))
-				.catch(() => Promise.resolve(fetchedResponse));
-		}
-
-	}
-
 }
 
 /**
