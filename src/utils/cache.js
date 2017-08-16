@@ -1,7 +1,5 @@
 import Db from './db';
 import parseLinkHeader from './parse-link-headers';
-import lowResImage from './low-res-image';
-import offlineContent from './offline-content';
 
 function addHeadersToResponse (res, headers) {
 	const response = res.clone();
@@ -236,18 +234,6 @@ export class Cache {
 						.filter(link => link.rel === 'precache') // TODO: pass as option
 						.forEach(link => {
 							let response;
-
-							if (link.as === 'image') {
-								// cache low res version of image
-								const lowResImageUrl = lowResImage(link.url);
-								response = fetch(lowResImageUrl);
-							}
-
-							if (link.as === 'document') {
-								// cache offline version of content
-								const offlineContentUrl = offlineContent(link.url);
-								response = fetch(offlineContentUrl);
-							}
 
 							// cache request
 							const _req = new Request(link.url, {
