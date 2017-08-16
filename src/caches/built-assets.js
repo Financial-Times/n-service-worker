@@ -1,4 +1,4 @@
-import router from '../utils/router';;
+import router from '../utils/router';
 
 import flags from '../utils/flags';
 import { getHandler } from '../utils/handlers';
