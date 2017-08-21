@@ -1,8 +1,8 @@
 const appcache = {
 	fonts: [
-		'/__origami/service/build/v2/files/o-fonts-assets@1.3.0/MetricWeb-Regular.woff?',
-		'/__origami/service/build/v2/files/o-fonts-assets@1.3.0/MetricWeb-Semibold.woff?',
-		'/__origami/service/build/v2/files/o-fonts-assets@1.3.0/FinancierDisplayWeb-Regular.woff?'
+		'/__origami/service/build/v2/files/o-fonts-assets@1.3.2/MetricWeb-Regular.woff?',
+		'/__origami/service/build/v2/files/o-fonts-assets@1.3.2/MetricWeb-Semibold.woff?',
+		'/__origami/service/build/v2/files/o-fonts-assets@1.3.2/FinancierDisplayWeb-Regular.woff?'
 	],
 	image: [
 		'/__origami/service/image/v2/images/raw/ftlogo:brand-ft-masthead?source=o-header&tint=%2333302E,%2333302E&format=svg',
