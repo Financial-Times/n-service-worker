@@ -1,4 +1,4 @@
-import router from '../utils/router';;
+import router from '../utils/router';
 
 import { getHandler } from '../utils/handlers';
 import precache from '../utils/precache';
