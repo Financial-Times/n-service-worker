@@ -82,11 +82,13 @@ import precache from './utils/precache';
 ```
 
 ### flagged caches
-To turn on whether a particular request fetches from a cache or network, based on the value of a flag, use flagged-toolbox
+To turn on whether a particular request fetches from a cache or network, based on the value of a flag, use the getHandler function from utils/handlers
 
 ```javascript
-import {cacheFirst} from './utils/flagged-toolbox';
+import {getHandler} from './utils/handlers';
 
-toolbox.get('/url', cacheFirst('flagname'));
+const myHandler = getHandler({flag: 'swAdsCaching', strategy: 'cacheFirst'});
+
+toolbox.get('/url', myHandler);
 
 ```
