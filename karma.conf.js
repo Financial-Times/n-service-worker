@@ -25,7 +25,7 @@ module.exports = function (karma) {
 			'test/caches/fonts.spec.js',
 			// These tests are commented out because the actual code doesn't get run
 			// See `src/__sw.js`
-			// 'test/caches/ads.spec.js',
+			'test/caches/ads.spec.js',
 			'test/caches/built-assets.spec.js',
 			// 'test/caches/comments.spec.js',
 			'test/caches/n-ui.spec.js',
