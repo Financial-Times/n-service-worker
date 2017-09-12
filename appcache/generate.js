@@ -2,7 +2,7 @@ const fs = require('fs');
 const precache = require('../config/precache').appcache;
 const urls = Object.keys(precache)
 	.reduce((arr, key) => {
-		return arr.concat('https://www.ft.com' + precache[key]);
+		return arr.concat(precache[key].map(path => 'https://www.ft.com' + path));
 	}, []);
 
 const landing = process.argv[2] === 'landing';
