@@ -49,6 +49,12 @@ Builds tagged with special tags and master builds push files named `__sw-{prod,c
 - All tags of the form `prod-v{release number}` will release `/__sw-prod.js`
 - All semver tags will result in a new release of the n-service-worker bower component (the bit that registers the service worker)
 
+#### Should I use semver for the releases?
+- For releasing the bower component (i.e. tags of the form `v1.2.3`)... yes, always use semver
+- For the prod/qa/canary releases semver isn't required, but try to be mindful of release history when creating your tag
+	- if the last prod release was `prod-v7`, but the last qa release was `qa-v3`, and you need to create a qa release, make it `qa-v8` so that when it gets to prod, the prod tage can be `prod-v8`
+	- if working on a feature and you need to release several related qa releases, feel free to use semver-esque tags e.g. `qa-v8`, `qa-v8.1`... 
+
 To move a version of the service worker through one or more stages of the release cycle, care must be taken to tag the same commit with the related `qa`, `canary` and `prod` tags
 
 #### Rolling back
