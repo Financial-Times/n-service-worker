@@ -14,7 +14,7 @@ const appcache = {
 
 const sw = {
 	fonts: appcache.fonts.concat([
-		'/__origami/service/build/v2/files/o-fonts-assets@1.3.0/MetricWeb-Bold.woff',
+		'/__origami/service/build/v2/files/o-fonts-assets@1.3.2/FinancierDisplayWeb-Bold.woff'
 	]),
 	image: appcache.image.concat([
 		// needed for the offline app - disabled for now
