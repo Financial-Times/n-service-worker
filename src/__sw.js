@@ -11,7 +11,7 @@ import './caches/polyfill';
 
 // user-specific things
 // import './caches/myft';
-// import './caches/ads'; *
+import './caches/ads';
 
 import './push/myft';
 
