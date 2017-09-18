@@ -87,18 +87,26 @@ export class Cache {
 	get (request, debug) {
 
 		return this.expire(request)
-			.then(({response, expires} = {}) => {
-				if (!response) {
+			.then(stillExists => {
+				if (!stillExists) {
 					return;
 				}
-				if (debug === true || (response.type !== 'opaque' && request.headers && request.headers.get('FT-Debug'))) {
-					return addHeadersToResponse(response, {
-						'From-Cache': 'true',
-						expires: expires || 'no-expiry'
-					});
-				} else {
-					return response;
-				}
+				return 	this.cache.get(request)
+					.then(response => {
+						if (!response) {
+							// TODO maybe call this.delete here too
+							return;
+						}
+						if (debug === true || (response.type !== 'opaque' && request.headers && request.headers.get('FT-Debug'))) {
+							return addHeadersToResponse(response, {
+								'From-Cache': 'true',
+								expires: expires || 'no-expiry'
+							});
+						} else {
+							return response;
+						}
+					})
+				
 			});
 	}
 
@@ -127,7 +135,7 @@ export class Cache {
 			this.cache.delete(request),
 			this.db.delete(url),
 		])
-		.then(() => { });
+		.then(() => null);
 	}
 
 	/**
@@ -153,15 +161,12 @@ export class Cache {
 
 	expire (key) {
 		const url = typeof key === 'string' ? key : key.url;
-		return Promise.all([
-			this.cache.match(key),
-			this.db.get(url)
-		])
-			.then(([response, { expires } = { }]) => {
+		return this.db.get(url)
+			.then(({ expires } = { }) => {
 				if (expires && expires <= Date.now()) {
 					return this.delete(key);
 				}
-				return {response, expires};
+				return true;
 			});
 	}
 
