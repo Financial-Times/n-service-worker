@@ -100,7 +100,7 @@ export class Cache {
 						if (debug === true || (response.type !== 'opaque' && request.headers && request.headers.get('FT-Debug'))) {
 							return addHeadersToResponse(response, {
 								'From-Cache': 'true',
-								expires: expiryDate || 'no-expiry'
+								expires: expiryDate > 0 ? expiryDate : 'no-expiry'
 							});
 						} else {
 							return response;
@@ -165,7 +165,7 @@ export class Cache {
 				if (expires && expires <= Date.now()) {
 					return this.delete(key);
 				}
-				return expires;
+				return expires || -1;
 			});
 	}
 
