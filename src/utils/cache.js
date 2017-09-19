@@ -87,11 +87,11 @@ export class Cache {
 	get (request, debug) {
 
 		return this.expire(request)
-			.then(stillExists => {
-				if (!stillExists) {
+			.then(expiryDate => {
+				if (!expiryDate) {
 					return;
 				}
-				return 	this.cache.get(request)
+				return this.cache.get(request)
 					.then(response => {
 						if (!response) {
 							// TODO maybe call this.delete here too
@@ -100,13 +100,12 @@ export class Cache {
 						if (debug === true || (response.type !== 'opaque' && request.headers && request.headers.get('FT-Debug'))) {
 							return addHeadersToResponse(response, {
 								'From-Cache': 'true',
-								expires: expires || 'no-expiry'
+								expires: expiryDate || 'no-expiry'
 							});
 						} else {
 							return response;
 						}
-					})
-				
+					});
 			});
 	}
 
@@ -166,7 +165,7 @@ export class Cache {
 				if (expires && expires <= Date.now()) {
 					return this.delete(key);
 				}
-				return true;
+				return expires;
 			});
 	}
 
