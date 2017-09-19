@@ -28,8 +28,7 @@ module.exports = function (karma) {
 			'test/caches/ads.spec.js',
 			'test/caches/built-assets.spec.js',
 			// 'test/caches/comments.spec.js',
-			'test/caches/n-ui.spec.js',
-			// 'test/caches/polyfill.spec.js',
+			'test/caches/polyfill.spec.js',
 			'test/utils/*.spec.js',
 			{pattern: 'test/sw/*.js', served: true, included: false},
 			{pattern: 'test/fixtures/files/*', served: true, included: false},
@@ -56,7 +55,7 @@ module.exports = function (karma) {
 			'test/sw/*.js': ['webpack', 'sourcemap']
 		},
 		webpack: {
-			devtool: 'source-map',
+			devtool: 'inline-source-map',
 			module: {
 				loaders: [
 					{

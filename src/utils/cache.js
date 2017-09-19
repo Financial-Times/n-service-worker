@@ -91,7 +91,7 @@ export class Cache {
 				if (!expiryDate) {
 					return;
 				}
-				return this.cache.get(request)
+				return this.cache.match(request)
 					.then(response => {
 						if (!response) {
 							// TODO maybe call this.delete here too
