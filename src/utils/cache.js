@@ -87,8 +87,8 @@ export class Cache {
 	get (request, debug) {
 
 		return this.expire(request)
-			.then(expiryDate => {
-				if (!expiryDate) {
+			.then(({ expiryDate, noExpiry } = { }) => {
+				if (!expiryDate && !noExpiry) {
 					return;
 				}
 				return this.cache.match(request)
@@ -100,7 +100,7 @@ export class Cache {
 						if (debug === true || (response.type !== 'opaque' && request.headers && request.headers.get('FT-Debug'))) {
 							return addHeadersToResponse(response, {
 								'From-Cache': 'true',
-								expires: expiryDate > 0 ? expiryDate : 'no-expiry'
+								expires: expiryDate || 'no-expiry'
 							});
 						} else {
 							return response;
@@ -134,7 +134,7 @@ export class Cache {
 			this.cache.delete(request),
 			this.db.delete(url),
 		])
-		.then(() => null);
+		.then(() => undefined);
 	}
 
 	/**
@@ -165,7 +165,7 @@ export class Cache {
 				if (expires && expires <= Date.now()) {
 					return this.delete(key);
 				}
-				return expires || -1;
+				return { expiryDate: expires, noExpiry: !expires };
 			});
 	}
 
