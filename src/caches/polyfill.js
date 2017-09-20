@@ -6,7 +6,8 @@ const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
 		name: 'polyfill',
-		maxEntries: 4
+		maxEntries: 4,
+		maxAge: -1
 	}
 };
 

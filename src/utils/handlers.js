@@ -17,7 +17,7 @@ const handlers = {
 		const cacheOptions = options.cache || {};
 		return cache(cacheOptions.name)
 			.then(cache => cache.getOrSet(request, cacheOptions))
-			.catch(() => fetch(request));
+			// .catch(() => fetch(request));
 	},
 
 	cacheOnly: (request, values, options = {}) => {
@@ -43,6 +43,7 @@ const handlers = {
 			.then(cache => cache.get(request, cacheOptions))
 			.then(res => {
 				if (!res) {
+					console.log('him not found')
 					throw 'request not found in cache';
 				}
 				return res;
@@ -54,13 +55,25 @@ const handlers = {
 			fromNetwork,
 			openCache
 		])
-			.then(([response, cache]) => cache.set(request, Object.assign({response: response.clone()}, cacheOptions)));
-
+			.then(([response, cache]) => {
+				console.log(response, cache);
+				return cache.set(request, Object.assign({response: response.clone()}, cacheOptions))
+			})
+			.then(setted => {
+				debugger;
+				console.log('styefhfwg', setted)
+				return setted
+			})
+			.catch(err => console.log(err))
 		// return a race between the two strategies
 		return ratRace([
 			fromNetwork.then(res => res.clone()),
 			fromCache
-		]);
+		])
+			.then(res => {
+				console.log('raced', res)
+				return res
+			});
 	}
 };
 
