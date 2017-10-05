@@ -49,6 +49,7 @@ const handlers = {
 			});
 
 		// update the cache when the network response returns
+		// no need to wait for this before responding though, hence not returned or thened
 		Promise.all([
 			fromNetwork,
 			openCache
