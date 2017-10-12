@@ -1,12 +1,7 @@
-// Karma configuration
-// Generated on Fri Apr 18 2014 18:19:03 GMT+0100 (BST)
-
-const path = require('path');
+const { module: moduleRules, resolve } = require('./webpack.config');
 
 module.exports = function (karma) {
-
 	const config = {
-
 		// base path that will be used to resolve all patterns (eg. files, exclude)
 		basePath: '',
 
@@ -17,8 +12,8 @@ module.exports = function (karma) {
 		// list of files / patterns to load in the browser
 		files: [
 			'test/main.spec.js',
-			{pattern: 'test/helpers.js', served: true},
-			{pattern: 'test/test-bundles.js', served: true},
+			{ pattern: 'test/helpers.js', served: true },
+			{ pattern: 'test/test-bundles.js', served: true },
 			'test/setup.js',
 			// `test/caches/*spec.js` files MUST be run before the utils ones!!
 			'test/caches/image.spec.js',
@@ -30,9 +25,9 @@ module.exports = function (karma) {
 			// 'test/caches/comments.spec.js',
 			'test/caches/polyfill.spec.js',
 			'test/utils/*.spec.js',
-			{pattern: 'test/sw/*.js', served: true, included: false},
-			{pattern: 'test/fixtures/files/*', served: true, included: false},
-			{pattern: 'test/**/*.js.map', served: true, included: false},
+			{ pattern: 'test/sw/*.js', served: true, included: false },
+			{ pattern: 'test/fixtures/files/*', served: true, included: false },
+			{ pattern: 'test/**/*.js.map', served: true, included: false },
 		],
 		proxies: {
 			'/integration-sw.js': '/base/test/sw/integration.js',
@@ -46,7 +41,6 @@ module.exports = function (karma) {
 				changeOrigin: true
 			}
 		},
-
 		preprocessors: {
 			'test/helpers.js': ['webpack', 'sourcemap'],
 			'test/test-bundles.js': ['webpack', 'sourcemap'],
@@ -54,43 +48,10 @@ module.exports = function (karma) {
 			'test/**/*.spec.js': ['webpack', 'sourcemap'],
 			'test/sw/*.js': ['webpack', 'sourcemap']
 		},
-		webpack: {
+		webpack:  {
 			devtool: 'inline-source-map',
-			module: {
-				loaders: [
-					{
-						test: /\.js$/,
-						loader: 'babel',
-						exclude: [
-							path.resolve('./node_modules')
-						],
-						query: {
-							cacheDirectory: true,
-							// on latest chrome (installed in dev) on need for this
-							presets: ['es2015'],//process.env.CIRCLE_BUILD_NUM ? ['es2015'] : [],
-							plugins: [
-								['add-module-exports', {loose: true}],
-								['transform-es2015-classes', { loose: true }],
-								['transform-es2015-modules-commonjs', {loose: true}]
-							]
-						}
-					},
-					{
-						test: /indexeddb-promised\.js$/,
-						loader: require.resolve('imports-loader'),
-						query: 'window=>self'
-					},
-					{
-						test: /\.json$/,
-						loader: require.resolve('json-loader')
-					}
-				]
-			},
-			resolve: {
-				root: [
-					path.join(__dirname, 'node_modules')
-				]
-			}
+			resolve,
+			module: moduleRules
 		},
 		reporters: ['progress'],
 		port: 9876,
@@ -112,23 +73,23 @@ module.exports = function (karma) {
 			require('karma-html-reporter')
 		],
 		client: {
-				mocha: {
-						reporter: 'html',
-						ui: 'bdd',
-						timeout: 5000
-				}
+			mocha: {
+				reporter: 'html',
+				ui: 'bdd',
+				timeout: 5000
+			}
 		},
 		singleRun: true
 	};
 
 	if (process.env.CI) {
 		const nightwatchBrowsers = require('@financial-times/n-heroku-tools/config/nightwatch').test_settings;
-		const whitelistedBrowsers = ['firefox','chrome'];
+		const whitelistedBrowsers = ['firefox', 'chrome'];
 		const sauceBrowsers = Object.keys(nightwatchBrowsers).reduce((browserList, browserName) => {
 			if (browserName === 'default' || whitelistedBrowsers.indexOf(browserName) === -1) {
 				return browserList;
 			}
-			browserList[`${browserName}_sauce`] = Object.assign({base: 'SauceLabs'}, nightwatchBrowsers[browserName].desiredCapabilities);
+			browserList[`${browserName}_sauce`] = Object.assign({ base: 'SauceLabs' }, nightwatchBrowsers[browserName].desiredCapabilities);
 			return browserList;
 		}, {});
 		config.customLaunchers = sauceBrowsers;

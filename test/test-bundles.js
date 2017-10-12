@@ -78,7 +78,9 @@ window.SWTestBundles = {
 									if (expiry === 'no-expiry') {
 										expect(res.headers.get('expires')).to.equal('no-expiry');
 									} else {
-										expect(res.headers.get('expires')).to.be.below((expireRelativeToInstall ? SWTestHelper.installedAt : Date.now()) + expiry + 10000);
+										let expires = parseInt(res.headers.get('expires'));
+										expect(expires).to.not.be.NaN;
+										expect(expires).to.be.below((expireRelativeToInstall ? SWTestHelper.installedAt : Date.now()) + expiry + 10000);
 									}
 								});
 						} else {
@@ -126,7 +128,9 @@ window.SWTestBundles = {
 					if (expiry === 'no-expiry') {
 						expect(res.headers.get('expires')).to.equal('no-expiry');
 					} else {
-						expect(res.headers.get('expires')).to.be.below(SWTestHelper.installedAt + expiry + 10000);
+						let expires = parseInt(res.headers.get('expires'));
+						expect(expires).to.not.be.NaN;
+						expect(expires).to.be.below(SWTestHelper.installedAt + expiry + 10000);
 					}
 				});
 		});
