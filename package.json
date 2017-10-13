@@ -14,12 +14,12 @@
     "prepush": "make verify -j3"
   },
   "dependencies": {
-    "@financial-times/n-internal-tool": "^2.1.0",
     "idb": "^2.0.4",
     "path-to-regexp": "^1.5.3",
     "promise-rat-race": "^1.5.1"
   },
   "devDependencies": {
+    "@financial-times/n-internal-tool": "^2.1.0",
     "@financial-times/n-gage": "^1.13.0",
     "@financial-times/n-heroku-tools": "^6.30.0",
     "babel-core": "^6.26.0",
