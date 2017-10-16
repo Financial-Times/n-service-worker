@@ -55,11 +55,9 @@ module.exports = {
 			{
 				test: /\.js$/,
 				loader: 'babel-loader',
-				exclude: [
-					path.resolve('./node_modules')
-				],
 				include: [
 					path.resolve('./src'),
+					path.resolve('./config'),
 					path.resolve('./node_modules/indexeddb'),
 					path.resolve('./node_modules/promise-rat-race')
 				],
@@ -67,7 +65,7 @@ module.exports = {
 					babelrc: false,
 					cacheDirectory: true,
 					plugins: [
-						require.resolve('babel-plugin-add-module-exports', true),
+						require.resolve('babel-plugin-add-module-exports'),
 						[
 							require.resolve('babel-plugin-transform-runtime'),
 							{
@@ -83,8 +81,7 @@ module.exports = {
 									'transform-es2015-classes',
 									'transform-es2015-modules-commonjs'
 								],
-								targets: { browsers },
-								loose: true
+								targets: { browsers }
 							}
 						]
 					]
