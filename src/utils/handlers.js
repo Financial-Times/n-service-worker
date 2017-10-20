@@ -12,12 +12,17 @@ function upgradeRequestToCors (request) {
 	});
 }
 
+const wrappedFetch = (request, options = {}) => fetch(request).catch(err => options.isOptional 
+	? Promise.resolve()
+	: Promise.reject(err)
+);
+
 const handlers = {
 	cacheFirst: (request, values, options = {}) => {
 		const cacheOptions = options.cache || {};
 		return cache(cacheOptions.name)
 			.then(cache => cache.getOrSet(request, cacheOptions))
-			.catch(() => fetch(request));
+			.catch(() => wrappedFetch(request));
 	},
 
 	cacheOnly: (request, values, options = {}) => {
@@ -25,7 +30,7 @@ const handlers = {
 		return cache(cacheOptions.name)
 			.then(cache => cache.get(request, cacheOptions))
 			.then(res => {
-				if (!res) {
+				if (!res && !options.isOptional) {
 					throw 'request not found in cache';
 				}
 				return res;
@@ -38,11 +43,11 @@ const handlers = {
 
 
 		// kickoff retrieving response from network and cache
-		const fromNetwork = fetch(request);
+		const fromNetwork = wrappedFetch(request);
 		const fromCache = openCache
 			.then(cache => cache.get(request, cacheOptions))
 			.then(res => {
-				if (!res) {
+				if (!res && !options.isOptional) {
 					throw 'request not found in cache';
 				}
 				return res;
@@ -67,7 +72,7 @@ const handlers = {
 const getHandler = ({strategy, flag, upgradeToCors}) => {
 	return (request, values, options = {}) => {
 		if (flag && !getFlag(flag)) {
-			return fetch(request);
+			return wrappedFetch(request);
 		}
 		if (upgradeToCors) {
 			request = upgradeRequestToCors(request);

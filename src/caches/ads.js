@@ -89,66 +89,76 @@ const sections = [
 	'5c7592a8-1f0c-11e4-b0cb-b2227cce2b54' 	// fastft
 ];
 
+// Adblockers block ads-api requests
+// net::ERR_BLOCKED_BY_CLIENT cannot be differentiated
+// so we just fail silently
+const isOptional = true;
+
 const precacheCacheOptions = getCacheOptions(7);
 precache(
-	precacheCacheOptions.name,
-	sections.map(section => `https://ads-api.ft.com/v1/concept/${section}`),
-	{ maxAge: precacheCacheOptions.maxAge, maxEntries: precacheCacheOptions.maxEntries }
-);
+    precacheCacheOptions.name,
+    sections.map(section => `https://ads-api.ft.com/v1/concept/${section}`),
+    { maxAge: precacheCacheOptions.maxAge, maxEntries: precacheCacheOptions.maxEntries },
+    { isOptional }
+);    
 
-const standardHandler = getHandler({flag: 'swAdsCaching', strategy: 'cacheFirst'});
+const standardHandler = getHandler({ 
+    flag: 'swAdsCaching',
+    strategy: 'cacheFirst',
+    isOptional
+});
 
 // Personalised stuff
 router.get('/v1/user', standardHandler, {
-	origin: 'https://ads-api.ft.com',
-	cache: getCacheOptions(7, true)
+    origin: 'https://ads-api.ft.com',
+    cache: getCacheOptions(7, true)
 });
 
 router.get('/userdata/*', standardHandler, {
-	origin: 'https://cdn.krxd.net',
-	cache: getCacheOptions(1, true)
+    origin: 'https://cdn.krxd.net',
+    cache: getCacheOptions(1, true)
 });
 
 
 // OK
 router.get(new RegExp('\/v1\/concept\/(' + popularConcepts.join('|') + ')'), standardHandler, {
-	origin: 'https://ads-api.ft.com',
-	cache: getCacheOptions(1)
+    origin: 'https://ads-api.ft.com',
+    cache: getCacheOptions(1)
 });
 
 // OK
 router.get('/tag/js/gpt.js', standardHandler, {
-	origin: 'https://www.googletagservices.com',
-	cache: getCacheOptions(7)
+    origin: 'https://www.googletagservices.com',
+    cache: getCacheOptions(7)
 });
 
 //OK
 router.get('/gpt/pubads_impl_*.js', standardHandler, {
-	origin: 'https://securepubads.g.doubleclick.net',
-	cache: getCacheOptions(7)	// was 30
+    origin: 'https://securepubads.g.doubleclick.net',
+    cache: getCacheOptions(7)	// was 30
 });
 
 // OK
 router.get('/pagead/osd.js', standardHandler, {
-	origin: 'https://pagead2.googlesyndication.com',
-	cache: getCacheOptions(1)
+    origin: 'https://pagead2.googlesyndication.com',
+    cache: getCacheOptions(1)
 });
 
 
 // OK
 router.get('/safeframe/*/html/container.html', standardHandler, {
-	origin: 'https://tpc.googlesyndication.com',
-	cache: getCacheOptions(0)
+    origin: 'https://tpc.googlesyndication.com',
+    cache: getCacheOptions(0)
 });
 
 // OK
 router.get('/controltag*', standardHandler, {
-	origin: 'https://cdn.krxd.net',
-	cache: getCacheOptions(7)
+    origin: 'https://cdn.krxd.net',
+    cache: getCacheOptions(7)
 });
 
 // OK
 router.get('/ctjs/controltag.js*', standardHandler, {
-	origin: 'https://cdn.krxd.net',
-	cache: getCacheOptions(7)		// was 30
-});
+    origin: 'https://cdn.krxd.net',
+    cache: getCacheOptions(7)		// was 30
+});    
