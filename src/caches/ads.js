@@ -5,11 +5,11 @@ import { registerCache } from '../utils/personal';
 import precache from '../utils/precache';
 
 function getCacheOptions (days, isPersonal) {
-	return {
-		name: 'ads' + (isPersonal ? ':personal' : ''),
-		maxAge: 60 * 60 * ( days >= 1 ? days * 24 : 1 ),
-		maxEntries: 60
-	};
+    return {
+        name: 'ads' + (isPersonal ? ':personal' : ''),
+        maxAge: 60 * 60 * (days >= 1 ? days * 24 : 1),
+        maxEntries: 60
+    };
 }
 
 registerCache('next:ads:personal');
@@ -26,7 +26,7 @@ const popularConcepts = [
     '99352f45-32b3-3059-b3e6-1acc1502624f', // old id: Mg==-U2VjdGlvbnM=
     '0c7b5242-2d94-3d6d-973c-af455bb85ff1', // old id: MjM=-U2VjdGlvbnM=
     '71a5efa5-e6e0-3ce1-9190-a7eac8bef325', // old id: NTc=-U2VjdGlvbnM=
-	'98815f9a-0c35-3824-98fb-f134965f56b7', // old id: Ng==-U2VjdGlvbnM=
+    '98815f9a-0c35-3824-98fb-f134965f56b7', // old id: Ng==-U2VjdGlvbnM=
     '972618ae-9c0b-3479-aab5-8fe867c44561', // old id: NDU=-U2VjdGlvbnM=
     '2dd66dcb-b87d-35ef-b1bf-ce8706f2c382', // old id: NTM=-U2VjdGlvbnM=
     '1ddb5be2-a098-38e0-b510-e37bf4f494b1', // old id: NTU=-U2VjdGlvbnM=
@@ -78,15 +78,15 @@ const popularConcepts = [
 
 // Top menu items, to be pre-loaded
 const sections = [
-	'd8009323-f898-3207-b543-eab4427b7a77',	// world
-	'852939c8-859c-361e-8514-f82f6c041580',	// companies
-	'd969d76e-f8f4-34ae-bc38-95cfd0884740', // markets
-	'38dbd827-fedc-3ebe-919f-e64cf55ea959', // opinion
-	'f814d8f7-d38e-31b8-a51f-3882805288fd', // work & careers
-	'f967910f-67d5-31f7-a031-64f8af0d9cf1', // life and arts
-	'59fd6642-055c-30b0-b2b8-8120bc2990af', // personal finance
-	'40433e6c-d2ac-3994-b168-d33b89b284c7', // science
-	'5c7592a8-1f0c-11e4-b0cb-b2227cce2b54' 	// fastft
+    'd8009323-f898-3207-b543-eab4427b7a77',	// world
+    '852939c8-859c-361e-8514-f82f6c041580',	// companies
+    'd969d76e-f8f4-34ae-bc38-95cfd0884740', // markets
+    '38dbd827-fedc-3ebe-919f-e64cf55ea959', // opinion
+    'f814d8f7-d38e-31b8-a51f-3882805288fd', // work & careers
+    'f967910f-67d5-31f7-a031-64f8af0d9cf1', // life and arts
+    '59fd6642-055c-30b0-b2b8-8120bc2990af', // personal finance
+    '40433e6c-d2ac-3994-b168-d33b89b284c7', // science
+    '5c7592a8-1f0c-11e4-b0cb-b2227cce2b54' 	// fastft
 ];
 
 // Adblockers block ads-api requests
@@ -100,9 +100,9 @@ precache(
     sections.map(section => `https://ads-api.ft.com/v1/concept/${section}`),
     { maxAge: precacheCacheOptions.maxAge, maxEntries: precacheCacheOptions.maxEntries },
     { isOptional }
-);    
+);
 
-const standardHandler = getHandler({ 
+const standardHandler = getHandler({
     flag: 'swAdsCaching',
     strategy: 'cacheFirst',
     isOptional
@@ -161,4 +161,4 @@ router.get('/controltag*', standardHandler, {
 router.get('/ctjs/controltag.js*', standardHandler, {
     origin: 'https://cdn.krxd.net',
     cache: getCacheOptions(7)		// was 30
-});    
+});

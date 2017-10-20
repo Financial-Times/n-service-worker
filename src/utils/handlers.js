@@ -12,7 +12,7 @@ function upgradeRequestToCors (request) {
 	});
 }
 
-const wrappedFetch = (request, options = {}) => fetch(request).catch(err => options.isOptional 
+const wrappedFetch = (request, options = {}) => fetch(request).catch(err => options.isOptional
 	? Promise.resolve()
 	: Promise.reject(err)
 );
@@ -37,8 +37,8 @@ const handlers = {
 			});
 	},
 
-	fastest: (request, values, options = { }) => {
-		const cacheOptions = options.cache || { };
+	fastest: (request, values, options = {}) => {
+		const cacheOptions = options.cache || {};
 		const openCache = cache(cacheOptions.name);
 
 
@@ -59,7 +59,7 @@ const handlers = {
 			fromNetwork,
 			openCache
 		])
-			.then(([response, cache]) => cache.set(request, Object.assign({response: response.clone()}, cacheOptions)));
+			.then(([response, cache]) => cache.set(request, Object.assign({ response: response.clone() }, cacheOptions)));
 
 		// return a race between the two strategies
 		return ratRace([
@@ -69,7 +69,7 @@ const handlers = {
 	}
 };
 
-const getHandler = ({strategy, flag, upgradeToCors}) => {
+const getHandler = ({ strategy, flag, upgradeToCors }) => {
 	return (request, values, options = {}) => {
 		if (flag && !getFlag(flag)) {
 			return wrappedFetch(request);
