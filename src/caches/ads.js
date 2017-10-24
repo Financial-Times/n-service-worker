@@ -104,8 +104,7 @@ precache(
 
 const standardHandler = getHandler({
     flag: 'swAdsCaching',
-    strategy: 'cacheFirst',
-    isOptional
+    strategy: 'cacheFirst'
 });
 
 // Personalised stuff
