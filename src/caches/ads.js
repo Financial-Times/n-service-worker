@@ -92,14 +92,12 @@ const sections = [
 // Adblockers block ads-api requests
 // net::ERR_BLOCKED_BY_CLIENT cannot be differentiated
 // so we just fail silently
-const isOptional = true;
-
 const precacheCacheOptions = getCacheOptions(7);
 precache(
     precacheCacheOptions.name,
     sections.map(section => `https://ads-api.ft.com/v1/concept/${section}`),
     { maxAge: precacheCacheOptions.maxAge, maxEntries: precacheCacheOptions.maxEntries },
-    { isOptional }
+    { isOptional: true }
 );
 
 const standardHandler = getHandler({
