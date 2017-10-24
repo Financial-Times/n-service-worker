@@ -8,7 +8,7 @@ function upgradeRequestToCors (request) {
 		headers: request.headers,
 		mode: 'cors', // need to set this properly
 		credentials: request.credentials,
-		redirect: 'manual'   // let browser handle redirects
+		redirect: 'manual' // let browser handle redirects
 	});
 }
 
