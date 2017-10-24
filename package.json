@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "idb": "^2.0.4",
-    "path-to-regexp": "^2.1.0",
+    "path-to-regexp": "^1.5.3",
     "promise-rat-race": "^1.5.1"
   },
   "devDependencies": {
