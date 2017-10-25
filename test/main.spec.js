@@ -9,7 +9,7 @@ const utils = require('../src/utils/sampleUsers');
 describe('client', () => {
 	describe('register', () => {
 		beforeEach(() => {
-			sinon.stub(navigator.serviceWorker, 'register', () => Promise.reject());
+			sinon.stub(navigator.serviceWorker, 'register').callsFake(() => Promise.reject());
 		});
 
 		afterEach(() => {
@@ -41,7 +41,7 @@ describe('client', () => {
 		});
 
 		it('use canary release swCanaryRelease if set', () => {
-			sinon.stub(utils, 'sampleUsers', () => true);
+			sinon.stub(utils, 'sampleUsers').callsFake(() => true);
 			client.register({
 				get: val => {
 					if (val === 'swCanaryRelease') {

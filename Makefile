@@ -8,9 +8,16 @@ node_modules/@financial-times/n-gage/index.mk:
 
 test: verify unit-test
 
-build-dev: watch
+build-dev:
+	webpack --watch --debug
 
 PORT ?= 3010
+
+build:
+	webpack --bail --debug
+
+build-production:
+	webpack --bail -p
 
 build-appcache:
 	node appcache/generate.js

@@ -13,7 +13,8 @@ const options = {
 precache(
 	options.cache.name,
 	precacheConfig.image.map(image => new Request(image)),
-	{ maxAge: -1 }
+	{ maxAge: -1 },
+	{ isOptional: true }
 );
 
 const cacheFirst = getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'});

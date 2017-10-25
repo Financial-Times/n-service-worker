@@ -8,7 +8,7 @@ function upgradeRequestToCors (request) {
 		headers: request.headers,
 		mode: 'cors', // need to set this properly
 		credentials: request.credentials,
-		redirect: 'manual'   // let browser handle redirects
+		redirect: 'manual' // let browser handle redirects
 	});
 }
 
@@ -32,8 +32,8 @@ const handlers = {
 			});
 	},
 
-	fastest: (request, values, options = { }) => {
-		const cacheOptions = options.cache || { };
+	fastest: (request, values, options = {}) => {
+		const cacheOptions = options.cache || {};
 		const openCache = cache(cacheOptions.name);
 
 
@@ -54,7 +54,7 @@ const handlers = {
 			fromNetwork,
 			openCache
 		])
-			.then(([response, cache]) => cache.set(request, Object.assign({response: response.clone()}, cacheOptions)));
+			.then(([response, cache]) => cache.set(request, Object.assign({ response: response.clone() }, cacheOptions)));
 
 		// return a race between the two strategies
 		return ratRace([
@@ -64,7 +64,7 @@ const handlers = {
 	}
 };
 
-const getHandler = ({strategy, flag, upgradeToCors}) => {
+const getHandler = ({ strategy, flag, upgradeToCors }) => {
 	return (request, values, options = {}) => {
 		if (flag && !getFlag(flag)) {
 			return fetch(request);
