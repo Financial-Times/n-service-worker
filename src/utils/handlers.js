@@ -2,16 +2,6 @@ import cache from './cache';
 import { getFlag } from './flags';
 const ratRace = require('promise-rat-race');
 
-function upgradeRequestToCors (request) {
-	return new Request(request.url, {
-		method: request.method,
-		headers: request.headers,
-		mode: 'cors', // need to set this properly
-		credentials: request.credentials,
-		redirect: 'manual' // let browser handle redirects
-	});
-}
-
 const handlers = {
 	cacheFirst: (request, values, options = {}) => {
 		const cacheOptions = options.cache || {};
@@ -64,13 +54,18 @@ const handlers = {
 	}
 };
 
-const getHandler = ({ strategy, flag, upgradeToCors }) => {
-	return (request, values, options = {}) => {
-		if (flag && !getFlag(flag)) {
-			return fetch(request);
-		}
-		if (upgradeToCors) {
-			request = upgradeRequestToCors(request);
+const getHandler = ({ strategy, flag }) => {
+	return async (request, values, options = {}) => {
+		if (flag) {
+
+			let flagIsOn = false;
+			try {
+				flagIsOn = await getFlag(flag)
+			} catch (e) {};
+
+			if (!flagIsOn) {
+				return fetch(request);
+			}
 		}
 		return handlers[strategy](request, values, options);
 	};

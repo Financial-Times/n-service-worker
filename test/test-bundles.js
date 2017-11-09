@@ -44,12 +44,12 @@ window.SWTestBundles = {
 
 	},
 
-	_checkCacheIsUsed: ({message, assetLabel, url, expiry, mode = 'no-cors', cacheName, flag, upgradeToCors, expireRelativeToInstall, strategy}) => {
+	_checkCacheIsUsed: ({message, assetLabel, url, expiry, mode = 'no-cors', cacheName, flag, expireRelativeToInstall, strategy}) => {
 
 
 		describe(assetLabel, () => {
 			const options = {mode};
-			if ((mode === 'cors' || upgradeToCors) && supportsMutatedHeaders) {
+			if (mode === 'cors' && supportsMutatedHeaders) {
 				options.headers = {'FT-Debug': true};
 			}
 
