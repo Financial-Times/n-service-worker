@@ -1,3 +1,27 @@
+const message = msg => {
+	if ('serviceWorker' in navigator) {
+		return navigator.serviceWorker.ready
+			.then(registration =>
+				new Promise((resolve, reject) => {
+					// Create a Message Channel
+					const messageChannel = new MessageChannel();
+					// Handler for recieving message reply from service worker
+					messageChannel.port1.onmessage = ev => {
+						if (ev.data.error) {
+							reject(ev.data.error);
+						} else {
+							resolve(ev.data);
+						}
+					};
+					// Send message to service worker along with port for reply
+					registration.active.postMessage(msg, [messageChannel.port2]);
+				})
+			);
+	} else {
+		return Promise.reject('Service Worker unavailable');
+	}
+};
+
 const register = flags => {
 	if ('serviceWorker' in navigator && flags.get('serviceWorker')) {
 		if (document.cookie.length > 4000) {
@@ -46,22 +70,32 @@ const register = flags => {
 };
 
 function passFlags (flags) {
-	const open = indexedDB.open('next-flags', 1);
+	return new Promise((res, rej) => {
+		const connection = indexedDB.open('next-flags', 1);
 
-	open.onupgradeneeded = () => {
-		const db = open.result;
-		db.createObjectStore('flags');
-	};
+		connection.onupgradeneeded = () => {
+			const db = connection.result;
+			db.createObjectStore('flags', );
+		};
 
-	open.onsuccess = () => {
-		const db = open.result;
-		const tx = db.transaction('flags', 'readwrite');
-		const store = tx.objectStore('flags');
+		connection.onsuccess = () => {
+			const db = connection.result;
+			const tx = db.transaction('flags', 'readwrite');
+			const store = tx.objectStore('flags');
 
-		store.put(JSON.parse(JSON.stringify(flags)));
+			store.put(JSON.parse(JSON.stringify(flags)), 'flags');
 
-		tx.oncomplete = () => db.close();
-	};
+			tx.oncomplete = () => {
+				db.close();
+				res();
+			};
+
+			tx.onerror = () => rej(tx.error);
+      tx.onabort = () => rej(tx.error);
+		};
+	})
+		// resets the throtling of flags calls
+		.then(() => message({type: 'flagsClobber'}));
 }
 
 const unregister = () => {
@@ -73,4 +107,4 @@ const unregister = () => {
 	}
 };
 
-export { register, unregister, passFlags };
+export { register, unregister, passFlags, message };

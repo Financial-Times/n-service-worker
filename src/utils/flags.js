@@ -31,10 +31,16 @@ function getLatestFlags () {
 		})
 }
 
-
+self.addEventListener('message', ev => {
+	const msg = ev.data;
+	if (msg.type === 'flagsClobber') {
+		lastUpdated = Date.now() - 10000;
+		ev.ports[0].postMessage('success');
+	}
+});
 
 async function getFlag (name) {
-	if (lastUpdated > 5000) {
+	if (Date.now() - lastUpdated > 5000) {
 		await getLatestFlags();
 	}
 	return flags[name];
