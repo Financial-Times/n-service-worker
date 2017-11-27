@@ -211,7 +211,17 @@ function CacheWrapper (cacheName, { cacheNamePrefix = 'next' } = { }) {
 		});
 }
 
+function checkAndExpireAllCaches (caches) {
+	caches.keys().then(keys => {
+		keys.map(cacheName => caches.open(cacheName).then(cache => {
+			const cc = new Cache(cache, cacheName);
+			cc.expireAll();
+		}));
+	});
+}
+
 module.exports = {
 	CacheWrapper,
-	Cache
+	Cache,
+	checkAndExpireAllCaches
 };
