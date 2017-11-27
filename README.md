@@ -10,19 +10,19 @@ you'll need to [add the self-signed cert to your keychain]
 
 General workflow is
 
- * Choose an app you want to run the service worker against, e.g. `front-page`,
- configure it to run as https and serve the service worker locally
+* Choose an app you want to run the service worker against, e.g. `front-page`,
+configure it to run as https and serve the service worker locally
 
 ```
-    cd next-front-page
-    nht run --https --local-apps service-worker=3010
+	cd next-front-page
+	nht run --https --local-apps service-worker=3010
 ```
 
- * Also, run the service worker locally
+* Also, run the service worker locally
 
 ```
-    cd n-service-worker
-    npm start
+	cd n-service-worker
+	npm start
 ```
 
 This will also start webpack's watch

@@ -1,4 +1,3 @@
-/*global expect, sinon */
 import { expect } from 'chai';
 import { stub } from 'sinon';
 import { purgeCache } from './helpers';

@@ -205,14 +205,12 @@ function CacheWrapper (cacheName, { cacheNamePrefix = 'next' } = { }) {
 	const fullCacheName = `${cacheNamePrefix}:${cacheName}`;
 	return caches.open(fullCacheName)
 		.then(cache => {
-			const cacheWrapper = new Cache(cache, fullCacheName);
-			cacheWrapper.expireAll();
-			return cacheWrapper;
+			return new Cache(cache, fullCacheName);
 		});
 }
 
 function checkAndExpireAllCaches (caches) {
-	caches.keys().then(keys => {
+	return caches.keys().then(keys => {
 		keys.map(cacheName => caches.open(cacheName).then(cache => {
 			const cc = new Cache(cache, cacheName);
 			cc.expireAll();
@@ -222,6 +220,5 @@ function checkAndExpireAllCaches (caches) {
 
 module.exports = {
 	CacheWrapper,
-	Cache,
 	checkAndExpireAllCaches
 };
