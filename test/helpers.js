@@ -12,12 +12,12 @@ window.SWTestHelper = {
 			this.unregisterAllRegistrations(),
 			this.clearAllCaches()
 		])
-		.then(() => {
-			const iframeList = document.querySelectorAll('.js-test-iframe');
-			for (let i = 0; i < iframeList.length; i++) {
-				iframeList[i].parentElement.removeChild(iframeList[i]);
-			}
-		}).catch();
+			.then(() => {
+				const iframeList = document.querySelectorAll('.js-test-iframe');
+				for (let i = 0; i < iframeList.length; i++) {
+					iframeList[i].parentElement.removeChild(iframeList[i]);
+				}
+			}).catch();
 	},
 
 	unregisterAllRegistrations: function () {

@@ -332,29 +332,29 @@ describe('cache', () => {
 								expect(keys).to.contain('http://localhost:9876/files/2');
 							})
 						// cache invalidation is done lazily so we add a delay
-						.then(() => new Promise(res => setTimeout(res, 500)))
-						.then(() => Promise.all([
-							cache.keys(),
-							caches.open('next:test-cache')
-								.then(cache => cache.match('http://localhost:9876/files/0')),
-							new DB('requests', { dbName: 'next:test-cache'})
-								.get('http://localhost:9876/files/0'),
-							caches.open('next:test-cache')
-								.then(cache => cache.match('http://localhost:9876/files/2')),
-							new DB('requests', { dbName: 'next:test-cache'})
-								.get('http://localhost:9876/files/2')
-						]))
-						.then(([keys, inCache1, inDb1, inCache2, inDb2]) => {
+							.then(() => new Promise(res => setTimeout(res, 500)))
+							.then(() => Promise.all([
+								cache.keys(),
+								caches.open('next:test-cache')
+									.then(cache => cache.match('http://localhost:9876/files/0')),
+								new DB('requests', { dbName: 'next:test-cache'})
+									.get('http://localhost:9876/files/0'),
+								caches.open('next:test-cache')
+									.then(cache => cache.match('http://localhost:9876/files/2')),
+								new DB('requests', { dbName: 'next:test-cache'})
+									.get('http://localhost:9876/files/2')
+							]))
+							.then(([keys, inCache1, inDb1, inCache2, inDb2]) => {
 
-							keys = keys.map(k => k.url);
-							expect(keys.length).to.equal(2);
-							expect(keys).to.contain('http://localhost:9876/files/1');
-							expect(keys).to.contain('http://localhost:9876/files/2');
-							expect(inCache1).to.not.exist;
-							expect(inDb1).to.not.exist;
-							expect(inCache2).to.exist;
-							expect(inDb2).to.exist;
-						});
+								keys = keys.map(k => k.url);
+								expect(keys.length).to.equal(2);
+								expect(keys).to.contain('http://localhost:9876/files/1');
+								expect(keys).to.contain('http://localhost:9876/files/2');
+								expect(inCache1).to.not.exist;
+								expect(inDb1).to.not.exist;
+								expect(inCache2).to.exist;
+								expect(inDb2).to.exist;
+							});
 					});
 			});
 		});

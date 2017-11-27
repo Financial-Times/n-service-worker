@@ -9,9 +9,9 @@ function addHeadersToResponse (res, headers) {
 	});
 
 	const init = {
-			status: response.status,
-			statusText: response.statusText,
-			headers: Object.assign({}, originalHeaders, headers)
+		status: response.status,
+		statusText: response.statusText,
+		headers: Object.assign({}, originalHeaders, headers)
 	};
 
 	return response.text()
@@ -134,7 +134,7 @@ export class Cache {
 			this.cache.delete(request),
 			this.db.delete(url),
 		])
-		.then(() => undefined);
+			.then(() => undefined);
 	}
 
 	/**
@@ -180,7 +180,7 @@ export class Cache {
 						.map(key =>
 							this.db.get(key.url)
 								.then(({expires} = {}) => ({key, expires}))
-					)
+						)
 				)
 					.then(lookups =>
 						lookups
@@ -191,7 +191,7 @@ export class Cache {
 							.map(({key}) => this.delete(key))
 					)
 			);
-			// .then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));
+		// .then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));
 	}
 }
 
