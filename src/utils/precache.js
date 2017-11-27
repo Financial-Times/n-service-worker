@@ -1,4 +1,4 @@
-import cache from './cache';
+const cache = require('./cache').CacheWrapper;
 
 const precachePromises = [];
 

@@ -2,7 +2,7 @@ import router from '../utils/router';
 
 import { getHandler } from '../utils/handlers';
 import { registerCache } from '../utils/personal';
-import cache from '../utils/cache';
+const cache = require('../utils/cache').CacheWrapper;
 
 const options = {
 	origin: self.host || 'https://www.ft.com',

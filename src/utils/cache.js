@@ -20,7 +20,7 @@ function addHeadersToResponse (res, headers) {
 		});
 }
 
-export class Cache {
+class Cache {
 
 	/**
 	 * @param {object} cache - Native Cache object
@@ -201,7 +201,7 @@ export class Cache {
  * @param {string} [opts.cacheNamePrefix = 'next'] - What to prefix to the cache name
  * @returns Cache
  */
-export default (cacheName, { cacheNamePrefix = 'next' } = { }) => {
+function CacheWrapper (cacheName, { cacheNamePrefix = 'next' } = { }) {
 	const fullCacheName = `${cacheNamePrefix}:${cacheName}`;
 	return caches.open(fullCacheName)
 		.then(cache => {
@@ -209,4 +209,9 @@ export default (cacheName, { cacheNamePrefix = 'next' } = { }) => {
 			cacheWrapper.expireAll();
 			return cacheWrapper;
 		});
+}
+
+module.exports = {
+	CacheWrapper,
+	Cache
 };

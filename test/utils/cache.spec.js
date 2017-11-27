@@ -1,5 +1,5 @@
 /* global expect,SWTestHelper */
-import cache from '../../src/utils/cache';
+const cache = require('../../src/utils/cache').CacheWrapper;
 import DB from '../../src/utils/db';
 import fetchMock from 'fetch-mock';
 
