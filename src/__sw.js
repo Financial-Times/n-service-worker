@@ -17,6 +17,7 @@ import './push/myft';
 
 import router from './utils/router';
 import { messageHandler } from './messages';
+const cache = require('./utils/cache');
 
 self.addEventListener('fetch', ev => {
 	const handler = router.match(ev.request);
@@ -27,6 +28,11 @@ self.addEventListener('fetch', ev => {
 
 self.addEventListener('activate', ev => {
 	ev.waitUntil(self.clients.claim());
+});
+
+// Cleanup caches on install
+self.addEventListener('install', () => {
+	cache.checkAndExpireAllCaches(caches);
 });
 
 self.addEventListener('message', messageHandler);

@@ -55,34 +55,34 @@ self.addEventListener('notificationclick', ev => {
 		clients.matchAll({
 			type: 'window'
 		})
-		.then(clientList => {
-			let url;
-			if (Notification.prototype.hasOwnProperty('data') && ev.notification.data.id) {
-				url = '/content/' + ev.notification.data.id;
-			} else {
-				url = '/myft/following';
-			}
-
-			url = url + '#myft:notification:push';
-
-			track({
-				category: 'push',
-				action: 'click',
-				context: {
-					url: 'https://next.ft.com' + url
-				},
-				content: { uuid: ev.notification.data ? ev.notification.data.id : 'default' }
-			});
-
-			for (let i = 0; i < clientList.length; i++) {
-				let client = clientList[i];
-				if (client.url.indexOf(url) > 0 && 'focus' in client) {
-					return client.focus();
+			.then(clientList => {
+				let url;
+				if (Notification.prototype.hasOwnProperty('data') && ev.notification.data.id) {
+					url = '/content/' + ev.notification.data.id;
+				} else {
+					url = '/myft/following';
 				}
-			}
-			if (clients.openWindow) {
-				return clients.openWindow(url);
-			}
-		})
+
+				url = url + '#myft:notification:push';
+
+				track({
+					category: 'push',
+					action: 'click',
+					context: {
+						url: 'https://next.ft.com' + url
+					},
+					content: { uuid: ev.notification.data ? ev.notification.data.id : 'default' }
+				});
+
+				for (let i = 0; i < clientList.length; i++) {
+					let client = clientList[i];
+					if (client.url.indexOf(url) > 0 && 'focus' in client) {
+						return client.focus();
+					}
+				}
+				if (clients.openWindow) {
+					return clients.openWindow(url);
+				}
+			})
 	);
 });

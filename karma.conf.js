@@ -12,7 +12,7 @@ module.exports = function (karma) {
 		// list of files / patterns to load in the browser
 		files: [
 			'test/main.spec.js',
-			{ pattern: 'test/helpers.js', served: true },
+			{ pattern: 'test/helpers-browser.js', served: true },
 			{ pattern: 'test/test-bundles.js', served: true },
 			'test/setup.js',
 			// `test/caches/*spec.js` files MUST be run before the utils ones!!
@@ -42,7 +42,7 @@ module.exports = function (karma) {
 			}
 		},
 		preprocessors: {
-			'test/helpers.js': ['webpack', 'sourcemap'],
+			'test/helpers-browser.js': ['webpack', 'sourcemap'],
 			'test/test-bundles.js': ['webpack', 'sourcemap'],
 			'test/setup.js': ['webpack', 'sourcemap'],
 			'test/**/*.spec.js': ['webpack', 'sourcemap'],
