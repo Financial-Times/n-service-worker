@@ -7,7 +7,7 @@ const cache = require('../utils/cache').CacheWrapper;
 const options = {
 	origin: self.host || 'https://www.ft.com',
 	cache: {
-		name: 'myft',
+		name: 'myft-v1',
 		maxAge: 60 * 60 * 12
 	}
 };
@@ -15,7 +15,7 @@ const options = {
 function purgeCache (request) {
 	let resource = request.url.replace('/user', '');
 
-	cache('next:myft')
+	cache('next:myft-v1')
 		.then(cache => cache.keys())
 		.then(keys => keys.some(key => {
 			if (resource.indexOf(key.url) === 0) {
@@ -27,7 +27,7 @@ function purgeCache (request) {
 	return fetch(request);
 }
 
-registerCache('next:myft');
+registerCache('next:myft-v1');
 
 router.get('/__myft/api/*', getHandler({strategy: 'cacheFirst', flag: 'swMyftCaching'}), options);
 router.put('/__myft/api/*', purgeCache);

@@ -9,7 +9,7 @@ describe('built-assets', () => {
 			assetLabel: label,
 			url,
 			expiry: 60 * 60 * 24 * 5,
-			cacheName: 'built-assets',
+			cacheName: 'built-assets-v1',
 			flag: 'swAssetCaching'
 		})
 	);

@@ -5,7 +5,7 @@ import { getHandler } from '../utils/handlers';
 const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
-		name: 'polyfill',
+		name: 'polyfill-v1',
 		maxEntries: 4
 	}
 };

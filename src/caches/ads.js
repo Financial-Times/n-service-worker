@@ -6,13 +6,13 @@ import precache from '../utils/precache';
 
 function getCacheOptions (days, isPersonal) {
 	return {
-		name: 'ads' + (isPersonal ? ':personal' : ''),
+		name: 'ads' + (isPersonal ? ':personal' : '') + '-v1',
 		maxAge: 60 * 60 * (days >= 1 ? days * 24 : 1),
 		maxEntries: 60
 	};
 }
 
-registerCache('next:ads:personal');
+registerCache('next:ads:personal-v1');
 
 const popularConcepts = [
 	'd8009323-f898-3207-b543-eab4427b7a77', // old id: MQ==-U2VjdGlvbnM=

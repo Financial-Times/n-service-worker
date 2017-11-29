@@ -4,7 +4,7 @@ import { getHandler } from '../utils/handlers';
 
 // Attempt to cache static assets served by lifefyre
 const cacheOptions = {
-	name: 'comments',
+	name: 'comments-v1',
 	maxEntries: 20
 };
 
