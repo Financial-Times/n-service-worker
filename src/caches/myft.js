@@ -7,7 +7,7 @@ const cache = require('../utils/cache').CacheWrapper;
 const options = {
 	origin: self.host || 'https://www.ft.com',
 	cache: {
-		name: 'myft',
+		name: 'myft-v1',
 		maxAge: 60 * 60 * 12
 	}
 };

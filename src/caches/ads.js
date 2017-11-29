@@ -6,7 +6,7 @@ import precache from '../utils/precache';
 
 function getCacheOptions (days, isPersonal) {
 	return {
-		name: 'ads' + (isPersonal ? ':personal' : ''),
+		name: 'ads' + (isPersonal ? ':personal' : '') + '-v1',
 		maxAge: 60 * 60 * (days >= 1 ? days * 24 : 1),
 		maxEntries: 60
 	};

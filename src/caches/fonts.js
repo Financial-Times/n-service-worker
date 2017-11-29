@@ -7,7 +7,7 @@ import { sw as precacheConfig} from '../../config/precache';
 const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
-		name: 'fonts',
+		name: 'fonts-v1',
 		maxEntries: 5
 	}
 };

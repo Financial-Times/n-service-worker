@@ -6,7 +6,7 @@ import { sw as precacheConfig} from '../../config/precache';
 const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
-		name: 'image'
+		name: 'image-v1'
 	}
 };
 

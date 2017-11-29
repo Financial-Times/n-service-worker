@@ -8,7 +8,7 @@ import { getHandler } from '../utils/handlers';
 const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
-		name: 'built-assets',
+		name: 'built-assets-v1',
 		maxEntries: 30,
 		// our code base moves so fast, pointless caching enything longer than a few days
 		maxAge: 60 * 60 * 24 * 14
