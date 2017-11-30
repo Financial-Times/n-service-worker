@@ -7,14 +7,14 @@ import { sw as precacheConfig} from '../../config/precache';
 const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
-		name: 'fonts',
+		name: 'fonts-v1',
 		maxEntries: 5
 	}
 };
 
 precache(
 	options.cache.name,
-	precacheConfig.fonts,
+	precacheConfig[options.cache.name],
 	{ maxAge: -1 },
 	{ isOptional: true }
 );

@@ -15,7 +15,7 @@ describe('ads', () => {
 			url: `https://ads-api.ft.com/v1/concept/${concept}`,
 			assetLabel: `asset metadata for section ${concept}`,
 			expiry: 7 * 60 * 60 * 24 * 1000,
-			cacheName: 'ads'
+			cacheName: 'ads-v1'
 		})
 	);
 
@@ -34,7 +34,7 @@ describe('ads', () => {
 			expiry: expiry * 60 * 60 * 24 * 1000,
 			expireRelativeToInstall: relativeToInstall,
 			mode,
-			cacheName: 'ads',
+			cacheName: 'ads-v1',
 			flag: 'swAdsCaching'
 		})
 	);

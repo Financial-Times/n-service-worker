@@ -11,7 +11,7 @@ describe('images', () => {
 
 			const url = `/__origami/service/image/v2/images/raw/${image}`;
 			const expiry = 'no-expiry';
-			const cacheName ='image';
+			const cacheName = 'image-v1';
 
 			SWTestBundles.checkGetsPrecached({
 				url,
@@ -39,7 +39,7 @@ describe('images', () => {
 			assetLabel: label,
 			url,
 			expiry: 'no-expiry',
-			cacheName: 'image',
+			cacheName: 'image-v1',
 			flag: 'swAssetCaching'
 		})
 	);

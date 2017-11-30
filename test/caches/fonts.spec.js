@@ -13,7 +13,7 @@ describe('fonts', () => {
 	fonts.map(font => {
 		const url = `/__origami/service/build/v2/files/o-fonts-assets@1.3.2/${font}.woff`;
 		const expiry = 'no-expiry';
-		const cacheName ='fonts';
+		const cacheName = 'fonts-v1';
 
 		SWTestBundles.checkGetsPrecached({
 			url,
