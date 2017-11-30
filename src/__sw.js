@@ -30,26 +30,28 @@ self.addEventListener('activate', ev => {
 	ev.waitUntil(self.clients.claim());
 });
 
-// Cleanup caches on install
+// Remove any stale cached keys past their max-age.
 self.addEventListener('install', () => {
-	cache.checkAndExpireAllCaches(caches)
-		.then(() => {
-			// Delete any unversioned caches.
-			[
-				'next:ads',
-				'next:ads:personal',
-				'next:built-assets',
-				'next:comments',
-				'next:fonts',
-				'next:image',
-				'next:myft',
-				'next:polyfill',
-				'next:session',
-			].forEach(cache => {
-				indexedDB.deleteDatabase(cache);
-				caches.delete(cache);
-			});
-		});
+	cache.checkAndExpireAllCaches(caches);
+});
+
+// Clean up cache storage objects from previous service worker versions.
+self.addEventListener('activate', () => {
+	// Delete any unversioned caches.
+	[
+		'next:ads',
+		'next:ads:personal',
+		'next:built-assets',
+		'next:comments',
+		'next:fonts',
+		'next:image',
+		'next:myft',
+		'next:polyfill',
+		'next:session',
+	].forEach(cache => {
+		indexedDB.deleteDatabase(cache);
+		caches.delete(cache);
+	});
 });
 
 self.addEventListener('message', messageHandler);
