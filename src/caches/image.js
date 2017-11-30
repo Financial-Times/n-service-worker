@@ -12,7 +12,7 @@ const options = {
 
 precache(
 	options.cache.name,
-	precacheConfig.image.map(image => new Request(image)),
+	precacheConfig[options.cache.name].map(image => new Request(image)),
 	{ maxAge: -1 },
 	{ isOptional: true }
 );

@@ -14,7 +14,7 @@ const options = {
 
 precache(
 	options.cache.name,
-	precacheConfig.fonts,
+	precacheConfig[options.cache.name],
 	{ maxAge: -1 },
 	{ isOptional: true }
 );

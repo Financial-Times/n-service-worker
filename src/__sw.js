@@ -32,7 +32,24 @@ self.addEventListener('activate', ev => {
 
 // Cleanup caches on install
 self.addEventListener('install', () => {
-	cache.checkAndExpireAllCaches(caches);
+	cache.checkAndExpireAllCaches(caches)
+		.then(() => {
+			// Delete any unversioned caches.
+			[
+				'next:ads',
+				'next:ads:personal',
+				'next:built-assets',
+				'next:comments',
+				'next:fonts',
+				'next:image',
+				'next:myft',
+				'next:polyfill',
+				'next:session',
+			].forEach(cache => {
+				indexedDB.deleteDatabase(cache);
+				caches.delete(cache);
+			});
+		});
 });
 
 self.addEventListener('message', messageHandler);
