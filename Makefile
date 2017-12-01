@@ -29,8 +29,8 @@ unit-test:
 	karma start
 
 # TODO: Refacor tests so that most use the mock, and a few run in browser as integration tests
-sw-mock-test:
-	mocha test/__sw.spec.js --require babel-core/register --require babel-polyfill --exit
+ut:
+	mocha test/__sw.spec.js test/unit/*.js --require babel-core/register --require babel-polyfill --exit
 
 test-chrome:
 	karma start --autoWatch=true --singleRun=false --browsers=Chrome

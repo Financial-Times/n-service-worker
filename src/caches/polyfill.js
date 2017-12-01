@@ -1,7 +1,5 @@
 import router from '../utils/router';
 
-import { getHandler } from '../utils/handlers';
-
 const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
@@ -10,5 +8,6 @@ const options = {
 	}
 };
 
-// use fastest as we want to send requests to check last-modified headers for polyfill
-router.get('/__origami/service/polyfill/*', getHandler({strategy: 'fastest', flag: 'swAssetCaching'}), options);
+export default function init (cacheHandler) {
+	router.get('/__origami/service/polyfill/*', cacheHandler, options);
+}
