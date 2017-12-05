@@ -1,5 +1,5 @@
 import { proxy } from 'proxyrequire';
-import { expect, sinon } from './setup';
+import { expect, sinon } from '../setup';
 
 function getCacheOptions (days, isPersonal) {
 	return {
@@ -18,7 +18,7 @@ describe('Ads cache', () => {
 
 	beforeEach(() => {
 		routerStub.get = sinon.spy();
-		adsCaches = proxy(() => require('../../src/caches/ads'), {
+		adsCaches = proxy(() => require('../../../src/caches/ads'), {
 			'../utils/personal': { registerCache: registerCacheStub },
 			'../utils/router': routerStub,
 			'../utils/precache': precacheStub

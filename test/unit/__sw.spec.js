@@ -1,4 +1,4 @@
-import { expect, sinon } from './unit/setup';
+import { expect, sinon } from './setup';
 import { purgeModuleCache } from './helpers';
 import { proxy } from 'proxyrequire';
 import makeServiceWorkerEnv from 'service-worker-mock';
@@ -7,26 +7,26 @@ import makeServiceWorkerEnv from 'service-worker-mock';
 describe('__sw.js', () => {
 	beforeEach(() => {
 		Object.assign(global, makeServiceWorkerEnv());
-		purgeModuleCache('../src/__sw.js');
+		purgeModuleCache('../../src/__sw.js');
 	});
 
 	it('Should have appropriate event listeners', () => {
-		require('../src/__sw.js');
+		require('../../src/__sw.js');
 		expect(self.listeners['install']).to.be.ok;
 		expect(self.listeners['activate']).to.be.ok;
 		expect(self.listeners['fetch']).to.be.ok;
 	});
 
 	it('should call clients.claim() on activate event', async () => {
-		require('../src/__sw.js');
+		require('../../src/__sw.js');
 		sinon.stub(self.clients, 'claim').callsFake(() => Promise.resolve());
 		await self.trigger('activate');
 		expect(self.clients.claim.called).is.ok;
 	});
 
 	it('should expire caches on install event', async () => {
-		require('../src/__sw.js');
-		const cache = require('../src/utils/cache');
+		require('../../src/__sw.js');
+		const cache = require('../../src/utils/cache');
 		sinon.stub(cache, 'checkAndExpireAllCaches').callsFake(() => Promise.resolve());
 		await self.trigger('install');
 		expect(cache.checkAndExpireAllCaches.calledWith(caches)).to.be.true;
@@ -50,7 +50,7 @@ describe('__sw.js', () => {
 			commentsCacheStub = sinon.stub();
 			myFtCacheStub = sinon.stub();
 
-			proxy(() => require('../src/__sw.js'), {
+			proxy(() => require('../../src/__sw.js'), {
 				'./caches/ads': adsCacheStub,
 				'./caches/fonts': fontsCacheStub ,
 				'./caches/image': imageCacheStub,

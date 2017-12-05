@@ -1,5 +1,5 @@
 import { proxy } from 'proxyrequire';
-import { expect, sinon } from './setup';
+import { expect, sinon } from '../setup';
 import makeServiceWorkerEnv from 'service-worker-mock';
 
 // Mock the service worker in the global scope to access `self` object.
@@ -23,7 +23,7 @@ describe('Built assets cache', () => {
 
 	beforeEach(() => {
 		routerStub.get = sinon.spy();
-		builtAssetsCaches = proxy(() => require('../../src/caches/built-assets'), {
+		builtAssetsCaches = proxy(() => require('../../../src/caches/built-assets'), {
 			'../utils/flags': flagsStub,
 			'../utils/router': routerStub,
 		});

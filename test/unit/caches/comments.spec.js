@@ -1,5 +1,5 @@
 import { proxy } from 'proxyrequire';
-import { expect, sinon } from './setup';
+import { expect, sinon } from '../setup';
 
 const cacheOptions = {
 	name: 'comments-v1',
@@ -13,7 +13,7 @@ describe('Comments cache', () => {
 
 	beforeEach(() => {
 		routerStub.get = sinon.spy();
-		commentsCache = proxy(() => require('../../src/caches/comments'), {
+		commentsCache = proxy(() => require('../../../src/caches/comments'), {
 			'../utils/router': routerStub,
 		});
 		commentsCache.default(handlerStub);

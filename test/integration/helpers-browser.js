@@ -1,6 +1,6 @@
 /* global SWTestHelper */
 import idb from 'idb';
-import { message } from '../main';
+import { message } from '../../main';
 
 window.SWTestHelper = {
 	queryFetchHistory: url => message({type: 'queryFetchHistory', url}),

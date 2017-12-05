@@ -1,6 +1,6 @@
 import { proxy } from 'proxyrequire';
-import { expect, sinon } from './setup';
-import { sw as precacheConfig} from '../../config/precache';
+import { expect, sinon } from '../setup';
+import { sw as precacheConfig} from '../../../config/precache';
 import makeServiceWorkerEnv from 'service-worker-mock';
 
 // Mock the service worker in the global scope to access `self` object.
@@ -21,7 +21,7 @@ describe('Image cache', () => {
 
 	beforeEach(() => {
 		routerStub.get = sinon.spy();
-		imageCache = proxy(() => require('../../src/caches/image'), {
+		imageCache = proxy(() => require('../../../src/caches/image'), {
 			'../utils/router': routerStub,
 			'../utils/precache': precacheStub
 		});

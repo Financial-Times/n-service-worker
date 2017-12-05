@@ -2,7 +2,7 @@
  * Removes a module from the node modules cache
  * @param moduleName
  */
-function purgeModuleCache (moduleName) {
+export function purgeModuleCache (moduleName) {
 	// Traverse the cache looking for the files
 	// loaded by the specified module name
 	searchCache(moduleName, function (mod) {
@@ -45,5 +45,3 @@ function searchCache (moduleName, callback) {
 		}(mod));
 	}
 }
-
-export { purgeModuleCache };

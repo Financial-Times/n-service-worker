@@ -1,5 +1,4 @@
 import './utils/flags';
-
 // generic assets
 import fontsCache from './caches/fonts';
 fontsCache(getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'}));

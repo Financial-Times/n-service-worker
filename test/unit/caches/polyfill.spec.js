@@ -1,5 +1,5 @@
 import { proxy } from 'proxyrequire';
-import { expect, sinon } from './setup';
+import { expect, sinon } from '../setup';
 import makeServiceWorkerEnv from 'service-worker-mock';
 
 // Mock the service worker in the global scope to access `self` object.
@@ -20,7 +20,7 @@ describe('Polyfill cache', () => {
 
 	beforeEach(() => {
 		routerStub.get = sinon.spy();
-		commentsCache = proxy(() => require('../../src/caches/polyfill'), {
+		commentsCache = proxy(() => require('../../../src/caches/polyfill'), {
 			'../utils/router': routerStub,
 		});
 		commentsCache.default(handlerStub);

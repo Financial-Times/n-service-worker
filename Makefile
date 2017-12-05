@@ -6,7 +6,7 @@ node_modules/@financial-times/n-gage/index.mk:
 
 .PHONY: demo
 
-test: verify unit-test sw-mock-test
+test: verify unit-test integration-test
 
 build-dev:
 	webpack --watch --debug
@@ -25,12 +25,12 @@ build-appcache:
 	cp appcache/loader.html dist/__appcache-manifest-loader.html
 	cp appcache/loader-landing.html dist/__appcache-manifest-loader-landing.html
 
-unit-test:
+# TODO: Add proper integration tests with nightwatch
+integration-test:
 	karma start
 
-# TODO: Refacor tests so that most use the mock, and a few run in browser as integration tests
-ut:
-	mocha test/__sw.spec.js test/unit/*.js --require babel-core/register --require babel-polyfill --exit
+unit-test:
+	mocha test/unit/*.spec.js test/unit/**/*.spec.js --require babel-core/register --require babel-polyfill --exit
 
 test-chrome:
 	karma start --autoWatch=true --singleRun=false --browsers=Chrome
