@@ -1,3 +1,8 @@
+/**
+ * Handlers are passed in like this for testability.
+ * TODO: There's probably a better way to do this, maybe a config file
+ */
+
 import './utils/flags';
 // generic assets
 import fontsCache from './caches/fonts';
