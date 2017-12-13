@@ -86,12 +86,12 @@ export const topSections = [
 ];
 
 export default function init (cacheHandler) {
-	// Adblockers block ads-api requests
-	// net::ERR_BLOCKED_BY_CLIENT cannot be differentiated
-	// so we just fail silently
 	registerCache('next:ads:personal-v1');
 
 	// Precache top level topSections
+	// Adblockers block ads-api requests
+	// net::ERR_BLOCKED_BY_CLIENT cannot be differentiated
+	// so we just fail silently by passing isOptional: true
 	const precacheCacheOptions = getCacheOptions(7);
 	precache(
 		precacheCacheOptions.name,
