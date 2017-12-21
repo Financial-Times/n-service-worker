@@ -9,9 +9,9 @@ function addHeadersToResponse (res, headers) {
 	});
 
 	const init = {
-			status: response.status,
-			statusText: response.statusText,
-			headers: Object.assign({}, originalHeaders, headers)
+		status: response.status,
+		statusText: response.statusText,
+		headers: Object.assign({}, originalHeaders, headers)
 	};
 
 	return response.text()
@@ -20,7 +20,7 @@ function addHeadersToResponse (res, headers) {
 		});
 }
 
-export class Cache {
+class Cache {
 
 	/**
 	 * @param {object} cache - Native Cache object
@@ -134,7 +134,7 @@ export class Cache {
 			this.cache.delete(request),
 			this.db.delete(url),
 		])
-		.then(() => undefined);
+			.then(() => undefined);
 	}
 
 	/**
@@ -180,7 +180,7 @@ export class Cache {
 						.map(key =>
 							this.db.get(key.url)
 								.then(({expires} = {}) => ({key, expires}))
-					)
+						)
 				)
 					.then(lookups =>
 						lookups
@@ -191,7 +191,7 @@ export class Cache {
 							.map(({key}) => this.delete(key))
 					)
 			);
-			// .then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));
+		// .then(keys => Promise.all(keys.reverse().slice(count).map(this.delete.bind(this))));
 	}
 }
 
@@ -201,12 +201,24 @@ export class Cache {
  * @param {string} [opts.cacheNamePrefix = 'next'] - What to prefix to the cache name
  * @returns Cache
  */
-export default (cacheName, { cacheNamePrefix = 'next' } = { }) => {
+function CacheWrapper (cacheName, { cacheNamePrefix = 'next' } = { }) {
 	const fullCacheName = `${cacheNamePrefix}:${cacheName}`;
 	return caches.open(fullCacheName)
 		.then(cache => {
-			const cacheWrapper = new Cache(cache, fullCacheName);
-			cacheWrapper.expireAll();
-			return cacheWrapper;
+			return new Cache(cache, fullCacheName);
 		});
+}
+
+function checkAndExpireAllCaches (caches) {
+	return caches.keys().then(keys => {
+		keys.map(cacheName => caches.open(cacheName).then(cache => {
+			const cc = new Cache(cache, cacheName);
+			cc.expireAll();
+		}));
+	});
+}
+
+module.exports = {
+	CacheWrapper,
+	checkAndExpireAllCaches
 };

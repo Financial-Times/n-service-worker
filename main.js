@@ -48,14 +48,14 @@ const register = flags => {
 
 					installingWorker.onstatechange = function () {
 						switch (installingWorker.state) {
-							case 'installed':
-								if (!navigator.serviceWorker.controller) {
-									window.postMessage({command: 'precacheDone'}, '*');
-								}
+						case 'installed':
+							if (!navigator.serviceWorker.controller) {
+								window.postMessage({command: 'precacheDone'}, '*');
+							}
 							break;
 
-							case 'redundant':
-								throw Error('The installing service worker became redundant.');
+						case 'redundant':
+							throw Error('The installing service worker became redundant.');
 						}
 
 					};

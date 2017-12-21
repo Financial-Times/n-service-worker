@@ -1,10 +1,10 @@
 const appcache = {
-	fonts: [
+	'fonts-v1': [
 		'/__origami/service/build/v2/files/o-fonts-assets@1.3.2/MetricWeb-Regular.woff',
 		'/__origami/service/build/v2/files/o-fonts-assets@1.3.2/MetricWeb-Semibold.woff',
 		'/__origami/service/build/v2/files/o-fonts-assets@1.3.2/FinancierDisplayWeb-Regular.woff'
 	],
-	image: [
+	'image-v1': [
 		'/__origami/service/image/v2/images/raw/ftlogo:brand-ft-masthead?source=o-header&tint=%2333302E,%2333302E&format=svg',
 		'/__origami/service/image/v2/images/raw/fticon-v1:hamburger?source=o-icons&tint=%2333302E,%2333302E&format=svg',
 		'/__origami/service/image/v2/images/raw/fticon-v1:search?source=o-icons&tint=%2333302E,%2333302E&format=svg',
@@ -13,10 +13,10 @@ const appcache = {
 };
 
 const sw = {
-	fonts: appcache.fonts.concat([
+	'fonts-v1': appcache['fonts-v1'].concat([
 		'/__origami/service/build/v2/files/o-fonts-assets@1.3.2/FinancierDisplayWeb-Bold.woff'
 	]),
-	image: appcache.image.concat([
+	'image-v1': appcache['image-v1'].concat([
 		// needed for the offline app - disabled for now
 		// '/__origami/service/image/v2/images/raw/fticon-v1:cross?source=o-icons&tint=%2333302E,%2333302E&format=svg',
 		// '/__origami/service/image/v2/images/raw/ftlogo:brand-nikkei-tagline?source=o-footer&format=svg',

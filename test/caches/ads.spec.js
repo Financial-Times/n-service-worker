@@ -1,6 +1,6 @@
 /* global SWTestBundles */
 describe('ads', () => {
-    [
+	[
 		'd8009323-f898-3207-b543-eab4427b7a77',	// world
 		'852939c8-859c-361e-8514-f82f6c041580',	// companies
 		'd969d76e-f8f4-34ae-bc38-95cfd0884740', // markets
@@ -10,12 +10,12 @@ describe('ads', () => {
 		'59fd6642-055c-30b0-b2b8-8120bc2990af', // personal finance
 		'40433e6c-d2ac-3994-b168-d33b89b284c7', // science
 		'5c7592a8-1f0c-11e4-b0cb-b2227cce2b54' 	// fastft
-    ].map(concept =>
+	].map(concept =>
 		SWTestBundles.checkGetsPrecached({
 			url: `https://ads-api.ft.com/v1/concept/${concept}`,
 			assetLabel: `asset metadata for section ${concept}`,
 			expiry: 7 * 60 * 60 * 24 * 1000,
-			cacheName: 'ads'
+			cacheName: 'ads-v1'
 		})
 	);
 
@@ -34,7 +34,7 @@ describe('ads', () => {
 			expiry: expiry * 60 * 60 * 24 * 1000,
 			expireRelativeToInstall: relativeToInstall,
 			mode,
-			cacheName: 'ads',
+			cacheName: 'ads-v1',
 			flag: 'swAdsCaching'
 		})
 	);

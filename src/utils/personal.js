@@ -1,6 +1,6 @@
 import router from '../utils/router';
 
-import cache from './cache';
+const cache = require('./cache').CacheWrapper;
 
 const options = {
 	origin: self.registration.scope.replace(/\/$/, '')

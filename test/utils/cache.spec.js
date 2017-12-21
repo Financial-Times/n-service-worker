@@ -1,5 +1,6 @@
 /* global expect,SWTestHelper */
-import cache from '../../src/utils/cache';
+const cache = require('../../src/utils/cache').CacheWrapper;
+const checkAndExpireAllCaches = require('../../src/utils/cache').checkAndExpireAllCaches;
 import DB from '../../src/utils/db';
 import fetchMock from 'fetch-mock';
 
@@ -332,29 +333,29 @@ describe('cache', () => {
 								expect(keys).to.contain('http://localhost:9876/files/2');
 							})
 						// cache invalidation is done lazily so we add a delay
-						.then(() => new Promise(res => setTimeout(res, 500)))
-						.then(() => Promise.all([
-							cache.keys(),
-							caches.open('next:test-cache')
-								.then(cache => cache.match('http://localhost:9876/files/0')),
-							new DB('requests', { dbName: 'next:test-cache'})
-								.get('http://localhost:9876/files/0'),
-							caches.open('next:test-cache')
-								.then(cache => cache.match('http://localhost:9876/files/2')),
-							new DB('requests', { dbName: 'next:test-cache'})
-								.get('http://localhost:9876/files/2')
-						]))
-						.then(([keys, inCache1, inDb1, inCache2, inDb2]) => {
+							.then(() => new Promise(res => setTimeout(res, 500)))
+							.then(() => Promise.all([
+								cache.keys(),
+								caches.open('next:test-cache')
+									.then(cache => cache.match('http://localhost:9876/files/0')),
+								new DB('requests', { dbName: 'next:test-cache'})
+									.get('http://localhost:9876/files/0'),
+								caches.open('next:test-cache')
+									.then(cache => cache.match('http://localhost:9876/files/2')),
+								new DB('requests', { dbName: 'next:test-cache'})
+									.get('http://localhost:9876/files/2')
+							]))
+							.then(([keys, inCache1, inDb1, inCache2, inDb2]) => {
 
-							keys = keys.map(k => k.url);
-							expect(keys.length).to.equal(2);
-							expect(keys).to.contain('http://localhost:9876/files/1');
-							expect(keys).to.contain('http://localhost:9876/files/2');
-							expect(inCache1).to.not.exist;
-							expect(inDb1).to.not.exist;
-							expect(inCache2).to.exist;
-							expect(inDb2).to.exist;
-						});
+								keys = keys.map(k => k.url);
+								expect(keys.length).to.equal(2);
+								expect(keys).to.contain('http://localhost:9876/files/1');
+								expect(keys).to.contain('http://localhost:9876/files/2');
+								expect(inCache1).to.not.exist;
+								expect(inDb1).to.not.exist;
+								expect(inCache2).to.exist;
+								expect(inDb2).to.exist;
+							});
 					});
 			});
 		});
@@ -417,39 +418,6 @@ describe('cache', () => {
 							.then(res => expect(res).to.not.exist);
 					});
 			});
-
-			it('invalidate expired items lazily when opening cache', () => {
-				const testUrl = 'http://localhost:9876/files/0';
-				return cache('test-cache')
-					.then(cache => {
-						return cache.set(testUrl)
-							// force an earlier expiry
-							.then(() => new DB('requests', { dbName: 'next:test-cache'}).set(testUrl, {expires: Date.now() - 2000}))
-							.then(() => Promise.all([
-								caches.open('next:test-cache')
-									.then(cache => cache.match(testUrl)),
-								new DB('requests', { dbName: 'next:test-cache'})
-									.get(testUrl)
-							]))
-							.then(([inCache, inDb]) => {
-								expect(inCache).to.exist;
-								expect(inDb).to.exist;
-							});
-					})
-					.then(() => cache('test-cache'))
-					// cache invalidation is done lazily so we add a delay
-					.then(() => new Promise(res => setTimeout(res, 500)))
-					.then(() => Promise.all([
-						caches.open('next:test-cache')
-							.then(cache => cache.match(testUrl)),
-						new DB('requests', { dbName: 'next:test-cache'})
-							.get(testUrl)
-					]))
-					.then(([inCache, inDb]) => {
-						expect(inCache).to.not.exist;
-						expect(inDb).to.not.exist;
-					});
-			});
 		});
 	});
 
@@ -457,4 +425,38 @@ describe('cache', () => {
 		// TODOD: expectations about not blocking network requests with idb/cache requests
 	});
 
+	describe('checkAndExpireAllCaches', () => {
+		it('should delete all expired caches', () => {
+			const testUrl = 'http://localhost:9876/files/0';
+			return cache('test-cache')
+				.then(cache => {
+					return cache.set(testUrl)
+					// force an earlier expiry
+						.then(() => new DB('requests', { dbName: 'next:test-cache'}).set(testUrl, {expires: Date.now() - 2000}))
+						.then(() => Promise.all([
+							caches.open('next:test-cache')
+								.then(cache => cache.match(testUrl)),
+							new DB('requests', { dbName: 'next:test-cache'})
+								.get(testUrl)
+						]))
+						.then(([inCache, inDb]) => {
+							expect(inCache).to.exist;
+							expect(inDb).to.exist;
+						});
+				})
+				.then(() => checkAndExpireAllCaches(caches))
+				// cache invalidation is done lazily so we add a delay
+				.then(() => new Promise(res => setTimeout(res, 500)))
+				.then(() => Promise.all([
+					caches.open('next:test-cache')
+						.then(cache => cache.match(testUrl)),
+					new DB('requests', { dbName: 'next:test-cache'})
+						.get(testUrl)
+				]))
+				.then(([inCache, inDb]) => {
+					expect(inCache).to.not.exist;
+					expect(inDb).to.not.exist;
+				});
+		});
+	});
 });
