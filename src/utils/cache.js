@@ -218,7 +218,26 @@ function checkAndExpireAllCaches (caches) {
 	});
 }
 
+function deleteOldCaches (caches) {
+	// Delete any unversioned caches.
+	[
+		'next:ads',
+		'next:ads:personal',
+		'next:built-assets',
+		'next:comments',
+		'next:fonts',
+		'next:image',
+		'next:myft',
+		'next:polyfill',
+		'next:session',
+	].forEach(cache => {
+		indexedDB.deleteDatabase(cache);
+		caches.delete(cache);
+	});
+}
+
 module.exports = {
 	CacheWrapper,
-	checkAndExpireAllCaches
+	checkAndExpireAllCaches,
+	deleteOldCaches
 };
