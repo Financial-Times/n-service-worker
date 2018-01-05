@@ -18,18 +18,33 @@ describe('__sw.js', () => {
 	});
 
 	it('should call clients.claim() on activate event', async () => {
-		require('../../src/__sw.js');
+		const cache = { deleteOldCaches: () => {} };
+
+		proxy(() => require('../../src/__sw.js'), {
+			'./utils/cache': cache
+		});
+
 		sinon.stub(self.clients, 'claim').callsFake(() => Promise.resolve());
+		sinon.stub(cache, 'deleteOldCaches').callsFake(() => undefined);
+
 		await self.trigger('activate');
+
 		expect(self.clients.claim.called).is.ok;
 	});
 
 	it('should expire caches on install event', async () => {
-		require('../../src/__sw.js');
-		const cache = require('../../src/utils/cache');
-		sinon.stub(cache, 'checkAndExpireAllCaches').callsFake(() => Promise.resolve());
-		await self.trigger('install');
-		expect(cache.checkAndExpireAllCaches.calledWith(caches)).to.be.true;
+		const cache = { deleteOldCaches: () => {} };
+
+		proxy(() => require('../../src/__sw.js'), {
+			'./utils/cache': cache
+		});
+
+		sinon.stub(self.clients, 'claim').callsFake(() => Promise.resolve());
+		sinon.stub(cache, 'deleteOldCaches').callsFake(() => undefined);
+
+		await self.trigger('activate');
+
+		expect(cache.deleteOldCaches.called).is.ok;
 	});
 
 	context('Register and initialise caches', () => {
