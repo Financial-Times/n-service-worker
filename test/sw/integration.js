@@ -24,7 +24,12 @@ function clearFetchHistory (url, port) {
 
 self.fetch = function (req, opts) {
 	fetchCalls.push(req.url || req);
-	return nativeFetch.call(self, req, opts);
+	return nativeFetch.call(self, req, opts)
+		// slow fetch down a little in test to make doubly sure it's slower than
+		// local async operations
+		.then(res => {
+			return new Promise(resolve => setTimeout(() => resolve(res), 50))
+		})
 };
 
 self.addEventListener('message', ev => {
@@ -44,7 +49,7 @@ const testCacheOptions = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
 		name: 'test-cache-v1',
-		maxEntries: 5
+		maxEntries: 50
 	}
 };
 

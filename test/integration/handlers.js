@@ -8,23 +8,7 @@ const useragent = require('useragent');
 // So we fallback to the dumber method in all but chrome :(
 const supportsMutatedHeaders = useragent.is(navigator.userAgent).chrome;
 
-
-const SWTestBundles = {
-	checkCacheIsUsed: (opts) => {
-		if (opts.flag) {
-
-		} else {
-			SWTestBundles._checkCacheIsUsed(Object.assign({}, opts, {message: `should use the cache for ${opts.assetLabel}`}));
-		}
-	},
-	_checkCacheNotUsed: ({message, url, mode = 'no-cors'}) => {
-
-	}
-}
-
-
-describe.only('handlers', () => {
-
+describe('handlers', () => {
 
 	const flag = 'testCacheFlag';
 	const expiry = 'no-expiry';
@@ -90,7 +74,7 @@ describe.only('handlers', () => {
 	describe('fastest', () => {
 		const url = '/__origami/service/image/v2/images/raw/ftlogo:brand-nikkei-tagline?source=sw-test';
 
-		it.only(`should use the cache, with network in parallel, if flag is on`, async () => {
+		it(`should use the cache, with network in parallel, if flag is on`, async () => {
 			const flags = {};
 			flags[flag] = true;
 
@@ -105,7 +89,6 @@ describe.only('handlers', () => {
 					if (supportsMutatedHeaders) {
 						return fetch(url, fetchOptions)
 							.then(res => {
-								// debugger;
 								expect(res.headers.get('from-cache')).to.equal('true');
 							});
 					} else {
