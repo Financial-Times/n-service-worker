@@ -1,5 +1,5 @@
 /* global SWTestHelper */
-import { passFlags } from '../main';
+import { passFlags } from '../../main';
 
 before(() => SWTestHelper.resetEnv());
 before(() => SWTestHelper.installSW('/integration-sw.js')

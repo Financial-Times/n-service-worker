@@ -1,6 +1,6 @@
 /* global SWTestHelper,SWTestBundles,expect */
-const cache = require('../src/utils/cache').CacheWrapper;
-import { passFlags } from '../main';
+const cache = require('../../src/utils/cache').CacheWrapper;
+import { passFlags } from '../../main';
 
 const useragent = require('useragent');
 

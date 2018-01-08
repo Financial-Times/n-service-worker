@@ -1,5 +1,4 @@
-/* global expect */
-
+import { expect } from './setup';
 import keyMatch from '../../src/utils/map-key-match';
 
 describe('keyMatch', () => {
@@ -38,9 +37,3 @@ describe('keyMatch', () => {
 		expect(result).to.eql(expected);
 	});
 });
-
-['key1', 'value1'],
-['key12', 'value12'],
-['key123', 'value123'],
-['key1234', 'value1234'],
-['key12345', 'value12345'];
