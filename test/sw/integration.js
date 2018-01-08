@@ -35,6 +35,26 @@ self.addEventListener('message', ev => {
 		clearFetchHistory(msg.url, ev.ports[0]);
 	}
 });
+
+// For testing flagged caches
+import router from '../../src/utils/router';
+import { getHandler } from '../../src/utils/handlers';
+
+const testCacheOptions = {
+	origin: self.registration.scope.replace(/\/$/, ''),
+	cache: {
+		name: 'test-cache-v1',
+		maxEntries: 5
+	}
+};
+
+const cacheFirstHandler = getHandler({strategy: 'cacheFirst', flag: 'testCacheFlag'});
+router.get('/__assets/creatives/backgrounds/header-markets-data.png', cacheFirstHandler, testCacheOptions);
+const fastestHandler = getHandler({strategy: 'fastest', flag: 'testCacheFlag'});
+router.get('/__origami/service/image/v2/images/raw/ftlogo:brand-nikkei-tagline', fastestHandler, testCacheOptions);
+
+
+
 // Don't use import here. For some reason (probably a very interesting one)
 // If this is imported then the code in it runs before the code above in
 // karma tests

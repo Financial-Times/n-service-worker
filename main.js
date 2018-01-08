@@ -91,7 +91,7 @@ function passFlags (flags) {
 			};
 
 			tx.onerror = () => rej(tx.error);
-			tx.onabort = () => rej(tx.error);
+      tx.onabort = () => rej(tx.error);
 		};
 	})
 		// resets the throtling of flags calls

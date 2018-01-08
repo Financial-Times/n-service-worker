@@ -22,8 +22,7 @@ function getLatestFlags () {
 	return getDb()
 		.then(db => {
 			const tx = db.transaction('flags');
-			tx.objectStore('flags').get('flags');
-			return tx.complete;
+			return tx.objectStore('flags').get('flags');
 		})
 		.then(latestFlags => {
 			flags = latestFlags;
@@ -39,11 +38,9 @@ self.addEventListener('message', ev => {
 	}
 });
 
-async function getFlag (name) {
+export async function getFlag (name) {
 	if (Date.now() - lastUpdated > 5000) {
 		await getLatestFlags();
 	}
 	return flags[name];
 }
-
-export { getFlag };

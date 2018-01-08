@@ -2,8 +2,12 @@
  * Handlers are passed in like this for testability.
  * TODO: There's probably a better way to do this, maybe a config file
  */
-
+import router from './utils/router';
+import { messageHandler } from './messages';
+const cache = require('./utils/cache');
+import { getHandler } from './utils/handlers';
 import './utils/flags';
+
 // generic assets
 import fontsCache from './caches/fonts';
 fontsCache(getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'}));
@@ -31,12 +35,6 @@ import adsCache from './caches/ads';
 adsCache(getHandler({ flag: 'swAdsCaching', strategy: 'cacheFirst' }));
 
 import './push/myft';
-
-import router from './utils/router';
-import { messageHandler } from './messages';
-const cache = require('./utils/cache');
-import { getHandler } from './utils/handlers';
-
 
 self.addEventListener('fetch', ev => {
 	const handler = router.match(ev.request);

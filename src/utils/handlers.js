@@ -23,19 +23,34 @@ const handlers = {
 	},
 
 	fastest: (request, values, options = {}) => {
+		console.log('as;kdjlkashdksajdsahdkjsahjk')
 		const cacheOptions = options.cache || {};
 		const openCache = cache(cacheOptions.name);
 
-
+		const start = Date.now();
 		// kickoff retrieving response from network and cache
-		const fromNetwork = fetch(request);
-		const fromCache = openCache
-			.then(cache => cache.get(request, cacheOptions))
+		const fromNetwork = fetch(request)
 			.then(res => {
+				console.log('from network', Date.now() - start)
+				return res;
+			});
+
+		const fromCache = openCache
+			.then(cache => {
+				console.log('open', Date.now() - start)
+				cache.get(request, cacheOptions)
+			})
+			.then(res => {
+				console.log('get', Date.now() - start)
 				if (!res) {
 					throw 'request not found in cache';
 				}
+				console.log('from cache')
 				return res;
+			})
+			.catch(err => {
+				console.log(err);
+				throw err
 			});
 
 		// update the cache when the network response returns
@@ -44,7 +59,13 @@ const handlers = {
 			fromNetwork,
 			openCache
 		])
-			.then(([response, cache]) => cache.set(request, Object.assign({ response: response.clone() }, cacheOptions)));
+			.then(([response, cache]) => {
+				console.log(response)
+				return cache.set(request, Object.assign({ response: response.clone() }, cacheOptions))
+					.then((it) => {
+						return it
+					})
+			});
 
 		// return a race between the two strategies
 		return ratRace([
@@ -57,7 +78,6 @@ const handlers = {
 const getHandler = ({ strategy, flag }) => {
 	return async (request, values, options = {}) => {
 		if (flag) {
-
 			let flagIsOn = false;
 			try {
 				flagIsOn = await getFlag(flag)
@@ -67,6 +87,7 @@ const getHandler = ({ strategy, flag }) => {
 				return fetch(request);
 			}
 		}
+
 		return handlers[strategy](request, values, options);
 	};
 };
