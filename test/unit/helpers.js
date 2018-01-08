@@ -1,7 +1,8 @@
 /**
- * Removes a module from the cache
+ * Removes a module from the node modules cache
+ * @param moduleName
  */
-function purgeCache (moduleName) {
+export function purgeModuleCache (moduleName) {
 	// Traverse the cache looking for the files
 	// loaded by the specified module name
 	searchCache(moduleName, function (mod) {
@@ -20,6 +21,8 @@ function purgeCache (moduleName) {
 /**
  * Traverses the cache to search for all the cached
  * files of the specified module name
+ * @param moduleName
+ * @param callback
  */
 function searchCache (moduleName, callback) {
 	// Resolve the module identified by the specified name
@@ -42,5 +45,3 @@ function searchCache (moduleName, callback) {
 		}(mod));
 	}
 }
-
-export { purgeCache };

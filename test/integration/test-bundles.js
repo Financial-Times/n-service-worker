@@ -1,6 +1,6 @@
 /* global SWTestHelper,SWTestBundles,expect */
-const cache = require('../src/utils/cache').CacheWrapper;
-import { passFlags } from '../main';
+const cache = require('../../src/utils/cache').CacheWrapper;
+import { passFlags } from '../../main';
 
 const test = only => only ? it.only : it;
 

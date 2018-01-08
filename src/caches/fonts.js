@@ -1,6 +1,4 @@
 import router from '../utils/router';
-
-import { getHandler } from '../utils/handlers';
 import precache from '../utils/precache';
 import { sw as precacheConfig} from '../../config/precache';
 
@@ -12,12 +10,14 @@ const options = {
 	}
 };
 
-precache(
-	options.cache.name,
-	precacheConfig[options.cache.name],
-	{ maxAge: -1 },
-	{ isOptional: true }
-);
+export default function init (cacheHandler) {
+	precache(
+		options.cache.name,
+		precacheConfig[options.cache.name],
+		{ maxAge: -1 },
+		{ isOptional: true }
+	);
 
-// fonts route
-router.get('/__origami/service/build/v2/files/o-fonts-assets@:version/:font.woff', getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'}), options);
+	// fonts route
+	router.get('/__origami/service/build/v2/files/o-fonts-assets@:version/:font.woff', cacheHandler, options);
+};

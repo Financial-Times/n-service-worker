@@ -11,18 +11,12 @@ module.exports = function (karma) {
 
 		// list of files / patterns to load in the browser
 		files: [
-			'test/main.spec.js',
-			{ pattern: 'test/helpers-browser.js', served: true },
-			{ pattern: 'test/test-bundles.js', served: true },
-			'test/setup.js',
-			// `test/caches/*spec.js` files MUST be run before the utils ones!!
-			'test/caches/image.spec.js',
-			// 'test/caches/fonts.spec.js',
-			// 'test/caches/ads.spec.js',
-			// 'test/caches/built-assets.spec.js',
-			// 'test/caches/comments.spec.js',
-			// 'test/caches/polyfill.spec.js',
-			// 'test/utils/*.spec.js',
+
+			'test/integration/main.spec.js',
+			'test/integration/cache.spec.js',
+			{ pattern: 'test/integration/helpers-browser.js', served: true },
+			{ pattern: 'test/integration/test-bundles.js', served: true },
+			'test/integration/setup.js',
 			{ pattern: 'test/sw/*.js', served: true, included: false },
 			{ pattern: 'test/fixtures/files/*', served: true, included: false },
 			{ pattern: 'test/**/*.js.map', served: true, included: false },
@@ -40,10 +34,10 @@ module.exports = function (karma) {
 			}
 		},
 		preprocessors: {
-			'test/helpers-browser.js': ['webpack', 'sourcemap'],
-			'test/test-bundles.js': ['webpack', 'sourcemap'],
-			'test/setup.js': ['webpack', 'sourcemap'],
-			'test/**/*.spec.js': ['webpack', 'sourcemap'],
+			'test/integration/helpers-browser.js': ['webpack', 'sourcemap'],
+			'test/integration/test-bundles.js': ['webpack', 'sourcemap'],
+			'test/integration/setup.js': ['webpack', 'sourcemap'],
+			'test/integration/**/*.spec.js': ['webpack', 'sourcemap'],
 			'test/sw/*.js': ['webpack', 'sourcemap']
 		},
 		webpack:  {

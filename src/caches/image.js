@@ -1,8 +1,7 @@
 import router from '../utils/router';
-
-import { getHandler } from '../utils/handlers';
 import precache from '../utils/precache';
 import { sw as precacheConfig} from '../../config/precache';
+
 const options = {
 	origin: self.registration.scope.replace(/\/$/, ''),
 	cache: {
@@ -10,17 +9,17 @@ const options = {
 	}
 };
 
-precache(
-	options.cache.name,
-	precacheConfig[options.cache.name].map(image => new Request(image)),
-	{ maxAge: -1 },
-	{ isOptional: true }
-);
+export default function init (cacheHandler) {
+	precache(
+		options.cache.name,
+		precacheConfig[options.cache.name].map(image => new Request(image)),
+		{ maxAge: -1 },
+		{ isOptional: true }
+	);
 
-const cacheFirst = getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'});
-
-//TODO - something for content images
-router.get('/__origami/service/image/v2/images/raw/fticon*', cacheFirst, options);
-router.get('/__origami/service/image/v2/images/raw/ftlogo*', cacheFirst, options);
-router.get('/__origami/service/image/v2/images/raw/ftsocial*', cacheFirst, options);
-router.get('/__assets/creatives*', cacheFirst, options);
+	//TODO - something for content images
+	router.get('/__origami/service/image/v2/images/raw/fticon*', cacheHandler, options);
+	router.get('/__origami/service/image/v2/images/raw/ftlogo*', cacheHandler, options);
+	router.get('/__origami/service/image/v2/images/raw/ftsocial*', cacheHandler, options);
+	router.get('/__assets/creatives*', cacheHandler, options);
+}

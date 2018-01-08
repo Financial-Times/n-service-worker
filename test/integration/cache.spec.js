@@ -5,8 +5,6 @@ import DB from '../../src/utils/db';
 import fetchMock from 'fetch-mock';
 
 describe('cache', () => {
-	// before(() => SWTestHelper.resetEnv());
-
 	before(() => SWTestHelper.clearAllCaches().catch(() => null));
 	afterEach(() => SWTestHelper.clearAllCaches().catch(() => null));
 
