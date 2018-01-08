@@ -2,8 +2,6 @@
 const cache = require('../../src/utils/cache').CacheWrapper;
 import { passFlags } from '../../main';
 
-const test = only => only ? it.only : it;
-
 const useragent = require('useragent');
 
 // In firefox https://bugzilla.mozilla.org/show_bug.cgi?id=1302090 means debug headers are not returned
@@ -19,10 +17,9 @@ window.SWTestBundles = {
 			SWTestBundles._checkCacheIsUsed(Object.assign({}, opts, {message: `should use the cache for ${opts.assetLabel}`}));
 		}
 	},
-	_checkCacheNotUsed: ({message, url, mode = 'no-cors', only}) => {
-
+	_checkCacheNotUsed: ({message, url, mode = 'no-cors'}) => {
 		if (mode === 'cors' && supportsMutatedHeaders) {
-			test(only)(message, () =>
+			it(message, () =>
 				fetch(url, {
 					mode,
 					headers: {
@@ -36,7 +33,7 @@ window.SWTestBundles = {
 					})
 			);
 		} else {
-			test(only)(message, () =>
+			it(message, () =>
 				fetch(url, {
 					mode
 				})
@@ -47,12 +44,12 @@ window.SWTestBundles = {
 
 	},
 
-	_checkCacheIsUsed: ({message, assetLabel, url, expiry, mode = 'no-cors', cacheName, flag, expireRelativeToInstall, strategy, only}) => {
+	_checkCacheIsUsed: ({message, assetLabel, url, expiry, mode = 'no-cors', cacheName, flag, upgradeToCors, expireRelativeToInstall, strategy}) => {
 
 
 		describe(assetLabel, () => {
 			const options = {mode};
-			if (mode === 'cors' && supportsMutatedHeaders) {
+			if ((mode === 'cors' || upgradeToCors) && supportsMutatedHeaders) {
 				options.headers = {'FT-Debug': true};
 			}
 
@@ -61,12 +58,12 @@ window.SWTestBundles = {
 				if (flag) {
 					const flags = {};
 					flags[flag] = true;
-					kickoff = passFlags(flags)
+					kickoff = passFlags(flags);
 				}
 				return kickoff;
 			});
 
-			test(only)(message, () => {
+			it(message, () => {
 				return fetch(url, options)
 					.then(() => SWTestHelper.clearFetchHistory(url))
 					// when using fastest strategy the cache is not populated before the sw responds
@@ -103,12 +100,12 @@ window.SWTestBundles = {
 			describe('additional network calls', () => {
 				beforeEach(() => fetch(url, options));
 				if (strategy === 'fastest') {
-					test(only)(`should check network for ${assetLabel} in parallel`, () =>
+					it(`should check network for ${assetLabel} in parallel`, () =>
 						SWTestHelper.queryFetchHistory(url)
 							.then(wasFetched => expect(wasFetched).to.be.true)
 					);
 				} else {
-					test(only)(`should not check network for ${assetLabel}`, () =>
+					it(`should not check network for ${assetLabel}`, () =>
 						SWTestHelper.queryFetchHistory(url)
 							.then(wasFetched => expect(wasFetched).to.be.false)
 					);
@@ -118,8 +115,8 @@ window.SWTestBundles = {
 
 	},
 
-	checkGetsPrecached: ({assetLabel, url, expiry, cacheName, only}) => {
-		test(only)(`should precache ${assetLabel}`, () => {
+	checkGetsPrecached: ({assetLabel, url, expiry, cacheName}) => {
+		it(`should precache ${assetLabel}`, () => {
 			return cache(cacheName)
 				.then(cache => cache.get(url, true))
 				.then(res => {
