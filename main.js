@@ -94,7 +94,8 @@ function passFlags (flags) {
 			tx.onabort = () => rej(tx.error);
 		};
 	})
-		// resets the throtling of flags calls
+		// resets the throttling of flags calls, meaning latest flags are picked up
+		// fairly instantly
 		.then(() => message({type: 'flagsClobber'}));
 }
 
