@@ -8,7 +8,7 @@ const useragent = require('useragent');
 // So we fallback to the dumber method in all but chrome :(
 const supportsMutatedHeaders = useragent.is(navigator.userAgent).chrome;
 
-describe('handlers', () => {
+describe('request handlers and caching', () => {
 
 	const flag = 'testCacheFlag';
 	const expiry = 'no-expiry';
@@ -19,6 +19,28 @@ describe('handlers', () => {
 			'FT-Debug': true
 		}
 	};
+
+	describe('precache', () => {
+		it(`should precache`, () => {
+			const url = '/__assets/creatives/backgrounds/header-markets-data.png';
+			return cache('test-cache-v1')
+				.then(cache => cache.get(url, true))
+				.then(res => {
+					SWTestHelper.clearFetchHistory(url);
+					return res;
+				})
+				.then(res => {
+					expect(res.headers.get('from-cache')).to.equal('true');
+					if (expiry === 'no-expiry') {
+						expect(res.headers.get('expires')).to.equal('no-expiry');
+					} else {
+						let expires = parseInt(res.headers.get('expires'));
+						expect(expires).to.not.be.NaN;
+						expect(expires).to.be.below(SWTestHelper.installedAt + expiry + 10000);
+					}
+				});
+		});
+	})
 
 	describe('cache first', () => {
 		const url = '/__assets/creatives/backgrounds/header-markets-data.png';
@@ -121,14 +143,5 @@ describe('handlers', () => {
 				})
 
 		});
-
-
-
-						// if (strategy === 'fastest') {
-				// 	it(`should check network for ${assetLabel} in parallel`, () =>
-				// 		SWTestHelper.queryFetchHistory(url)
-				// 			.then(wasFetched => expect(wasFetched).to.be.true)
-				// 	);
-				// } else {
 	});
 })

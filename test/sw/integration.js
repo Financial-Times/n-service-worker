@@ -44,6 +44,7 @@ self.addEventListener('message', ev => {
 // For testing flagged caches
 import router from '../../src/utils/router';
 import { getHandler } from '../../src/utils/handlers';
+import precache from '../../src/utils/precache';
 
 const testCacheOptions = {
 	origin: self.registration.scope.replace(/\/$/, ''),
@@ -52,6 +53,12 @@ const testCacheOptions = {
 		maxEntries: 50
 	}
 };
+
+precache(
+	'test-cache-v1',
+	['/__assets/creatives/backgrounds/header-markets-data.png'],
+	{ maxAge: -1 }
+);
 
 const cacheFirstHandler = getHandler({strategy: 'cacheFirst', flag: 'testCacheFlag'});
 router.get('/__assets/creatives/backgrounds/header-markets-data.png', cacheFirstHandler, testCacheOptions);

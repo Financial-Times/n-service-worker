@@ -17,7 +17,6 @@ module.exports = function (karma) {
 			{ pattern: 'test/integration/helpers-browser.js', served: true },
 			{ pattern: 'test/integration/test-bundles.js', served: true },
 			'test/integration/setup.js',
-			'test/integration/handlers.js',
 			{ pattern: 'test/sw/*.js', served: true, included: false },
 			{ pattern: 'test/fixtures/files/*', served: true, included: false },
 			{ pattern: 'test/**/*.js.map', served: true, included: false },
@@ -38,7 +37,6 @@ module.exports = function (karma) {
 			'test/integration/helpers-browser.js': ['webpack', 'sourcemap'],
 			'test/integration/test-bundles.js': ['webpack', 'sourcemap'],
 			'test/integration/setup.js': ['webpack', 'sourcemap'],
-			'test/integration/handlers.js': ['webpack', 'sourcemap'],
 			'test/integration/**/*.spec.js': ['webpack', 'sourcemap'],
 			'test/sw/*.js': ['webpack', 'sourcemap']
 		},
