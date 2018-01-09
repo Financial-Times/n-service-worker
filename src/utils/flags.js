@@ -16,7 +16,7 @@ function getDb () {
 }
 
 let lastUpdated = 0;
-let flags = {}
+let flags = {};
 
 function getLatestFlags () {
 	return getDb()
@@ -27,7 +27,7 @@ function getLatestFlags () {
 		.then(latestFlags => {
 			flags = latestFlags;
 			lastUpdated = Date.now();
-		})
+		});
 }
 
 self.addEventListener('message', ev => {

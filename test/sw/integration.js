@@ -28,8 +28,8 @@ self.fetch = function (req, opts) {
 		// slow fetch down a little in test to make doubly sure it's slower than
 		// local async operations
 		.then(res => {
-			return new Promise(resolve => setTimeout(() => resolve(res), 50))
-		})
+			return new Promise(resolve => setTimeout(() => resolve(res), 50));
+		});
 };
 
 self.addEventListener('message', ev => {

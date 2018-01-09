@@ -26,7 +26,6 @@ const handlers = {
 		const cacheOptions = options.cache || {};
 		const openCache = cache(cacheOptions.name);
 
-		const start = Date.now();
 		// kickoff retrieving response from network and cache
 		const fromNetwork = fetch(request)
 			.then(res => {
@@ -49,7 +48,7 @@ const handlers = {
 			openCache
 		])
 			.then(([response, cache]) => {
-				return cache.set(request, Object.assign({ response: response.clone() }, cacheOptions))
+				return cache.set(request, Object.assign({ response: response.clone() }, cacheOptions));
 			});
 
 		// return a race between the two strategies
@@ -65,7 +64,7 @@ const getHandler = ({ strategy, flag }) => {
 		if (flag) {
 			let flagIsOn = false;
 			try {
-				flagIsOn = await getFlag(flag)
+				flagIsOn = await getFlag(flag);
 			} catch (e) {};
 
 			if (!flagIsOn) {

@@ -1,4 +1,4 @@
-/* global SWTestHelper,SWTestBundles,expect */
+/* global SWTestHelper,expect */
 const cache = require('../../src/utils/cache').CacheWrapper;
 import { passFlags } from '../../main';
 
@@ -21,7 +21,7 @@ describe('request handlers and caching', () => {
 	};
 
 	describe('precache', () => {
-		it(`should precache`, () => {
+		it('should precache', () => {
 			const url = '/__assets/creatives/backgrounds/header-markets-data.png';
 			return cache('test-cache-v1')
 				.then(cache => cache.get(url, true))
@@ -40,13 +40,13 @@ describe('request handlers and caching', () => {
 					}
 				});
 		});
-	})
+	});
 
 	describe('cache first', () => {
 		const url = '/__assets/creatives/backgrounds/header-markets-data.png';
 
 
-		it(`should use the cache, not network, if flag is on`, async () => {
+		it('should use the cache, not network, if flag is on', async () => {
 			const flags = {};
 			flags[flag] = true;
 
@@ -72,12 +72,12 @@ describe('request handlers and caching', () => {
 				})
 				.then(() => {
 					return SWTestHelper.queryFetchHistory(url)
-						.then(wasFetched => expect(wasFetched).to.be.false)
+						.then(wasFetched => expect(wasFetched).to.be.false);
 				});
 
 		});
 
-		it(`should use the network if flag is off`, async () => {
+		it('should use the network if flag is off', async () => {
 			const flags = {};
 			flags[flag] = false;
 			await passFlags(flags);
@@ -87,7 +87,7 @@ describe('request handlers and caching', () => {
 					expect(res.headers.get('from-cache')).to.not.exist;
 					return SWTestHelper.queryFetchHistory(url)
 						.then(wasFetched => expect(wasFetched).to.be.true);
-				})
+				});
 
 		});
 
@@ -96,7 +96,7 @@ describe('request handlers and caching', () => {
 	describe('fastest', () => {
 		const url = '/__origami/service/image/v2/images/raw/ftlogo:brand-nikkei-tagline?source=sw-test';
 
-		it(`should use the cache, with network in parallel, if flag is on`, async () => {
+		it('should use the cache, with network in parallel, if flag is on', async () => {
 			const flags = {};
 			flags[flag] = true;
 
@@ -125,12 +125,12 @@ describe('request handlers and caching', () => {
 				})
 				.then(() => {
 					return SWTestHelper.queryFetchHistory(url)
-						.then(wasFetched => expect(wasFetched).to.be.true)
+						.then(wasFetched => expect(wasFetched).to.be.true);
 				});
 
 		});
 
-		it(`should use the network if flag is off`, async () => {
+		it('should use the network if flag is off', async () => {
 			const flags = {};
 			flags[flag] = false;
 			await passFlags(flags);
@@ -140,8 +140,8 @@ describe('request handlers and caching', () => {
 					expect(res.headers.get('from-cache')).to.not.exist;
 					return SWTestHelper.queryFetchHistory(url)
 						.then(wasFetched => expect(wasFetched).to.be.true);
-				})
+				});
 
 		});
 	});
-})
+});
