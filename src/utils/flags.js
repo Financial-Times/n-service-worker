@@ -33,7 +33,7 @@ function getLatestFlags () {
 self.addEventListener('message', ev => {
 	const msg = ev.data;
 	if (msg.type === 'flagsClobber') {
-		lastUpdated = Date.now() - 10000;
+		lastUpdated = 0;
 		ev.ports[0].postMessage('success');
 	}
 });
