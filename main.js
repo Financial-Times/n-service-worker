@@ -70,6 +70,13 @@ const register = flags => {
 };
 
 function passFlags (flags) {
+	//only needed while rolling out the new SW wit new flags mechanism
+	//TODO delete in a few days 9/1/18
+	message({
+		type: 'flagsUpdate',
+		flags: flags
+	});
+
 	return new Promise((res, rej) => {
 		const connection = indexedDB.open('next-flags', 1);
 
