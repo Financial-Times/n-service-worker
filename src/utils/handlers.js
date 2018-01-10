@@ -66,7 +66,6 @@ const getHandler = ({ strategy, flag }) => {
 			try {
 				flagIsOn = await getFlag(flag);
 			} catch (e) {};
-
 			if (!flagIsOn) {
 				return fetch(request);
 			}

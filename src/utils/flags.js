@@ -42,5 +42,5 @@ export async function getFlag (name) {
 	if (Date.now() - lastUpdated > 5000) {
 		await getLatestFlags();
 	}
-	return flags[name];
+	return flags && flags[name];
 }

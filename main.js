@@ -52,6 +52,12 @@ const register = flags => {
 							if (!navigator.serviceWorker.controller) {
 								window.postMessage({command: 'precacheDone'}, '*');
 							}
+							//only needed while rolling out the new SW wit new flags mechanism
+							//TODO delete in a few days 9/1/18
+							message({
+								type: 'flagsUpdate',
+								flags: JSON.parse(JSON.stringify(flags))
+							});
 							break;
 
 						case 'redundant':
@@ -70,12 +76,6 @@ const register = flags => {
 };
 
 function passFlags (flags) {
-	//only needed while rolling out the new SW wit new flags mechanism
-	//TODO delete in a few days 9/1/18
-	message({
-		type: 'flagsUpdate',
-		flags: flags
-	});
 
 	return new Promise((res, rej) => {
 		const connection = indexedDB.open('next-flags', 1);
