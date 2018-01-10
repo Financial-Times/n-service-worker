@@ -2,16 +2,6 @@ const cache = require('./cache').CacheWrapper;
 import { getFlag } from './flags';
 const ratRace = require('promise-rat-race');
 
-function upgradeRequestToCors (request) {
-	return new Request(request.url, {
-		method: request.method,
-		headers: request.headers,
-		mode: 'cors', // need to set this properly
-		credentials: request.credentials,
-		redirect: 'manual' // let browser handle redirects
-	});
-}
-
 const handlers = {
 	cacheFirst: (request, values, options = {}) => {
 		const cacheOptions = options.cache || {};
@@ -36,9 +26,12 @@ const handlers = {
 		const cacheOptions = options.cache || {};
 		const openCache = cache(cacheOptions.name);
 
-
 		// kickoff retrieving response from network and cache
-		const fromNetwork = fetch(request);
+		const fromNetwork = fetch(request)
+			.then(res => {
+				return res;
+			});
+
 		const fromCache = openCache
 			.then(cache => cache.get(request, cacheOptions))
 			.then(res => {
@@ -54,7 +47,9 @@ const handlers = {
 			fromNetwork,
 			openCache
 		])
-			.then(([response, cache]) => cache.set(request, Object.assign({ response: response.clone() }, cacheOptions)));
+			.then(([response, cache]) => {
+				return cache.set(request, Object.assign({ response: response.clone() }, cacheOptions));
+			});
 
 		// return a race between the two strategies
 		return ratRace([
@@ -64,14 +59,18 @@ const handlers = {
 	}
 };
 
-const getHandler = ({ strategy, flag, upgradeToCors }) => {
-	return (request, values, options = {}) => {
-		if (flag && !getFlag(flag)) {
-			return fetch(request);
+const getHandler = ({ strategy, flag }) => {
+	return async (request, values, options = {}) => {
+		if (flag) {
+			let flagIsOn = false;
+			try {
+				flagIsOn = await getFlag(flag);
+			} catch (e) {};
+			if (!flagIsOn) {
+				return fetch(request);
+			}
 		}
-		if (upgradeToCors) {
-			request = upgradeRequestToCors(request);
-		}
+
 		return handlers[strategy](request, values, options);
 	};
 };

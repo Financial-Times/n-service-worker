@@ -34,6 +34,8 @@ const register = flags => {
 		const swEnv = flags.get('swQAVariant') ||
 			((flags.get('swCanaryRelease') && sampleUsers(3, 'sw-canary')) ? 'canary' : 'prod');
 
+		passFlags(flags);
+
 		// TODO add something to tracking & o-errors config to determine the version
 		return navigator.serviceWorker.register(`/__sw-${swEnv}.js`)
 			.then(registration => {
@@ -50,6 +52,12 @@ const register = flags => {
 							if (!navigator.serviceWorker.controller) {
 								window.postMessage({command: 'precacheDone'}, '*');
 							}
+							//only needed while rolling out the new SW wit new flags mechanism
+							//TODO delete in a few days 9/1/18
+							message({
+								type: 'flagsUpdate',
+								flags: JSON.parse(JSON.stringify(flags))
+							});
 							break;
 
 						case 'redundant':
@@ -59,14 +67,44 @@ const register = flags => {
 					};
 				};
 
-				passFlags(JSON.parse(JSON.stringify(flags)))
-					.then(() => registration);
+
 			});
 
 	} else {
 		return Promise.reject('Service Worker unavailable, or serviceWorker flag off');
 	}
 };
+
+function passFlags (flags) {
+
+	return new Promise((res, rej) => {
+		const connection = indexedDB.open('next-flags', 1);
+
+		connection.onupgradeneeded = () => {
+			const db = connection.result;
+			db.createObjectStore('flags', );
+		};
+
+		connection.onsuccess = () => {
+			const db = connection.result;
+			const tx = db.transaction('flags', 'readwrite');
+			const store = tx.objectStore('flags');
+
+			store.put(JSON.parse(JSON.stringify(flags)), 'flags');
+
+			tx.oncomplete = () => {
+				db.close();
+				res();
+			};
+
+			tx.onerror = () => rej(tx.error);
+			tx.onabort = () => rej(tx.error);
+		};
+	})
+		// resets the throttling of flags calls, meaning latest flags are picked up
+		// fairly instantly
+		.then(() => message({type: 'flagsClobber'}));
+}
 
 const unregister = () => {
 	if ('serviceWorker' in navigator) {
@@ -77,11 +115,4 @@ const unregister = () => {
 	}
 };
 
-function passFlags (flags) {
-	return message({
-		type: 'flagsUpdate',
-		flags: flags
-	});
-}
-
-export { register, unregister, message, passFlags };
+export { register, unregister, passFlags, message };

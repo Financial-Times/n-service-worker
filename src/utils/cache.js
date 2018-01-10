@@ -85,7 +85,6 @@ class Cache {
 	 * @returns {object|undefined} - The Response, or undefined if nothing in the cache
 	 */
 	get (request, debug) {
-
 		return this.expire(request)
 			.then(({ expiryDate, noExpiry } = { }) => {
 				if (!expiryDate && !noExpiry) {
