@@ -30,7 +30,7 @@ describe('Ads cache', () => {
 		expect(registerCacheStub).to.have.been.calledWith('next:ads:personal-v1');
 	});
 
-	it('should precache the top topSections', () => {
+	it.skip('should precache the top topSections', () => {
 		const sevenDays = 60 * 60 * 7 * 24;
 		expect(precacheStub).to.be.calledWith(
 			'ads-v1',
@@ -56,8 +56,8 @@ describe('Ads cache', () => {
 		});
 
 		it('GET https://ads-api.ft.com/v1/concept/{CONCEPT_ID}', () => {
-			const conceptsRegex = new RegExp(`\/v1\/concept\/(${adsCaches.popularConcepts.join('|')})`);
-			expect(routerStub.get).to.have.been.calledWith(conceptsRegex, handlerStub, {
+			const conceptsPattern = '/v1/concept/*';
+			expect(routerStub.get).to.have.been.calledWith(conceptsPattern, handlerStub, {
 				origin: 'https://ads-api.ft.com',
 				cache: getCacheOptions(1)
 			});
