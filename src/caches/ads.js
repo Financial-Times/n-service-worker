@@ -15,7 +15,7 @@ function getCacheOptions (days, isPersonal) {
 // 	'd8009323-f898-3207-b543-eab4427b7a77',	// world
 // 	'852939c8-859c-361e-8514-f82f6c041580',	// companies
 // 	'd969d76e-f8f4-34ae-bc38-95cfd0884740', // markets
-// 	'38dbd827-fedc-3ebe-919f-e64cf55ea959', // opinion
+// 	'6da31a37-691f-4908-896f-2829ebe2309e', // opinion
 // 	'f814d8f7-d38e-31b8-a51f-3882805288fd', // work & careers
 // 	'f967910f-67d5-31f7-a031-64f8af0d9cf1', // life and arts
 // 	'59fd6642-055c-30b0-b2b8-8120bc2990af', // personal finance
