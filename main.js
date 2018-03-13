@@ -52,22 +52,12 @@ const register = flags => {
 							if (!navigator.serviceWorker.controller) {
 								window.postMessage({command: 'precacheDone'}, '*');
 							}
-							//only needed while rolling out the new SW wit new flags mechanism
-							//TODO delete in a few days 9/1/18
-							message({
-								type: 'flagsUpdate',
-								flags: JSON.parse(JSON.stringify(flags))
-							});
 							break;
-
 						case 'redundant':
 							throw Error('The installing service worker became redundant.');
 						}
-
 					};
 				};
-
-
 			});
 
 	} else {
