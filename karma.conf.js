@@ -59,7 +59,7 @@ module.exports = function (karma) {
 			require('karma-webpack'),
 			require('karma-chrome-launcher'),
 			require('karma-firefox-launcher'),
-			require('karma-sauce-launcher'),
+			require('karma-browserstack-launcher'),
 			require('karma-html-reporter')
 		],
 		client: {
@@ -76,7 +76,8 @@ module.exports = function (karma) {
 		config.browserStack = {
 			username: process.env.BROWSERSTACK_USER,
 			accessKey: process.env.BROWSERSTACK_KEY,
-			name: 'n-service-worker unit tests'
+			project: 'n-service-worker',
+			name: 'Unit Tests'
 		};
 
 		config.customLaunchers = {
