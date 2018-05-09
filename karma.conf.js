@@ -99,15 +99,8 @@ module.exports = function (karma) {
 				base: 'BrowserStack',
 				browser: 'safari',
 				browser_version: 'latest',
-				os: 'OSX',
+				os: 'OS X',
 				os_version: 'High Sierra'
-			},
-			edge: {
-				base: 'BrowserStack',
-				browser: 'Edge',
-				browser_version: 'insider preview',
-				os: 'Windows',
-				os_version: '10'
 			}
 		};
 
