@@ -73,25 +73,39 @@ module.exports = function (karma) {
 	};
 
 	if (process.env.CI) {
-		const nightwatchBrowsers = require('@financial-times/n-heroku-tools/config/nightwatch').test_settings;
-		const whitelistedBrowsers = ['firefox', 'chrome'];
-		const sauceBrowsers = Object.keys(nightwatchBrowsers).reduce((browserList, browserName) => {
-			if (browserName === 'default' || whitelistedBrowsers.indexOf(browserName) === -1) {
-				return browserList;
-			}
-			browserList[`${browserName}_sauce`] = Object.assign({ base: 'SauceLabs' }, nightwatchBrowsers[browserName].desiredCapabilities);
-			return browserList;
-		}, {});
-		config.customLaunchers = sauceBrowsers;
-		config.sauceLabs = {
-			testName: 'n-service-worker unit tests',
-			username: process.env.SAUCE_USER,
-			accessKey: process.env.SAUCE_KEY,
-			recordScreenshots: true
+		config.browserStack = {
+			username: process.env.BROWSERSTACK_USER,
+			accessKey: process.env.BROWSERSTACK_KEY,
+			name: 'n-service-worker unit tests'
 		};
 
-		config.browsers = Object.keys(sauceBrowsers);
-		config.reporters.push('saucelabs');
+		config.customLaunchers = {
+			chromeLatest: {
+				base: 'BrowserStack',
+				browser: 'chrome',
+				browser_version: 'latest',
+				os: 'Windows',
+				os_version: '10'
+			},
+			firefoxLatest: {
+				base: 'BrowserStack',
+				browser: 'firefox',
+				browser_version: 'latest',
+				os: 'Windows',
+				os_version: '10'
+			},
+			ie11: {
+				base: 'BrowserStack',
+				browser: 'Edge',
+				browser_version: '16.0',
+				os: 'Windows',
+				os_version: '10'
+			}
+		};
+
+		config.browsers = Object.keys(config.customLaunchers);
+
+		config.reporters.push('BrowserStack');
 	}
 
 	karma.set(config);
