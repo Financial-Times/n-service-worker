@@ -95,10 +95,17 @@ module.exports = function (karma) {
 				os: 'Windows',
 				os_version: '10'
 			},
-			ie11: {
+			safariLatest: {
+				base: 'BrowserStack',
+				browser: 'safari',
+				browser_version: 'latest',
+				os: 'OSX',
+				os_version: 'High Sierra'
+			},
+			edge: {
 				base: 'BrowserStack',
 				browser: 'Edge',
-				browser_version: '16.0',
+				browser_version: 'insider preview',
 				os: 'Windows',
 				os_version: '10'
 			}
