@@ -103,7 +103,11 @@ function passFlags (flags) {
 	})
 		// resets the throttling of flags calls, meaning latest flags are picked up
 		// fairly instantly
-		.then(() => message({type: 'flagsClobber'}));
+		.then(() => message({type: 'flagsClobber'}))
+		.catch((e) => {
+			// Squash this useless error.
+			if (e.message !== 'UnknownError') throw e;
+		});
 }
 
 const unregister = () => {
