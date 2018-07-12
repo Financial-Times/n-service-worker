@@ -78,36 +78,37 @@ const register = flags => {
 function passFlags (flags) {
 
 	return new Promise((res, rej) => {
-		const connection = indexedDB.open('next-flags', 1);
+		try {
+			const connection = indexedDB.open('next-flags', 1);
 
-		connection.onupgradeneeded = () => {
-			const db = connection.result;
-			db.createObjectStore('flags', );
-		};
-
-		connection.onsuccess = () => {
-			const db = connection.result;
-			const tx = db.transaction('flags', 'readwrite');
-			const store = tx.objectStore('flags');
-
-			store.put(JSON.parse(JSON.stringify(flags)), 'flags');
-
-			tx.oncomplete = () => {
-				db.close();
-				res();
+			connection.onupgradeneeded = () => {
+				const db = connection.result;
+				db.createObjectStore('flags', );
 			};
 
-			tx.onerror = () => rej(tx.error);
-			tx.onabort = () => rej(tx.error);
-		};
+			connection.onsuccess = () => {
+				const db = connection.result;
+				const tx = db.transaction('flags', 'readwrite');
+				const store = tx.objectStore('flags');
+
+				store.put(JSON.parse(JSON.stringify(flags)), 'flags');
+
+				tx.oncomplete = () => {
+					db.close();
+					res();
+				};
+
+				tx.onerror = () => rej(tx.error);
+				tx.onabort = () => rej(tx.error);
+			};
+		} catch (e) {
+			// Squash this useless error.
+			if (e.message !== 'UnknownError') rej(e);
+		}
 	})
 		// resets the throttling of flags calls, meaning latest flags are picked up
 		// fairly instantly
-		.then(() => message({type: 'flagsClobber'}))
-		.catch((e) => {
-			// Squash this useless error.
-			if (e.message !== 'UnknownError') throw e;
-		});
+		.then(() => message({type: 'flagsClobber'}));
 }
 
 const unregister = () => {
