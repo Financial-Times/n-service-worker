@@ -103,7 +103,7 @@ function passFlags (flags) {
 			};
 		} catch (e) {
 			// Squash this useless error.
-			if (e.message !== 'UnknownError') rej(e);
+			if (e.toString().indexOf('UnknownError') === -1) rej(e);
 		}
 	})
 		// resets the throttling of flags calls, meaning latest flags are picked up
