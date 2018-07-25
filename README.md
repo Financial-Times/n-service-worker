@@ -31,18 +31,21 @@ This will also start webpack's watch
 
 As service workers are potentially disastrous in their impact and difficult to roll back quickly, n-service-worker is one of the few parts of the next stack which has the concept of multiple qa environments. Releases happen in up to 4 stages (any of which can be skipped in a hurry/emergency).
 
-When releasing changes to n-service-worker consider how likely your changes are to go wrong and whether unit tests provide adequate coverage. Discuss with QA if necessary and keep them informed about which 'environment' your planned release is at.
+When releasing changes to n-service-worker consider how likely your changes are to go wrong and whether unit tests provide adequate coverage.
 
 ### Releasing the bower component
-If you're only changing `main.js`, or the templates, this is just a normal bower component release (consumed by n-ui). To get it into prod create a semver tag on this repo and then a new patch reease of n-ui.
+
+If you're only changing `main.js`, or the templates, this is just a normal bower component release (consumed by n-ui). To get it into prod create a semver tag on this repo and then a new patch release of n-ui.
 
 ### Releasing the service worker
 
 Builds tagged with special tags and master builds push files named `__sw-{prod,canary,qa,master}.js` to s3. Feature flags are then used to toggle which one is installed for which users. The relevant flags are
+
 - `swQAVariant` - multivariant flag used by QA to choose between any of the 4 service worker variants
 - `swCanaryRelease` - forces a small percentage of users onto an experimental version of the service worker
 
 #### What triggers each kind of release
+
 - All master builds release `/__sw-master.js`
 - All tags of the form `qa-v{release number}` will release `/__sw-qa.js`
 - All tags of the form `canary-v{release number}` will release `/__sw-canary.js`
@@ -50,14 +53,15 @@ Builds tagged with special tags and master builds push files named `__sw-{prod,c
 - All semver tags will result in a new release of the n-service-worker bower component (the bit that registers the service worker)
 
 #### Should I use semver for the releases?
+
 - For releasing the bower component (i.e. tags of the form `v1.2.3`)... yes, always use semver
-- For the prod/qa/canary releases semver isn't required, but try to be mindful of release history when creating your tag
+- For the prod/qa/canary releases use an incremental integer
 	- if the last prod release was `prod-v7`, but the last qa release was `qa-v3`, and you need to create a qa release, make it `qa-v8` so that when it gets to prod, the prod tage can be `prod-v8`
-	- if working on a feature and you need to release several related qa releases, feel free to use semver-esque tags e.g. `qa-v8`, `qa-v8.1`...
 
 To move a version of the service worker through one or more stages of the release cycle, care must be taken to tag the same commit with the related `qa`, `canary` and `prod` tags
 
 #### Rolling back
+
 Unfortunately it's still a manual process, but creating a new tag on the same commit as the last good version should do it.
 // TODO - set up versioning in s3
 
@@ -78,6 +82,7 @@ if (getFlag('swUseSpecificCache')) {
 ```
 
 ### precache/cache
+
 sw-toolbox doesn't offer all features on its cache and precache utilities, so we offer enhanced versions
 
 ```javascript
@@ -88,6 +93,7 @@ import precache from './utils/precache';
 ```
 
 ### flagged caches
+
 To turn on whether a particular request fetches from a cache or network, based on the value of a flag, use the getHandler function from utils/handlers
 
 ```javascript

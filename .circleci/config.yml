@@ -58,21 +58,21 @@ references:
   filters_qa_tag: &filters_qa_tag
     tags:
       only:
-        - /^qa-v?\d+\.\d+\.\d+(?:-beta\.\d+)?$/
+        - /^qa-v\d+$/
     branches:
       ignore: /.*/
 
   filters_canary_tag: &filters_canary_tag
     tags:
       only:
-        - /^canary-v?\d+\.\d+\.\d+(?:-beta\.\d+)?$/
+        - /^canary-v\d+$/
     branches:
       ignore: /.*/
 
   filters_production_tag: &filters_production_tag
     tags:
       only:
-        - /^prod-v?\d+\.\d+\.\d+(?:-beta\.\d+)?$/
+        - /^prod-v\d+$/
     branches:
       ignore: /.*/
 
@@ -139,17 +139,6 @@ jobs:
           environment:
             JEST_JUNIT_OUTPUT: test-results/jest/results.xml
             MOCHA_FILE: test-results/mocha/results.xml
-
-  publish:
-    <<: *container_config_node8
-    steps:
-      - *attach_workspace
-      - run:
-          name: shared-helper / npm-store-auth-token
-          command: .circleci/shared-helpers/helper-npm-store-auth-token
-      - run:
-          name: shared-helper / npm-version-and-publish-public
-          command: .circleci/shared-helpers/helper-npm-version-and-publish-public
 
 workflows:
 
