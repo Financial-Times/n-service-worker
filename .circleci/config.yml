@@ -55,21 +55,21 @@ references:
     branches:
       ignore: /.*/
 
-  filters_qa_tag: &filters_version_tag
+  filters_qa_tag: &filters_qa_tag
     tags:
       only:
         - /^qa-v?\d+\.\d+\.\d+(?:-beta\.\d+)?$/
     branches:
       ignore: /.*/
 
-  filters_canary_tag: &filters_version_tag
+  filters_canary_tag: &filters_canary_tag
     tags:
       only:
         - /^canary-v?\d+\.\d+\.\d+(?:-beta\.\d+)?$/
     branches:
       ignore: /.*/
 
-  filters_production_tag: &filters_version_tag
+  filters_production_tag: &filters_production_tag
     tags:
       only:
         - /^prod-v?\d+\.\d+\.\d+(?:-beta\.\d+)?$/
