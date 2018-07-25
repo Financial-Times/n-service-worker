@@ -55,6 +55,27 @@ references:
     branches:
       ignore: /.*/
 
+  filters_qa_tag: &filters_qa_tag
+    tags:
+      only:
+        - /^qa-v\d+$/
+    branches:
+      ignore: /.*/
+
+  filters_canary_tag: &filters_canary_tag
+    tags:
+      only:
+        - /^canary-v\d+$/
+    branches:
+      ignore: /.*/
+
+  filters_production_tag: &filters_production_tag
+    tags:
+      only:
+        - /^prod-v\d+$/
+    branches:
+      ignore: /.*/
+
 version: 2
 
 jobs:
@@ -108,16 +129,16 @@ jobs:
           path: test-results
           destination: test-results
 
-  publish:
+  deploy:
     <<: *container_config_node8
     steps:
       - *attach_workspace
       - run:
-          name: shared-helper / npm-store-auth-token
-          command: .circleci/shared-helpers/helper-npm-store-auth-token
-      - run:
-          name: shared-helper / npm-version-and-publish-public
-          command: .circleci/shared-helpers/helper-npm-version-and-publish-public
+          name: Deploy
+          command: make deploy
+          environment:
+            JEST_JUNIT_OUTPUT: test-results/jest/results.xml
+            MOCHA_FILE: test-results/mocha/results.xml
 
 workflows:
 
@@ -132,19 +153,67 @@ workflows:
           requires:
             - build
 
-  build-test-publish:
+  build-test-deploy-master:
     jobs:
       - build:
           filters:
-            <<: *filters_version_tag
+            <<: *filters_only_master
       - test:
           filters:
-            <<: *filters_version_tag
+            <<: *filters_only_master
           requires:
             - build
-      - publish:
+      - deploy:
           filters:
-            <<: *filters_version_tag
+            <<: *filters_only_master
+          requires:
+            - test
+
+  build-test-deploy-qa:
+    jobs:
+      - build:
+          filters:
+            <<: *filters_qa_tag
+      - test:
+          filters:
+            <<: *filters_qa_tag
+          requires:
+            - build
+      - deploy:
+          filters:
+            <<: *filters_qa_tag
+          requires:
+            - test
+
+  build-test-deploy-canary:
+    jobs:
+      - build:
+          filters:
+            <<: *filters_canary_tag
+      - test:
+          filters:
+            <<: *filters_canary_tag
+          requires:
+            - build
+      - deploy:
+          filters:
+            <<: *filters_canary_tag
+          requires:
+            - test
+
+  build-test-deploy-production:
+    jobs:
+      - build:
+          filters:
+            <<: *filters_production_tag
+      - test:
+          filters:
+            <<: *filters_production_tag
+          requires:
+            - build
+      - deploy:
+          filters:
+            <<: *filters_production_tag
           requires:
             - test
 
