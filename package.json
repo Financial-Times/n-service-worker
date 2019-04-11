@@ -24,7 +24,7 @@
     ]
   },
   "devDependencies": {
-    "@financial-times/n-gage": "3.4.0",
+    "@financial-times/n-gage": "^3.6.0",
     "@financial-times/n-heroku-tools": "^6.31.1",
     "@financial-times/n-internal-tool": "^2.1.0",
     "babel-core": "^6.26.0",
