@@ -59,6 +59,9 @@ self.addEventListener('notificationclick', ev => {
 				let url;
 				if (Notification.prototype.hasOwnProperty('data') && ev.notification.data.id) {
 					url = '/content/' + ev.notification.data.id;
+					if( ev.notification.data.segmentId ) {
+						url += '?segmentId=' + ev.notification.data.segmentId;
+					}
 				} else {
 					url = '/myft/following';
 				}
