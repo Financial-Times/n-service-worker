@@ -15,6 +15,7 @@ self.addEventListener('push', event => {
 		if (payload.uuid) {
 			tag = payload.uuid;
 			notificationData.id = payload.uuid;
+			notificationData.segmentId = payload.segmentId;
 			title = payload.headline ? payload.headline : title;
 			body: payload.subheading ? payload.subheading : body;
 			icon = payload.mainImage ? payload.mainImage : icon;
