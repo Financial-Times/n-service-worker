@@ -11,7 +11,8 @@
     "start": "make run -j2",
     "precommit": "node_modules/.bin/secret-squirrel",
     "commitmsg": "node_modules/.bin/secret-squirrel-commitmsg",
-    "prepush": "make verify -j3"
+    "prepush": "make verify -j3",
+    "prepare": "npx snyk protect || npx snyk protect -d || true"
   },
   "dependencies": {
     "idb": "^2.0.4",
@@ -60,6 +61,7 @@
     "service-worker-mock": "^1.7.2",
     "sinon": "^4.0.1",
     "sinon-chai": "^2.14.0",
+    "snyk": "^1.167.2",
     "useragent": "^2.2.1",
     "webpack": "^3.8.1"
   },
