@@ -1,7 +1,23 @@
 <script>
 try {
-if ('serviceWorker' in navigator) {
-	navigator.serviceWorker.getRegistration().then(function (reg) { reg && reg.unregister()});
-}
+	if ('serviceWorker' in navigator) {
+		function trackServiceWorkerRegistered() {
+			var data = JSON.stringify({
+				category: 'service-worker',
+				action: 'registered'
+			});
+
+			var img = new Image();
+
+			img.src = 'https://spoor-api.ft.com/px.gif?data=' + encodeURIComponent(data);
+		}
+
+		navigator.serviceWorker.getRegistration().then(function(registration) {
+			if (registration) {
+				trackServiceWorkerRegistered();
+				registration.unregister();
+			}
+		});
+	}
 } catch (e) {}
 </script>
