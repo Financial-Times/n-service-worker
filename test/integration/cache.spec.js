@@ -365,7 +365,7 @@ describe('cache', () => {
 					.then(cache => cache.set(testUrl))
 					.then(() => new DB('requests', { dbName: 'next:test-cache'}).get(testUrl))
 					.then(inDb => {
-						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 1000);
+						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 500);
 					});
 			});
 
@@ -401,7 +401,7 @@ describe('cache', () => {
 					.then(cache => cache.set(testUrl))
 					.then(() => new DB('requests', { dbName: 'next:test-cache'}).get(testUrl))
 					.then(inDb => {
-						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 500);
+						expect(inDb.expires).to.be.closeTo(now + (60 * 1000), 1000);
 					});
 			});
 
