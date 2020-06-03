@@ -220,8 +220,6 @@ function checkAndExpireAllCaches (caches) {
 function deleteOldCaches (caches) {
 	// Delete any unversioned caches.
 	[
-		'next:ads',
-		'next:ads:personal',
 		'next:built-assets',
 		'next:comments',
 		'next:fonts',

@@ -31,9 +31,6 @@ polyfillCache(getHandler({strategy: 'fastest', flag: 'swAssetCaching'}));
 // import myFtCache from './caches/myft';
 // myFtCache(getHandler({strategy: 'cacheFirst', flag: 'swMyftCaching'}));
 
-import adsCache from './caches/ads';
-adsCache(getHandler({ flag: 'swAdsCaching', strategy: 'cacheFirst' }));
-
 import './push/myft';
 
 self.addEventListener('fetch', ev => {

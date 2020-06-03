@@ -48,7 +48,6 @@ describe('__sw.js', () => {
 	});
 
 	context('Register and initialise caches', () => {
-		let adsCacheStub = {};
 		let fontsCacheStub = {};
 		let imageCacheStub = {};
 		let builtAssetsCacheStub = {};
@@ -57,7 +56,6 @@ describe('__sw.js', () => {
 		let myFtCacheStub = {};
 
 		beforeEach(() => {
-			adsCacheStub = sinon.stub();
 			fontsCacheStub = sinon.stub();
 			imageCacheStub = sinon.stub();
 			builtAssetsCacheStub = sinon.stub();
@@ -66,7 +64,6 @@ describe('__sw.js', () => {
 			myFtCacheStub = sinon.stub();
 
 			proxy(() => require('../../src/__sw.js'), {
-				'./caches/ads': adsCacheStub,
 				'./caches/fonts': fontsCacheStub ,
 				'./caches/image': imageCacheStub,
 				'./caches/built-assets': builtAssetsCacheStub,
@@ -74,10 +71,6 @@ describe('__sw.js', () => {
 				'./caches/comments': commentsCacheStub,
 				'./caches/myft': myFtCacheStub
 			});
-		});
-
-		it('Ads cache', () => {
-			expect(adsCacheStub).to.have.been.called;
 		});
 
 		it('Fonts cache', () => {

@@ -101,7 +101,7 @@ To turn on whether a particular request fetches from a cache or network, based o
 ```javascript
 import {getHandler} from './utils/handlers';
 
-const myHandler = getHandler({flag: 'swAdsCaching', strategy: 'cacheFirst'});
+const myHandler = getHandler({flag: 'flagName', strategy: 'cacheFirst'});
 
 toolbox.get('/url', myHandler);
 
