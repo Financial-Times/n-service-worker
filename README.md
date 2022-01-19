@@ -12,15 +12,15 @@ you'll need to [add the self-signed cert to your keychain]
 
 General workflow is
 
-* Choose an app you want to run the service worker against, e.g. `front-page`,
-configure it to run as https and serve the service worker locally
+- Choose an app you want to run the service worker against, e.g. `front-page`,
+  configure it to run as https and serve the service worker locally
 
 ```
 	cd next-front-page
 	nht run --https --local-apps service-worker=3010
 ```
 
-* Also, run the service worker locally
+- Also, run the service worker locally
 
 ```
 	cd n-service-worker
@@ -41,14 +41,14 @@ If you're only changing `main.js`, or the templates, this is just a normal bower
 
 ### Releasing the service worker
 
-Builds tagged with special tags and master builds push files named `__sw-{prod,canary,qa,master}.js` to s3. Feature flags are then used to toggle which one is installed for which users. The relevant flags are
+Builds tagged with special tags and `main` builds push files named `__sw-{prod,canary,qa,main}.js` to s3. Feature flags are then used to toggle which one is installed for which users. The relevant flags are
 
 - `swQAVariant` - multivariant flag used by QA to choose between any of the 4 service worker variants
 - `swCanaryRelease` - forces a small percentage of users onto an experimental version of the service worker
 
 #### What triggers each kind of release
 
-- All master builds release `/__sw-master.js`
+- All main builds release `/__sw-main.js`
 - All tags of the form `qa-v{release number}` will release `/__sw-qa.js`
 - All tags of the form `canary-v{release number}` will release `/__sw-canary.js`
 - All tags of the form `prod-v{release number}` will release `/__sw-prod.js`
@@ -58,7 +58,7 @@ Builds tagged with special tags and master builds push files named `__sw-{prod,c
 
 - For releasing the bower component (i.e. tags of the form `v1.2.3`)... yes, always use semver
 - For the prod/qa/canary releases use an incremental integer
-	- if the last prod release was `prod-v7`, but the last qa release was `qa-v3`, and you need to create a qa release, make it `qa-v8` so that when it gets to prod, the prod tage can be `prod-v8`
+  - if the last prod release was `prod-v7`, but the last qa release was `qa-v3`, and you need to create a qa release, make it `qa-v8` so that when it gets to prod, the prod tage can be `prod-v8`
 
 To move a version of the service worker through one or more stages of the release cycle, care must be taken to tag the same commit with the related `qa`, `canary` and `prod` tags
 
@@ -76,10 +76,10 @@ For most cases [sw-toolbox](http://googlechrome.github.io/sw-toolbox/docs/releas
 On each page load the service worker is passed the current set of feature flags. Depending on what you're using the flag to toggle on\off, it may not take effect until the next page load due to the service worker lifecycle
 
 ```javascript
-import { getFlag } from './utils/flags'
+import { getFlag } from "./utils/flags";
 
-if (getFlag('swUseSpecificCache')) {
-	// do something
+if (getFlag("swUseSpecificCache")) {
+  // do something
 }
 ```
 
@@ -88,10 +88,9 @@ if (getFlag('swUseSpecificCache')) {
 sw-toolbox doesn't offer all features on its cache and precache utilities, so we offer enhanced versions
 
 ```javascript
-import cache from './utils/cache';
-import precache from './utils/precache';
+import cache from "./utils/cache";
+import precache from "./utils/precache";
 // then use instead of toolbox.cache or toolbox.precache
-
 ```
 
 ### flagged caches
@@ -99,10 +98,9 @@ import precache from './utils/precache';
 To turn on whether a particular request fetches from a cache or network, based on the value of a flag, use the getHandler function from utils/handlers
 
 ```javascript
-import {getHandler} from './utils/handlers';
+import { getHandler } from "./utils/handlers";
 
-const myHandler = getHandler({flag: 'swAdsCaching', strategy: 'cacheFirst'});
+const myHandler = getHandler({ flag: "swAdsCaching", strategy: "cacheFirst" });
 
-toolbox.get('/url', myHandler);
-
+toolbox.get("/url", myHandler);
 ```

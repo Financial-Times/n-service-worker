@@ -7,7 +7,7 @@ const getEnvironment = () => {
 	if (!process.env.CIRCLE_BUILD_NUM) {
 		return 'prod';
 	}
-	let env = 'master';
+	let env = 'main';
 	if (process.env.CIRCLE_TAG) {
 		const customEnv = (/prod|qa|canary/.exec(process.env.CIRCLE_TAG) || [])[0];
 		if (customEnv) {
