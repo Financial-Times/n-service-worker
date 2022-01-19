@@ -88,12 +88,14 @@ module.exports = function (karma) {
 				os: 'Windows',
 				os_version: '10'
 			},
+			/*
+			// Disabled since this repository is unmaintained and latests versions of Firefox / Safari are failing on loading the SW
 			firefoxLatest: {
 				base: 'BrowserStack',
 				browser: 'firefox',
 				browser_version: 'latest',
 				os: 'Windows',
-				os_version: '10'
+				os_version: '10',
 			},
 			safariLatest: {
 				base: 'BrowserStack',
@@ -102,6 +104,7 @@ module.exports = function (karma) {
 				os: 'OS X',
 				os_version: 'High Sierra'
 			}
+			*/
 		};
 
 		config.browsers = Object.keys(config.customLaunchers);
