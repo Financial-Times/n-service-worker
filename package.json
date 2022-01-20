@@ -9,9 +9,6 @@
   },
   "scripts": {
     "start": "make run -j2",
-    "precommit": "node_modules/.bin/secret-squirrel",
-    "commitmsg": "node_modules/.bin/secret-squirrel-commitmsg",
-    "prepush": "make verify -j3",
     "prepare": "npx snyk protect || npx snyk protect -d || true"
   },
   "dependencies": {
@@ -25,7 +22,7 @@
     ]
   },
   "devDependencies": {
-    "@financial-times/n-gage": "^3.6.0",
+    "@financial-times/n-gage": "^8.3.2",
     "@financial-times/n-heroku-tools": "^6.31.1",
     "@financial-times/n-internal-tool": "^2.1.0",
     "babel-core": "^6.26.0",
@@ -65,5 +62,12 @@
     "useragent": "^2.2.1",
     "webpack": "^3.8.1"
   },
-  "config": {}
+  "config": {},
+  "husky": {
+    "hooks": {
+      "commit-msg": "node_modules/.bin/secret-squirrel-commitmsg",
+      "pre-commit": "node_modules/.bin/secret-squirrel",
+      "pre-push": "make verify -j3"
+    }
+  }
 }
