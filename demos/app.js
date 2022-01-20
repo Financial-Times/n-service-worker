@@ -1,25 +1,24 @@
-const internalTool = require('@financial-times/n-internal-tool');
+const nExpress = require('@financial-times/n-express');
 const chalk = require('chalk');
 const path = require('path');
-
-const fixtures = require('./fixtures.json');
 
 const errorHighlight = chalk.bold.red;
 const highlight = chalk.bold.green;
 
-const app = internalTool({
-	s3o: false,
-	partialsDirectory: path.resolve(__dirname, '..'),
+const app = module.exports = nExpress({
+	name: 'public',
 	systemCode: 'n-service-worker',
-	viewsDirectory: '/demo'
+	withFlags: false,
+	withConsent: false,
+	withServiceMetrics: false,
+	withAnonMiddleware: false,
+	demo: true,
+	withBackendAuthentication: false,
 });
 
-app.get('/', (req, res) => {
-	res.render('demo', Object.assign({
-		title: 'Test App',
-		layout: 'vanilla',
-	}, fixtures));
-});
+app.use('/', nExpress.static(path.join(process.cwd(), '/demos'), { redirect: false }));
+app.use('/public', nExpress.static(path.join(process.cwd(), '/public'), { redirect: false }));
+
 
 function runPa11yTests () {
 	const spawn = require('child_process').spawn;
