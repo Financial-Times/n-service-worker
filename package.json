@@ -5,11 +5,12 @@
     "url": "https://github.com/Financial-Times/n-service-worker.git"
   },
   "engines": {
-    "node": "^8.7.0"
+    "node": "14.x"
   },
   "scripts": {
     "start": "make run -j2",
-    "prepare": "npx snyk protect || npx snyk protect -d || true"
+    "prepare": "npx snyk protect || npx snyk protect -d || true",
+    "postinstall": "check-engine"
   },
   "dependencies": {
     "idb": "^2.0.4",
@@ -35,6 +36,7 @@
     "bower": "^1.8.8",
     "chai": "^4.1.2",
     "chalk": "^2.3.0",
+    "check-engine": "^1.10.1",
     "eslint": "^4.9.0",
     "fetch-mock": "^5.13.1",
     "http-server": "^0.10.0",
