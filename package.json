@@ -10,7 +10,7 @@
   "scripts": {
     "start": "make run -j2",
     "prepare": "npx snyk protect || npx snyk protect -d || true",
-    "postinstall": "check-engine"
+    "preinstall": "npm_config_yes=true npx check-engine"
   },
   "dependencies": {
     "idb": "^2.0.4",
