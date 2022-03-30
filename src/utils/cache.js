@@ -224,7 +224,6 @@ function deleteOldCaches (caches) {
 		'next:ads:personal',
 		'next:built-assets',
 		'next:comments',
-		'next:fonts',
 		'next:image',
 		'next:myft',
 		'next:polyfill',

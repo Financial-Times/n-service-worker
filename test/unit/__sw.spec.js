@@ -49,7 +49,6 @@ describe('__sw.js', () => {
 
 	context('Register and initialise caches', () => {
 		let adsCacheStub = {};
-		let fontsCacheStub = {};
 		let imageCacheStub = {};
 		let builtAssetsCacheStub = {};
 		let polyfillCacheStub = {};
@@ -58,7 +57,6 @@ describe('__sw.js', () => {
 
 		beforeEach(() => {
 			adsCacheStub = sinon.stub();
-			fontsCacheStub = sinon.stub();
 			imageCacheStub = sinon.stub();
 			builtAssetsCacheStub = sinon.stub();
 			polyfillCacheStub = sinon.stub();
@@ -67,7 +65,6 @@ describe('__sw.js', () => {
 
 			proxy(() => require('../../src/__sw.js'), {
 				'./caches/ads': adsCacheStub,
-				'./caches/fonts': fontsCacheStub ,
 				'./caches/image': imageCacheStub,
 				'./caches/built-assets': builtAssetsCacheStub,
 				'./caches/polyfill': polyfillCacheStub,
@@ -78,10 +75,6 @@ describe('__sw.js', () => {
 
 		it('Ads cache', () => {
 			expect(adsCacheStub).to.have.been.called;
-		});
-
-		it('Fonts cache', () => {
-			expect(fontsCacheStub).to.have.been.called;
 		});
 
 		it('Image cache', () => {
