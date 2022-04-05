@@ -9,9 +9,6 @@ import { getHandler } from './utils/handlers';
 import './utils/flags';
 
 // generic assets
-import fontsCache from './caches/fonts';
-fontsCache(getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'}));
-
 import imageCache from './caches/image';
 imageCache(getHandler({strategy: 'cacheFirst', flag: 'swAssetCaching'}));
 
