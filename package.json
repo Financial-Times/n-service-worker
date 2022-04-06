@@ -5,11 +5,11 @@
     "url": "https://github.com/Financial-Times/n-service-worker.git"
   },
   "volta": {
-    "node": "12.22.5",
+    "node": "16.14.2",
     "npm": "7.20.2"
   },
   "engines": {
-    "node": "12.x",
+    "node": "14.x || 16.x",
     "npm": "7.x"
   },
   "scripts": {
