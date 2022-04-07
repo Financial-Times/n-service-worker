@@ -2,11 +2,10 @@
 # template: component
 
 references:
-  container_config:
-    &container_config
+  container_config: &container_config
     working_directory: ~/project/build
     docker:
-      - image: circleci/node:<< parameters.node-version >>-browsers
+      - image: cimg/node:<< parameters.node-version >>-browsers
     parameters:
       node-version:
         default: "16.14"
@@ -14,71 +13,60 @@ references:
 
   workspace_root: &workspace_root ~/project
 
-  attach_workspace:
-    &attach_workspace
+  attach_workspace: &attach_workspace
     attach_workspace:
       at: *workspace_root
 
-  npm_cache_keys:
-    &npm_cache_keys
+  npm_cache_keys: &npm_cache_keys
     keys:
       - v3-dependency-npm-{{ checksum "package-lock.json" }}-
       - v3-dependency-npm-{{ checksum "package-lock.json" }}
       - v3-dependency-npm-
 
-  cache_npm_cache:
-    &cache_npm_cache
+  cache_npm_cache: &cache_npm_cache
     save_cache:
       key: v3-dependency-npm-{{ checksum "package-lock.json" }}-{{ epoch }}
       paths:
         - ./node_modules/
 
-  restore_npm_cache:
-    &restore_npm_cache
+  restore_npm_cache: &restore_npm_cache
     restore_cache:
       <<: *npm_cache_keys
 
-  filters_only_main:
-    &filters_only_main
+  filters_only_main: &filters_only_main
     branches:
       only: main
 
-  filters_ignore_main:
-    &filters_ignore_main
+  filters_ignore_main: &filters_ignore_main
     branches:
       ignore: main
 
-  filters_ignore_tags:
-    &filters_ignore_tags
+  filters_ignore_tags: &filters_ignore_tags
     tags:
       ignore: /.*/
 
-  filters_version_tag:
-    &filters_version_tag
+  filters_version_tag: &filters_version_tag
     tags:
       only:
         - /^v?\d+\.\d+\.\d+(?:-beta\.\d+)?$/
     branches:
       ignore: /.*/
 
-  filters_qa_tag:
-    &filters_qa_tag
+  filters_qa_tag: &filters_qa_tag
     tags:
       only:
         - /^qa-v\d+$/
     branches:
       ignore: /.*/
 
-  filters_canary_tag:
-    &filters_canary_tag
+  filters_canary_tag: &filters_canary_tag
     tags:
       only:
         - /^canary-v\d+$/
     branches:
       ignore: /.*/
 
-  filters_production_tag:
-    &filters_production_tag
+  filters_production_tag: &filters_production_tag
     tags:
       only:
         - /^prod-v\d+$/
@@ -160,14 +148,14 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.14", "14.19" ]
+              node-version: ["16.14", "14.19"]
       - test:
           requires:
             - build-v<< matrix.node-version >>
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.14", "14.19" ]
+              node-version: ["16.14", "14.19"]
 
   build-test-deploy-main:
     jobs:
@@ -177,7 +165,7 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.14", "14.19" ]
+              node-version: ["16.14", "14.19"]
       - test:
           filters:
             <<: *filters_only_main
@@ -186,7 +174,7 @@ workflows:
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.14", "14.19" ]
+              node-version: ["16.14", "14.19"]
       - deploy:
           filters:
             <<: *filters_only_main
@@ -201,7 +189,7 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.14", "14.19" ]
+              node-version: ["16.14", "14.19"]
       - test:
           filters:
             <<: *filters_qa_tag
@@ -210,7 +198,7 @@ workflows:
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.14", "14.19" ]
+              node-version: ["16.14", "14.19"]
       - deploy:
           filters:
             <<: *filters_qa_tag
@@ -225,7 +213,7 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.14", "14.19" ]
+              node-version: ["16.14", "14.19"]
       - test:
           filters:
             <<: *filters_canary_tag
@@ -234,7 +222,7 @@ workflows:
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.14", "14.19" ]
+              node-version: ["16.14", "14.19"]
       - deploy:
           filters:
             <<: *filters_canary_tag
@@ -249,7 +237,7 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.14", "14.19" ]
+              node-version: ["16.14", "14.19"]
       - test:
           filters:
             <<: *filters_production_tag
@@ -258,7 +246,7 @@ workflows:
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.14", "14.19" ]
+              node-version: ["16.14", "14.19"]
       - deploy:
           filters:
             <<: *filters_production_tag
@@ -277,7 +265,7 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.14", "14.19" ]
+              node-version: ["16.14", "14.19"]
       - test:
           requires:
             - build-v<< matrix.node-version >>
@@ -285,7 +273,7 @@ workflows:
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.14", "14.19" ]
+              node-version: ["16.14", "14.19"]
 
 notify:
   webhooks:
