@@ -126,6 +126,19 @@ jobs:
           path: test-results
           destination: test-results
 
+    publish:
+    <<: *container_config_node
+    steps:
+      - *attach_workspace
+      - run:
+          name: shared-helper / npm-store-auth-token
+          command: .circleci/shared-helpers/helper-npm-store-auth-token
+      - run: npx snyk monitor --org=customer-products
+          --project-name=Financial-Times/n-service-worker
+      - run:
+          name: shared-helper / npm-version-and-publish-public
+          command: .circleci/shared-helpers/helper-npm-version-and-publish-public
+
   deploy:
     <<: *container_config
     steps:
@@ -156,7 +169,30 @@ workflows:
           matrix:
             parameters:
               node-version: ["16.14", "14.19"]
-
+  build-test-publish:
+    jobs:
+      - build:
+          filters:
+            <<: *filters_version_tag
+          name: build-v<< matrix.node-version >>
+          matrix:
+            parameters:
+              node-version: [ "16.14", "14.19" ]
+      - test:
+          filters:
+            <<: *filters_version_tag
+          requires:
+            - build-v<< matrix.node-version >>
+          name: test-v<< matrix.node-version >>
+          matrix:
+            parameters:
+              node-version: [ "16.14", "14.19" ]
+      - publish:
+          context: npm-publish-token
+          filters:
+            <<: *filters_version_tag
+          requires:
+            - test-v16.14
   build-test-deploy-main:
     jobs:
       - build:
