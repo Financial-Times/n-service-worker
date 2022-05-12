@@ -84,7 +84,7 @@ jobs:
     steps:
       - checkout
       - node/install-npm:
-          version: "7"
+          version: "7.20.2"
       - run:
           name: Checkout next-ci-shared-helpers
           command: git clone --depth 1
