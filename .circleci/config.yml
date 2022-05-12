@@ -127,7 +127,7 @@ jobs:
           destination: test-results
 
   publish:
-    <<: *container_config_node
+    <<: *container_config
     steps:
       - *attach_workspace
       - run:
