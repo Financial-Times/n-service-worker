@@ -21,16 +21,16 @@ build-production:
 
 # TODO: Add proper integration tests with nightwatch
 integration-test:
-	karma start
+	node_modules/karma/bin/karma start karma.conf.js
 
 unit-test:
 	mocha test/unit/*.spec.js test/unit/**/*.spec.js --require babel-core/register --require babel-polyfill --exit
 
 test-chrome:
-	karma start --autoWatch=true --singleRun=false --browsers=Chrome
+	node_modules/karma/bin/karma start --autoWatch=true --singleRun=false --browsers=Chrome
 
 test-firefox:
-	karma start --autoWatch=true --singleRun=false --browsers=Firefox
+	node_modules/karma/bin/karma start --autoWatch=true --singleRun=false --browsers=Firefox
 
 a11y:
 	node .pa11yci.js

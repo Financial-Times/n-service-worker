@@ -1,9 +1,13 @@
 {
-  "name": "n-service-worker",
+  "version": "0.0.0",
+  "name": "@financial-times/n-service-worker",
+  "main": "main.js",
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "https://github.com/Financial-Times/n-service-worker.git"
   },
+  "description": "Global service worker component for next.ft.com",
   "volta": {
     "node": "16.14.2",
     "npm": "7.20.2"
@@ -27,6 +31,10 @@
       "env"
     ]
   },
+  "authors": [
+    "Darren Hurley <darren.hurley@ft.com>",
+    "Rhys Evans <rhys.evans@ft.com>"
+  ],
   "devDependencies": {
     "@financial-times/n-express": "^22.4.1",
     "@financial-times/n-gage": "^8.3.2",
@@ -38,7 +46,6 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-runtime": "^6.26.0",
-    "bower": "^1.8.8",
     "chai": "^4.1.2",
     "chalk": "^2.3.0",
     "check-engine": "^1.10.1",
