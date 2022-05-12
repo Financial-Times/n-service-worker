@@ -4,6 +4,10 @@
 
 Global service worker component for next.ft.com
 
+## Installation
+
+`npm install --save @financial-times/n-service-worker`
+
 ## Setup
 
 Service workers need to be run over HTTPS. To avoid any nasty cert issues,
@@ -35,9 +39,9 @@ As service workers are potentially disastrous in their impact and difficult to r
 
 When releasing changes to n-service-worker consider how likely your changes are to go wrong and whether unit tests provide adequate coverage.
 
-### Releasing the bower component
+### Releasing the component
 
-If you're only changing `main.js`, or the templates, this is just a normal bower component release (consumed by n-ui). To get it into prod create a semver tag on this repo and then a new patch release of n-ui.
+If you're only changing `main.js`, or the templates, this is just a normal component release. To get it into prod create a semver tag on this repo.
 
 ### Releasing the service worker
 
@@ -52,11 +56,11 @@ Builds tagged with special tags and `main` builds push files named `__sw-{prod,c
 - All tags of the form `qa-v{release number}` will release `/__sw-qa.js`
 - All tags of the form `canary-v{release number}` will release `/__sw-canary.js`
 - All tags of the form `prod-v{release number}` will release `/__sw-prod.js`
-- All semver tags will result in a new release of the n-service-worker bower component (the bit that registers the service worker)
+- All semver tags will result in a new release of the n-service-worker component (the bit that registers the service worker)
 
 #### Should I use semver for the releases?
 
-- For releasing the bower component (i.e. tags of the form `v1.2.3`)... yes, always use semver
+- For releasing the component (i.e. tags of the form `v1.2.3`)... yes, always use semver
 - For the prod/qa/canary releases use an incremental integer
   - if the last prod release was `prod-v7`, but the last qa release was `qa-v3`, and you need to create a qa release, make it `qa-v8` so that when it gets to prod, the prod tage can be `prod-v8`
 
