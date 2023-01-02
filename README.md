@@ -108,3 +108,4 @@ const myHandler = getHandler({ flag: "swAdsCaching", strategy: "cacheFirst" });
 
 toolbox.get("/url", myHandler);
 ```
+test
