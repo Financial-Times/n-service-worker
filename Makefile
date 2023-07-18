@@ -6,43 +6,50 @@ node_modules/@financial-times/n-gage/index.mk:
 
 .PHONY: demo
 
+NODE_VERSION := $(shell node --version)
+NODE_MAJOR_VERSION := $(shell echo $(NODE_VERSION) | cut -c2-3)
+
+ifeq ($(NODE_MAJOR_VERSION),18)
+	NODE_OPTS := "--openssl-legacy-provider --dns-result-order=ipv4first"
+endif
+
 test: verify unit-test integration-test
 
 build-dev:
-	webpack --watch --debug
+	NODE_OPTIONS=$(NODE_OPTS) webpack --watch --debug
 
 PORT ?= 3010
 
 build:
-	webpack --bail --debug
+	NODE_OPTIONS=$(NODE_OPTS) webpack --bail --debug
 
 build-production:
-	webpack --bail -p
+	NODE_OPTIONS=$(NODE_OPTS) webpack --bail -p
 
 # TODO: Add proper integration tests with nightwatch
 integration-test:
-	node_modules/karma/bin/karma start karma.conf.js
+	NODE_OPTIONS=$(NODE_OPTS) node_modules/karma/bin/karma start karma.conf.js
 
 unit-test:
-	mocha test/unit/*.spec.js test/unit/**/*.spec.js --require babel-core/register --require babel-polyfill --exit
+	NODE_OPTIONS=$(NODE_OPTS) && mocha test/unit/*.spec.js test/unit/**/*.spec.js --require babel-core/register --require babel-polyfill --exit
 
 test-chrome:
-	node_modules/karma/bin/karma start --autoWatch=true --singleRun=false --browsers=Chrome
+	NODE_OPTIONS=$(NODE_OPTS) node_modules/karma/bin/karma start --autoWatch=true --singleRun=false --browsers=Chrome
 
 test-firefox:
-	node_modules/karma/bin/karma start --autoWatch=true --singleRun=false --browsers=Firefox
+	NODE_OPTIONS=$(NODE_OPTS) node_modules/karma/bin/karma start --autoWatch=true --singleRun=false --browsers=Firefox
 
 a11y:
-	node .pa11yci.js
+	NODE_OPTIONS=$(NODE_OPTS) node .pa11yci.js
 	PA11Y=true node demos/app
 
 demo:
-	node demos/app
+	NODE_OPTIONS=$(NODE_OPTS) node demos/app
 
 run: build-dev server
 
 server:
-	http-server dist -p $(PORT) -c-1
+	NODE_OPTIONS=$(NODE_OPTS) http-server dist -p $(PORT) -c-1
 
 deploy: build-production
 	nht deploy-static `find . -path "./dist/*"` --strip 1 --bucket ft-next-service-worker-prod \
