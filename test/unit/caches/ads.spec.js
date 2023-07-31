@@ -63,9 +63,9 @@ describe('Ads cache', () => {
 			});
 		});
 
-		it('GET https://www.googletagservices.com/tag/js/gpt.js', () => {
+		it('GET https://securepubads.g.doubleclick.net/tag/js/gpt.js', () => {
 			expect(routerStub.get).to.have.been.calledWith('/tag/js/gpt.js', handlerStub, {
-				origin: 'https://www.googletagservices.com',
+				origin: 'https://securepubads.g.doubleclick.net',
 				cache: getCacheOptions(7)
 			});
 		});

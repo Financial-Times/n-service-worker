@@ -58,7 +58,7 @@ export default function init (cacheHandler) {
 	});
 
 	router.get('/tag/js/gpt.js', cacheHandler, {
-		origin: 'https://www.googletagservices.com',
+		origin: 'https://securepubads.g.doubleclick.net',
 		cache: getCacheOptions(7)
 	});
 
