@@ -9,15 +9,15 @@ node_modules/@financial-times/n-gage/index.mk:
 test: verify unit-test integration-test
 
 build-dev:
-	webpack --watch --debug
+	NODE_OPTIONS="--openssl-legacy-provider" webpack --watch --debug
 
 PORT ?= 3010
 
 build:
-	webpack --bail --debug
+	NODE_OPTIONS="--openssl-legacy-provider" webpack --bail --debug
 
 build-production:
-	webpack --bail -p
+	NODE_OPTIONS="--openssl-legacy-provider" webpack --bail -p
 
 # TODO: Add proper integration tests with nightwatch
 integration-test:
