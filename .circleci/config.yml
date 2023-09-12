@@ -159,14 +159,14 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
       - test:
           requires:
             - build-v<< matrix.node-version >>
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
   build-test-publish:
     jobs:
       - build:
@@ -175,7 +175,7 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
       - test:
           filters:
             <<: *filters_version_tag
@@ -184,7 +184,7 @@ workflows:
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
       - publish:
           context: npm-publish-token
           filters:
@@ -199,7 +199,7 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
       - test:
           filters:
             <<: *filters_only_main
@@ -208,7 +208,7 @@ workflows:
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
       - deploy:
           filters:
             <<: *filters_only_main
@@ -223,7 +223,7 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
       - test:
           filters:
             <<: *filters_qa_tag
@@ -232,7 +232,7 @@ workflows:
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
       - deploy:
           filters:
             <<: *filters_qa_tag
@@ -247,7 +247,7 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
       - test:
           filters:
             <<: *filters_canary_tag
@@ -256,7 +256,7 @@ workflows:
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
       - deploy:
           filters:
             <<: *filters_canary_tag
@@ -271,7 +271,7 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
       - test:
           filters:
             <<: *filters_production_tag
@@ -280,7 +280,7 @@ workflows:
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
       - deploy:
           filters:
             <<: *filters_production_tag
@@ -299,7 +299,7 @@ workflows:
           name: build-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
       - test:
           requires:
             - build-v<< matrix.node-version >>
@@ -307,7 +307,7 @@ workflows:
           name: test-v<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: [ "16.20", "18.17" ]
+              node-version: [ "18.17" ]
 
 notify:
   webhooks:
