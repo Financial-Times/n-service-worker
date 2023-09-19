@@ -86,25 +86,9 @@ module.exports = function (karma) {
 				browser: 'chrome',
 				browser_version: 'latest',
 				os: 'Windows',
-				os_version: '10'
-			},
-			/*
-			// Disabled since this repository is unmaintained and latests versions of Firefox / Safari are failing on loading the SW
-			firefoxLatest: {
-				base: 'BrowserStack',
-				browser: 'firefox',
-				browser_version: 'latest',
-				os: 'Windows',
 				os_version: '10',
+				flags: ['--no-sandbox'],
 			},
-			safariLatest: {
-				base: 'BrowserStack',
-				browser: 'safari',
-				browser_version: 'latest',
-				os: 'OS X',
-				os_version: 'High Sierra'
-			}
-			*/
 		};
 
 		config.browsers = Object.keys(config.customLaunchers);
