@@ -1,0 +1,10 @@
+test/
+demos/
+.github/
+.circleci/
+Makefile
+.pa11yci.js
+.snyk
+CODEOWNERS
+karma.conf.js
+secret-squirrel.js
