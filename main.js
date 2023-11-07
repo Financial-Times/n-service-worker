@@ -24,11 +24,6 @@ const message = msg => {
 
 const register = flags => {
 	if ('serviceWorker' in navigator && flags.get('serviceWorker')) {
-		if (document.cookie.length > 4000) {
-			console.warn('Cookie is greater than 4000 characters - unregistering service worker due to potential failure to retrieve updates'); //eslint-disable-line
-			return unregister();
-		}
-
 		const sampleUsers = require('./src/utils/sampleUsers').sampleUsers;
 
 		const swEnv = flags.get('swQAVariant') ||
