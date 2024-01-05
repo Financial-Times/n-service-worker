@@ -1,5 +1,7 @@
 const { module: moduleRules, resolve } = require('./webpack.config');
 
+process.env.NODE_OPTIONS = '--openssl-legacy-provider';
+
 module.exports = function (karma) {
 	const config = {
 		// base path that will be used to resolve all patterns (eg. files, exclude)

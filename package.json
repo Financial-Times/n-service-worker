@@ -9,14 +9,14 @@
   },
   "description": "Global service worker component for next.ft.com",
   "volta": {
-    "node": "16.14.2",
-    "npm": "7.20.2"
+    "node": "18.16.1"
   },
   "engines": {
-    "node": "14.x || 16.x",
-    "npm": "7.x"
+    "node": "16.x || 18.x",
+    "npm": "7.x || 8.x || 9.x"
   },
   "scripts": {
+		"test": "node_modules/karma/bin/karma start karma.conf.js",
     "start": "make run -j2",
     "prepare": "npx snyk protect || npx snyk protect -d || true"
   },
