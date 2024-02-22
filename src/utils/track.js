@@ -12,7 +12,7 @@ export default function (data) {
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json',
-			'Content-Length': new Buffer(JSON.stringify(data)).length
+			'Content-Length': Buffer.from(JSON.stringify(data)).length
 		},
 		body: JSON.stringify(data)
 	}).catch(() => {});
