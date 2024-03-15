@@ -1,6 +1,6 @@
 # n-service-worker [![CircleCI](https://circleci.com/gh/Financial-Times/n-service-worker.svg?style=svg)](https://circleci.com/gh/Financial-Times/n-service-worker)
 
-⚠️ This component is deprecated. Please only commit bug and security patches to this repo. Do not integrate it in new implementation without a preliminary discussion with the Code Owner ⚠️
+⚠️ **This component is decommissioned!** ⚠️
 
 Global service worker component for next.ft.com
 
