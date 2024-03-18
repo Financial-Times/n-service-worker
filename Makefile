@@ -9,15 +9,15 @@ node_modules/@financial-times/n-gage/index.mk:
 test: verify
 
 build-dev:
-	webpack --watch --debug
+	NODE_OPTIONS="--openssl-legacy-provider" webpack --watch --debug
 
 PORT ?= 3010
 
 build:
-	webpack --bail --debug
+	NODE_OPTIONS="--openssl-legacy-provider" webpack --bail --debug
 
 build-production:
-	webpack --bail -p
+	NODE_OPTIONS="--openssl-legacy-provider" webpack --bail -p
 
 a11y:
 	node .pa11yci.js

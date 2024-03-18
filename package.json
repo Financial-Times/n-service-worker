@@ -9,12 +9,11 @@
   },
   "description": "Global service worker component for next.ft.com",
   "volta": {
-    "node": "16.14.2",
-    "npm": "7.20.2"
+    "node": "18.17.1"
   },
   "engines": {
-    "node": "14.x || 16.x",
-    "npm": "7.x"
+    "node": "18.x",
+    "npm": "7.x || 8.x || 9.x"
   },
   "scripts": {
     "start": "make run -j2",
