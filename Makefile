@@ -6,7 +6,7 @@ node_modules/@financial-times/n-gage/index.mk:
 
 .PHONY: demo
 
-test: echo "no tests"
+test: verify
 
 build-dev:
 	webpack --watch --debug
