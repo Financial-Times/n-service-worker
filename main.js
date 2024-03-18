@@ -29,10 +29,8 @@ const register = flags => {
 			return unregister();
 		}
 
-		const sampleUsers = require('./src/utils/sampleUsers').sampleUsers;
-
 		const swEnv = flags.get('swQAVariant') ||
-			((flags.get('swCanaryRelease') && sampleUsers(3, 'sw-canary')) ? 'canary' : 'prod');
+			(flags.get('swCanaryRelease') ? 'canary' : 'prod');
 
 		passFlags(flags);
 

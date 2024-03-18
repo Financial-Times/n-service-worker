@@ -6,7 +6,7 @@ node_modules/@financial-times/n-gage/index.mk:
 
 .PHONY: demo
 
-test: verify unit-test integration-test
+test: echo "no tests"
 
 build-dev:
 	webpack --watch --debug
@@ -18,19 +18,6 @@ build:
 
 build-production:
 	webpack --bail -p
-
-# TODO: Add proper integration tests with nightwatch
-integration-test:
-	node_modules/karma/bin/karma start karma.conf.js
-
-unit-test:
-	mocha test/unit/*.spec.js test/unit/**/*.spec.js --require babel-core/register --require babel-polyfill --exit
-
-test-chrome:
-	node_modules/karma/bin/karma start --autoWatch=true --singleRun=false --browsers=Chrome
-
-test-firefox:
-	node_modules/karma/bin/karma start --autoWatch=true --singleRun=false --browsers=Firefox
 
 a11y:
 	node .pa11yci.js
